@@ -119,7 +119,6 @@ const SIMULATED_HALF_LIVES_PER_SECOND = 0.18;
 const HISTORY_INTERVAL = 0.025;
 const MAX_HISTORY_POINTS = 320;
 const VISUAL_UPDATE_INTERVAL_MS = 140;
-const SIMULATION_FRAME_INTERVAL_MS = 32;
 
 function seededRandom(seed: number) {
   let value = seed >>> 0;
@@ -175,6 +174,7 @@ function appendHistoryPoint(
 
 export default function Home() {
   const particlesRef = useRef<Particle[]>(makeParticles(160, 131));
+  const particleNodeRefs = useRef<Array<SVGGElement | null>>([]);
   const burstsRef = useRef<Burst[]>([]);
   const elapsedRef = useRef(0);
   const historyRef = useRef<HistoryPoint[]>([{ t: 0, remaining: 160 }]);
@@ -235,7 +235,6 @@ export default function Home() {
     const simulate = (timestamp: number) => {
       frameId = requestAnimationFrame(simulate);
       const frameElapsed = timestamp - lastFrame;
-      if (frameElapsed < SIMULATION_FRAME_INTERVAL_MS) return;
 
       const dt = Math.min(frameElapsed / 1000, 0.08);
       lastFrame = timestamp;
@@ -255,6 +254,10 @@ export default function Home() {
         particle.x = Math.max(0.035, Math.min(0.965, particle.x));
         particle.y = Math.max(0.055, Math.min(0.945, particle.y));
         particle.pulse += dt * 2;
+        particleNodeRefs.current[particle.id]?.setAttribute(
+          "transform",
+          `translate(${particle.x * 1000} ${particle.y * 520})`,
+        );
 
         if (
           particle.phase === "parent" &&
@@ -482,6 +485,9 @@ export default function Home() {
                   return (
                     <g
                       key={particle.id}
+                      ref={(node) => {
+                        particleNodeRefs.current[particle.id] = node;
+                      }}
                       className={`particle particle-${particle.phase}`}
                       transform={`translate(${particle.x * 1000} ${particle.y * 520})`}
                     >
