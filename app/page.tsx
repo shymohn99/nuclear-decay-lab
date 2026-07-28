@@ -10,6 +10,7 @@ import {
 } from "react";
 
 type DecayMode = "alpha" | "beta" | "gamma";
+type DecaySeries = "independent" | "uranium-238" | "thorium-232" | "uranium-235";
 
 type Nuclide = {
   massNumber: number;
@@ -19,10 +20,9 @@ type Nuclide = {
 
 type IsotopePreset = {
   key: string;
+  series: DecaySeries;
   parent: string;
   daughter: string;
-  symbol: string;
-  daughterSymbol: string;
   parentNuclide: Nuclide;
   daughterNuclide: Nuclide;
   equation: string;
@@ -63,79 +63,363 @@ type HistoryPoint = {
 
 type ChartScale = "linear" | "log";
 
+const SUPERSCRIPT_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
+const SUBSCRIPT_DIGITS = "₀₁₂₃₄₅₆₇₈₉";
+
+function scriptNumber(value: number, digits: string) {
+  return String(value)
+    .split("")
+    .map((digit) => digits[Number(digit)])
+    .join("");
+}
+
+function formatNuclideText(nuclide: Nuclide) {
+  return `${scriptNumber(nuclide.massNumber, SUPERSCRIPT_DIGITS)}${scriptNumber(
+    nuclide.protonNumber,
+    SUBSCRIPT_DIGITS,
+  )}${nuclide.element}`;
+}
+
+function createPreset(
+  preset: Omit<IsotopePreset, "equation" | "emissionSymbol" | "modeLabel" | "emission"> & {
+    modeLabel?: string;
+    emission?: string;
+    emissionSymbol?: string;
+  },
+): IsotopePreset {
+  const defaults =
+    preset.mode === "alpha"
+      ? {
+          modeLabel: "α壊変",
+          emission: "ヘリウム原子核",
+          emissionSymbol: "⁴₂He",
+        }
+      : preset.mode === "beta"
+        ? {
+            modeLabel: "β⁻壊変",
+            emission: "電子・反電子ニュートリノ",
+            emissionSymbol: "e⁻ + ν̄ₑ",
+          }
+        : {
+            modeLabel: "γ放出",
+            emission: "γ線",
+            emissionSymbol: "γ",
+          };
+  const emissionSymbol = preset.emissionSymbol ?? defaults.emissionSymbol;
+
+  return {
+    ...preset,
+    modeLabel: preset.modeLabel ?? defaults.modeLabel,
+    emission: preset.emission ?? defaults.emission,
+    emissionSymbol,
+    equation: `${formatNuclideText(preset.parentNuclide)} → ${formatNuclideText(
+      preset.daughterNuclide,
+    )} + ${emissionSymbol}`,
+  };
+}
+
+const SERIES_OPTIONS: Array<{
+  key: DecaySeries;
+  label: string;
+  caption: string;
+}> = [
+  { key: "independent", label: "単独核種", caption: "代表的な人工・天然核種" },
+  { key: "uranium-238", label: "U-238系列", caption: "ウラン系列" },
+  { key: "thorium-232", label: "Th-232系列", caption: "トリウム系列" },
+  { key: "uranium-235", label: "U-235系列", caption: "アクチニウム系列" },
+];
+
 const PRESETS: IsotopePreset[] = [
-  {
+  createPreset({
     key: "iodine-131",
-    parentNuclide: { massNumber: 131, protonNumber: 53, element: "I" },
-    daughterNuclide: { massNumber: 131, protonNumber: 54, element: "Xe" },
+    series: "independent",
     parent: "ヨウ素131",
     daughter: "キセノン131",
-    symbol: "¹³¹₅₃I",
-    daughterSymbol: "¹³¹₅₄Xe",
-    equation: "¹³¹₅₃I → ¹³¹₅₄Xe + e⁻ + ν̄ₑ",
-    emissionSymbol: "e⁻ + ν̄ₑ",
+    parentNuclide: { massNumber: 131, protonNumber: 53, element: "I" },
+    daughterNuclide: { massNumber: 131, protonNumber: 54, element: "Xe" },
     halfLife: 8.02,
     unit: "日",
     mode: "beta",
-    modeLabel: "β⁻壊変",
-    emission: "電子・反電子ニュートリノ",
     parentRgb: "221, 80, 78",
     daughterRgb: "49, 163, 177",
-  },
-  {
+  }),
+  createPreset({
     key: "carbon-14",
-    parentNuclide: { massNumber: 14, protonNumber: 6, element: "C" },
-    daughterNuclide: { massNumber: 14, protonNumber: 7, element: "N" },
+    series: "independent",
     parent: "炭素14",
     daughter: "窒素14",
-    symbol: "¹⁴₆C",
-    daughterSymbol: "¹⁴₇N",
-    equation: "¹⁴₆C → ¹⁴₇N + e⁻ + ν̄ₑ",
-    emissionSymbol: "e⁻ + ν̄ₑ",
+    parentNuclide: { massNumber: 14, protonNumber: 6, element: "C" },
+    daughterNuclide: { massNumber: 14, protonNumber: 7, element: "N" },
     halfLife: 5730,
     unit: "年",
     mode: "beta",
-    modeLabel: "β⁻壊変",
-    emission: "電子・反電子ニュートリノ",
     parentRgb: "205, 120, 38",
     daughterRgb: "39, 145, 102",
-  },
-  {
+  }),
+  createPreset({
     key: "cobalt-60",
-    parentNuclide: { massNumber: 60, protonNumber: 27, element: "Co" },
-    daughterNuclide: { massNumber: 60, protonNumber: 28, element: "Ni" },
+    series: "independent",
     parent: "コバルト60",
     daughter: "ニッケル60",
-    symbol: "⁶⁰₂₇Co",
-    daughterSymbol: "⁶⁰₂₈Ni",
-    equation: "⁶⁰₂₇Co → ⁶⁰₂₈Ni + e⁻ + ν̄ₑ + γ",
-    emissionSymbol: "e⁻ + ν̄ₑ + γ",
+    parentNuclide: { massNumber: 60, protonNumber: 27, element: "Co" },
+    daughterNuclide: { massNumber: 60, protonNumber: 28, element: "Ni" },
     halfLife: 5.27,
     unit: "年",
     mode: "gamma",
     modeLabel: "β⁻壊変 + γ放出",
     emission: "電子・反電子ニュートリノ・γ線",
+    emissionSymbol: "e⁻ + ν̄ₑ + γ",
     parentRgb: "132, 85, 183",
     daughterRgb: "43, 132, 185",
-  },
-  {
+  }),
+  createPreset({
+    key: "uranium-238",
+    series: "uranium-238",
+    parent: "ウラン238",
+    daughter: "トリウム234",
+    parentNuclide: { massNumber: 238, protonNumber: 92, element: "U" },
+    daughterNuclide: { massNumber: 234, protonNumber: 90, element: "Th" },
+    halfLife: 4.468e9,
+    unit: "年",
+    mode: "alpha",
+    parentRgb: "78, 103, 153",
+    daughterRgb: "174, 108, 53",
+  }),
+  createPreset({
+    key: "thorium-234",
+    series: "uranium-238",
+    parent: "トリウム234",
+    daughter: "プロトアクチニウム234m",
+    parentNuclide: { massNumber: 234, protonNumber: 90, element: "Th" },
+    daughterNuclide: { massNumber: 234, protonNumber: 91, element: "Paᵐ" },
+    halfLife: 24.1,
+    unit: "日",
+    mode: "beta",
+    parentRgb: "78, 103, 153",
+    daughterRgb: "174, 108, 53",
+  }),
+  createPreset({
+    key: "uranium-234",
+    series: "uranium-238",
+    parent: "ウラン234",
+    daughter: "トリウム230",
+    parentNuclide: { massNumber: 234, protonNumber: 92, element: "U" },
+    daughterNuclide: { massNumber: 230, protonNumber: 90, element: "Th" },
+    halfLife: 245500,
+    unit: "年",
+    mode: "alpha",
+    parentRgb: "78, 103, 153",
+    daughterRgb: "174, 108, 53",
+  }),
+  createPreset({
+    key: "radium-226",
+    series: "uranium-238",
+    parent: "ラジウム226",
+    daughter: "ラドン222",
+    parentNuclide: { massNumber: 226, protonNumber: 88, element: "Ra" },
+    daughterNuclide: { massNumber: 222, protonNumber: 86, element: "Rn" },
+    halfLife: 1600,
+    unit: "年",
+    mode: "alpha",
+    parentRgb: "78, 103, 153",
+    daughterRgb: "174, 108, 53",
+  }),
+  createPreset({
+    key: "radon-222",
+    series: "uranium-238",
+    parent: "ラドン222",
+    daughter: "ポロニウム218",
+    parentNuclide: { massNumber: 222, protonNumber: 86, element: "Rn" },
+    daughterNuclide: { massNumber: 218, protonNumber: 84, element: "Po" },
+    halfLife: 3.8222,
+    unit: "日",
+    mode: "alpha",
+    parentRgb: "78, 103, 153",
+    daughterRgb: "174, 108, 53",
+  }),
+  createPreset({
     key: "polonium-210",
-    parentNuclide: { massNumber: 210, protonNumber: 84, element: "Po" },
-    daughterNuclide: { massNumber: 206, protonNumber: 82, element: "Pb" },
+    series: "uranium-238",
     parent: "ポロニウム210",
     daughter: "鉛206",
-    symbol: "²¹⁰₈₄Po",
-    daughterSymbol: "²⁰⁶₈₂Pb",
-    equation: "²¹⁰₈₄Po → ²⁰⁶₈₂Pb + ⁴₂He",
-    emissionSymbol: "⁴₂He",
+    parentNuclide: { massNumber: 210, protonNumber: 84, element: "Po" },
+    daughterNuclide: { massNumber: 206, protonNumber: 82, element: "Pb" },
     halfLife: 138.4,
     unit: "日",
     mode: "alpha",
-    modeLabel: "α壊変",
-    emission: "ヘリウム原子核",
     parentRgb: "194, 66, 60",
     daughterRgb: "38, 119, 173",
-  },
+  }),
+  createPreset({
+    key: "thorium-232",
+    series: "thorium-232",
+    parent: "トリウム232",
+    daughter: "ラジウム228",
+    parentNuclide: { massNumber: 232, protonNumber: 90, element: "Th" },
+    daughterNuclide: { massNumber: 228, protonNumber: 88, element: "Ra" },
+    halfLife: 1.405e10,
+    unit: "年",
+    mode: "alpha",
+    parentRgb: "94, 111, 75",
+    daughterRgb: "177, 104, 72",
+  }),
+  createPreset({
+    key: "radium-228",
+    series: "thorium-232",
+    parent: "ラジウム228",
+    daughter: "アクチニウム228",
+    parentNuclide: { massNumber: 228, protonNumber: 88, element: "Ra" },
+    daughterNuclide: { massNumber: 228, protonNumber: 89, element: "Ac" },
+    halfLife: 5.75,
+    unit: "年",
+    mode: "beta",
+    parentRgb: "94, 111, 75",
+    daughterRgb: "177, 104, 72",
+  }),
+  createPreset({
+    key: "actinium-228",
+    series: "thorium-232",
+    parent: "アクチニウム228",
+    daughter: "トリウム228",
+    parentNuclide: { massNumber: 228, protonNumber: 89, element: "Ac" },
+    daughterNuclide: { massNumber: 228, protonNumber: 90, element: "Th" },
+    halfLife: 6.15,
+    unit: "時間",
+    mode: "beta",
+    parentRgb: "94, 111, 75",
+    daughterRgb: "177, 104, 72",
+  }),
+  createPreset({
+    key: "thorium-228",
+    series: "thorium-232",
+    parent: "トリウム228",
+    daughter: "ラジウム224",
+    parentNuclide: { massNumber: 228, protonNumber: 90, element: "Th" },
+    daughterNuclide: { massNumber: 224, protonNumber: 88, element: "Ra" },
+    halfLife: 1.9125,
+    unit: "年",
+    mode: "alpha",
+    parentRgb: "94, 111, 75",
+    daughterRgb: "177, 104, 72",
+  }),
+  createPreset({
+    key: "radium-224",
+    series: "thorium-232",
+    parent: "ラジウム224",
+    daughter: "ラドン220",
+    parentNuclide: { massNumber: 224, protonNumber: 88, element: "Ra" },
+    daughterNuclide: { massNumber: 220, protonNumber: 86, element: "Rn" },
+    halfLife: 3.66,
+    unit: "日",
+    mode: "alpha",
+    parentRgb: "94, 111, 75",
+    daughterRgb: "177, 104, 72",
+  }),
+  createPreset({
+    key: "radon-220",
+    series: "thorium-232",
+    parent: "ラドン220",
+    daughter: "ポロニウム216",
+    parentNuclide: { massNumber: 220, protonNumber: 86, element: "Rn" },
+    daughterNuclide: { massNumber: 216, protonNumber: 84, element: "Po" },
+    halfLife: 55.6,
+    unit: "秒",
+    mode: "alpha",
+    parentRgb: "94, 111, 75",
+    daughterRgb: "177, 104, 72",
+  }),
+  createPreset({
+    key: "uranium-235",
+    series: "uranium-235",
+    parent: "ウラン235",
+    daughter: "トリウム231",
+    parentNuclide: { massNumber: 235, protonNumber: 92, element: "U" },
+    daughterNuclide: { massNumber: 231, protonNumber: 90, element: "Th" },
+    halfLife: 7.038e8,
+    unit: "年",
+    mode: "alpha",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
+  createPreset({
+    key: "thorium-231",
+    series: "uranium-235",
+    parent: "トリウム231",
+    daughter: "プロトアクチニウム231",
+    parentNuclide: { massNumber: 231, protonNumber: 90, element: "Th" },
+    daughterNuclide: { massNumber: 231, protonNumber: 91, element: "Pa" },
+    halfLife: 25.52,
+    unit: "時間",
+    mode: "beta",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
+  createPreset({
+    key: "protactinium-231",
+    series: "uranium-235",
+    parent: "プロトアクチニウム231",
+    daughter: "アクチニウム227",
+    parentNuclide: { massNumber: 231, protonNumber: 91, element: "Pa" },
+    daughterNuclide: { massNumber: 227, protonNumber: 89, element: "Ac" },
+    halfLife: 32760,
+    unit: "年",
+    mode: "alpha",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
+  createPreset({
+    key: "actinium-227",
+    series: "uranium-235",
+    parent: "アクチニウム227",
+    daughter: "トリウム227",
+    parentNuclide: { massNumber: 227, protonNumber: 89, element: "Ac" },
+    daughterNuclide: { massNumber: 227, protonNumber: 90, element: "Th" },
+    halfLife: 21.772,
+    unit: "年",
+    mode: "beta",
+    modeLabel: "β⁻壊変（98.62%）",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
+  createPreset({
+    key: "thorium-227",
+    series: "uranium-235",
+    parent: "トリウム227",
+    daughter: "ラジウム223",
+    parentNuclide: { massNumber: 227, protonNumber: 90, element: "Th" },
+    daughterNuclide: { massNumber: 223, protonNumber: 88, element: "Ra" },
+    halfLife: 18.68,
+    unit: "日",
+    mode: "alpha",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
+  createPreset({
+    key: "radium-223",
+    series: "uranium-235",
+    parent: "ラジウム223",
+    daughter: "ラドン219",
+    parentNuclide: { massNumber: 223, protonNumber: 88, element: "Ra" },
+    daughterNuclide: { massNumber: 219, protonNumber: 86, element: "Rn" },
+    halfLife: 11.4366,
+    unit: "日",
+    mode: "alpha",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
+  createPreset({
+    key: "radon-219",
+    series: "uranium-235",
+    parent: "ラドン219",
+    daughter: "ポロニウム215",
+    parentNuclide: { massNumber: 219, protonNumber: 86, element: "Rn" },
+    daughterNuclide: { massNumber: 215, protonNumber: 84, element: "Po" },
+    halfLife: 3.96,
+    unit: "秒",
+    mode: "alpha",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
 ];
 
 const SIMULATED_HALF_LIVES_PER_SECOND = 0.18;
@@ -227,6 +511,7 @@ export default function Home() {
   const burstIdRef = useRef(0);
 
   const [presetKey, setPresetKey] = useState(PRESETS[0].key);
+  const [seriesKey, setSeriesKey] = useState<DecaySeries>("independent");
   const [atomCount, setAtomCount] = useState(160);
   const [speed, setSpeed] = useState(1);
   const [paused, setPaused] = useState(false);
@@ -246,8 +531,18 @@ export default function Home() {
     () => PRESETS.find((item) => item.key === presetKey) ?? PRESETS[0],
     [presetKey],
   );
+  const seriesPresets = useMemo(
+    () => PRESETS.filter((item) => item.series === seriesKey),
+    [seriesKey],
+  );
   const parentColor = `rgb(${preset.parentRgb})`;
   const daughterColor = `rgb(${preset.daughterRgb})`;
+
+  const selectSeries = useCallback((nextSeries: DecaySeries) => {
+    const firstPreset = PRESETS.find((item) => item.series === nextSeries);
+    setSeriesKey(nextSeries);
+    if (firstPreset) setPresetKey(firstPreset.key);
+  }, []);
 
   const resetSimulation = useCallback(() => {
     resetSeedRef.current += 97;
@@ -354,77 +649,7 @@ export default function Home() {
         setBursts(burstsRef.current.map((burst) => ({ ...burst })));
         setRemaining(currentRemaining);
         setElapsed(elapsedRef.current);
-        lastSnapshot = timestamp;
-      }
-    };
-
-    frameId = requestAnimationFrame(simulate);
-    return () => cancelAnimationFrame(frameId);
-  }, [paused, preset.mode, speed]);
-
-  const handleDetectorPulse = (
-    event: ReactPointerEvent<SVGSVGElement>,
-  ) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    burstsRef.current.push({
-      id: burstIdRef.current++,
-      x: (event.clientX - rect.left) / rect.width,
-      y: (event.clientY - rect.top) / rect.height,
-      life: 1,
-      angle: Math.random() * Math.PI * 2,
-      kind: "gamma",
-    });
-  };
-
-  const copyEquation = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(preset.equation);
-      setEquationCopied(true);
-      window.setTimeout(() => setEquationCopied(false), 1800);
-    } catch {
-      setEquationCopied(false);
-    }
-  }, [preset.equation]);
-
-  const exportHistoryCsv = useCallback(() => {
-    const rows = historyRef.current.map((point) => [
-      point.t.toFixed(4),
-      (point.t * preset.halfLife).toFixed(4),
-      preset.unit,
-      point.remaining,
-      atomCount,
-      ((point.remaining / atomCount) * 100).toFixed(2),
-    ]);
-    const csv = [
-      ["経過半減期", "経過時間", "時間単位", "未壊変数", "初期原子核数", "残存率"],
-      ...rows,
-    ]
-      .map((row) => row.join(","))
-      .join("\n");
-    const url = URL.createObjectURL(
-      new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" }),
-    );
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = `${preset.key}-decay-observation.csv`;
-    anchor.click();
-    URL.revokeObjectURL(url);
-  }, [atomCount, preset]);
-
-  const expected = atomCount * Math.pow(0.5, elapsed);
-  const decayed = atomCount - remaining;
-  const activity = remaining * Math.LN2;
-  const remainingPercent = (remaining / atomCount) * 100;
-
-  const chart = useMemo(() => {
-    const width = 760;
-    const height = 280;
-    const left = 58;
-    const right = 24;
-    const top = 20;
-    const bottom = 44;
-    const maxT = Math.max(1, Math.ceil(elapsed * 2) / 2);
-    const plotWidth = width - left - right;
+        lastSnapsho…531 tokens truncated…th - left - right;
     const plotHeight = height - top - bottom;
     const logMinimum = 0.001;
 
@@ -527,26 +752,89 @@ export default function Home() {
       </section>
 
       <section className="simulator" id="simulator" aria-label="核崩壊シミュレーター">
-        <div className="preset-rail" role="tablist" aria-label="核種を選択">
-          {PRESETS.map((item, index) => (
-            <button
-              type="button"
-              role="tab"
-              aria-selected={presetKey === item.key}
-              className={presetKey === item.key ? "is-active" : ""}
-              onClick={() => setPresetKey(item.key)}
-              key={item.key}
-            >
-              <span className="preset-number">0{index + 1}</span>
-              <span>
-                <strong>{item.parent}</strong>
-                <small>
-                  <NuclideSymbol nuclide={item.parentNuclide} className="nuclide-symbol-small" />
-                  <span> T½ = {item.halfLife} {item.unit}</span>
-                </small>
-              </span>
-            </button>
-          ))}
+        <div className="nuclide-catalog">
+          <div className="catalog-heading">
+            <div>
+              <span>NUCLIDE CATALOG</span>
+              <strong>核種と放射系列</strong>
+            </div>
+            <p>系列を切り替え、表の核種を選ぶと実験条件へ反映されます。</p>
+          </div>
+
+          <div className="series-tabs" aria-label="放射系列を選択">
+            {SERIES_OPTIONS.map((series) => (
+              <button
+                type="button"
+                aria-pressed={seriesKey === series.key}
+                className={seriesKey === series.key ? "is-active" : ""}
+                onClick={() => selectSeries(series.key)}
+                key={series.key}
+              >
+                <strong>{series.label}</strong>
+                <small>{series.caption}</small>
+              </button>
+            ))}
+          </div>
+
+          <div className="nuclide-table-meta">
+            <span>{SERIES_OPTIONS.find((series) => series.key === seriesKey)?.label}</span>
+            <strong>{seriesPresets.length} 核種</strong>
+          </div>
+          <div className="nuclide-table-wrap">
+            <table className="nuclide-table">
+              <thead>
+                <tr>
+                  <th scope="col">親核種</th>
+                  <th scope="col">壊変</th>
+                  <th scope="col">娘核種</th>
+                  <th scope="col">半減期</th>
+                </tr>
+              </thead>
+              <tbody>
+                {seriesPresets.map((item) => (
+                  <tr
+                    className={presetKey === item.key ? "is-active" : ""}
+                    key={item.key}
+                  >
+                    <td>
+                      <button
+                        type="button"
+                        className="nuclide-select"
+                        aria-pressed={presetKey === item.key}
+                        onClick={() => setPresetKey(item.key)}
+                      >
+                        <NuclideSymbol
+                          nuclide={item.parentNuclide}
+                          className="nuclide-symbol-table"
+                        />
+                        <span>{item.parent}</span>
+                      </button>
+                    </td>
+                    <td>
+                      <span className={`decay-mode mode-${item.mode}`}>
+                        {item.modeLabel}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="daughter-cell">
+                        <NuclideSymbol
+                          nuclide={item.daughterNuclide}
+                          className="nuclide-symbol-table"
+                        />
+                        <span>{item.daughter}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <strong className="half-life-value">
+                        {formatNumber(item.halfLife)}
+                      </strong>
+                      <span className="half-life-unit">{item.unit}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div className="equation-panel" aria-label={`${preset.parent}の壊変式`}>
@@ -878,3 +1166,4 @@ export default function Home() {
     </main>
   );
 }
+
