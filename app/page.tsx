@@ -649,7 +649,77 @@ export default function Home() {
         setBursts(burstsRef.current.map((burst) => ({ ...burst })));
         setRemaining(currentRemaining);
         setElapsed(elapsedRef.current);
-        lastSnapsho…531 tokens truncated…th - left - right;
+        lastSnapshot = timestamp;
+      }
+    };
+
+    frameId = requestAnimationFrame(simulate);
+    return () => cancelAnimationFrame(frameId);
+  }, [paused, preset.mode, speed]);
+
+  const handleDetectorPulse = (
+    event: ReactPointerEvent<SVGSVGElement>,
+  ) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    burstsRef.current.push({
+      id: burstIdRef.current++,
+      x: (event.clientX - rect.left) / rect.width,
+      y: (event.clientY - rect.top) / rect.height,
+      life: 1,
+      angle: Math.random() * Math.PI * 2,
+      kind: "gamma",
+    });
+  };
+
+  const copyEquation = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(preset.equation);
+      setEquationCopied(true);
+      window.setTimeout(() => setEquationCopied(false), 1800);
+    } catch {
+      setEquationCopied(false);
+    }
+  }, [preset.equation]);
+
+  const exportHistoryCsv = useCallback(() => {
+    const rows = historyRef.current.map((point) => [
+      point.t.toFixed(4),
+      (point.t * preset.halfLife).toFixed(4),
+      preset.unit,
+      point.remaining,
+      atomCount,
+      ((point.remaining / atomCount) * 100).toFixed(2),
+    ]);
+    const csv = [
+      ["経過半減期", "経過時間", "時間単位", "未壊変数", "初期原子核数", "残存率"],
+      ...rows,
+    ]
+      .map((row) => row.join(","))
+      .join("\n");
+    const url = URL.createObjectURL(
+      new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" }),
+    );
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `${preset.key}-decay-observation.csv`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }, [atomCount, preset]);
+
+  const expected = atomCount * Math.pow(0.5, elapsed);
+  const decayed = atomCount - remaining;
+  const activity = remaining * Math.LN2;
+  const remainingPercent = (remaining / atomCount) * 100;
+
+  const chart = useMemo(() => {
+    const width = 760;
+    const height = 280;
+    const left = 58;
+    const right = 24;
+    const top = 20;
+    const bottom = 44;
+    const maxT = Math.max(1, Math.ceil(elapsed * 2) / 2);
+    const plotWidth = width - left - right;
     const plotHeight = height - top - bottom;
     const logMinimum = 0.001;
 
@@ -1166,4 +1236,3 @@ export default function Home() {
     </main>
   );
 }
-
