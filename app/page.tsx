@@ -18,6 +18,7 @@ type IsotopePreset = {
   symbol: string;
   daughterSymbol: string;
   equation: string;
+  emissionSymbol: string;
   halfLife: number;
   unit: string;
   mode: DecayMode;
@@ -60,6 +61,7 @@ const PRESETS: IsotopePreset[] = [
     symbol: "¹³¹₅₃I",
     daughterSymbol: "¹³¹₅₄Xe",
     equation: "¹³¹₅₃I → ¹³¹₅₄Xe + e⁻ + ν̄ₑ",
+    emissionSymbol: "e⁻ + ν̄ₑ",
     halfLife: 8.02,
     unit: "日",
     mode: "beta",
@@ -75,6 +77,7 @@ const PRESETS: IsotopePreset[] = [
     symbol: "¹⁴₆C",
     daughterSymbol: "¹⁴₇N",
     equation: "¹⁴₆C → ¹⁴₇N + e⁻ + ν̄ₑ",
+    emissionSymbol: "e⁻ + ν̄ₑ",
     halfLife: 5730,
     unit: "年",
     mode: "beta",
@@ -90,6 +93,7 @@ const PRESETS: IsotopePreset[] = [
     symbol: "⁶⁰₂₇Co",
     daughterSymbol: "⁶⁰₂₈Ni",
     equation: "⁶⁰₂₇Co → ⁶⁰₂₈Ni + e⁻ + ν̄ₑ + γ",
+    emissionSymbol: "e⁻ + ν̄ₑ + γ",
     halfLife: 5.27,
     unit: "年",
     mode: "gamma",
@@ -105,6 +109,7 @@ const PRESETS: IsotopePreset[] = [
     symbol: "²¹⁰₈₄Po",
     daughterSymbol: "²⁰⁶₈₂Pb",
     equation: "²¹⁰₈₄Po → ²⁰⁶₈₂Pb + ⁴₂He",
+    emissionSymbol: "⁴₂He",
     halfLife: 138.4,
     unit: "日",
     mode: "alpha",
@@ -195,6 +200,7 @@ export default function Home() {
   const [history, setHistory] = useState<HistoryPoint[]>([
     { t: 0, remaining: 160 },
   ]);
+  const [equationCopied, setEquationCopied] = useState(false);
 
   const preset = useMemo(
     () => PRESETS.find((item) => item.key === presetKey) ?? PRESETS[0],
@@ -330,6 +336,41 @@ export default function Home() {
     });
   };
 
+  const copyEquation = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(preset.equation);
+      setEquationCopied(true);
+      window.setTimeout(() => setEquationCopied(false), 1800);
+    } catch {
+      setEquationCopied(false);
+    }
+  }, [preset.equation]);
+
+  const exportHistoryCsv = useCallback(() => {
+    const rows = historyRef.current.map((point) => [
+      point.t.toFixed(4),
+      (point.t * preset.halfLife).toFixed(4),
+      preset.unit,
+      point.remaining,
+      atomCount,
+      ((point.remaining / atomCount) * 100).toFixed(2),
+    ]);
+    const csv = [
+      ["経過半減期", "経過時間", "時間単位", "未壊変数", "初期原子核数", "残存率"],
+      ...rows,
+    ]
+      .map((row) => row.join(","))
+      .join("\n");
+    const url = URL.createObjectURL(
+      new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" }),
+    );
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `${preset.key}-decay-observation.csv`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }, [atomCount, preset]);
+
   const expected = atomCount * Math.pow(0.5, elapsed);
   const decayed = atomCount - remaining;
   const activity = remaining * Math.LN2;
@@ -436,16 +477,41 @@ export default function Home() {
         </div>
 
         <div className="equation-panel" aria-label={`${preset.parent}の壊変式`}>
-          <div>
-            <span>壊変式</span>
-            <small>{preset.modeLabel}</small>
+          <div className="equation-heading">
+            <div>
+              <span>DECAY REACTION</span>
+              <strong>壊変式</strong>
+            </div>
+            <div className="equation-heading-actions">
+              <small>{preset.modeLabel}</small>
+              <button type="button" onClick={copyEquation}>
+                {equationCopied ? "コピーしました" : "式をコピー"}
+              </button>
+            </div>
           </div>
-          <code>{preset.equation}</code>
-          <dl>
-            <div><dt>親核種</dt><dd>{preset.parent}</dd></div>
-            <div><dt>娘核種</dt><dd>{preset.daughter}</dd></div>
-            <div><dt>放出</dt><dd>{preset.emission}</dd></div>
-          </dl>
+          <div className="decay-flow">
+            <div className="reaction-species reaction-parent">
+              <span>親核種</span>
+              <code>{preset.symbol}</code>
+              <small>{preset.parent}</small>
+            </div>
+            <div className="reaction-arrow" aria-hidden="true">
+              <span>{preset.modeLabel}</span>
+              <b>→</b>
+            </div>
+            <div className="reaction-species reaction-daughter">
+              <span>娘核種</span>
+              <code>{preset.daughterSymbol}</code>
+              <small>{preset.daughter}</small>
+            </div>
+            <b className="reaction-plus" aria-hidden="true">＋</b>
+            <div className="reaction-species reaction-emission">
+              <span>放出粒子</span>
+              <code>{preset.emissionSymbol}</code>
+              <small>{preset.emission}</small>
+            </div>
+          </div>
+          <p className="equation-plain">{preset.equation}</p>
         </div>
 
         <div className="simulator-grid">
@@ -630,6 +696,9 @@ export default function Home() {
             <span><i className="observed-line" style={{ backgroundColor: parentColor }} />観測値</span>
             <span><i className="theory-line" style={{ borderTopColor: daughterColor }} />理論値</span>
             <strong>推定活動度 {activity.toFixed(1)} / T½</strong>
+            <button type="button" className="export-button" onClick={exportHistoryCsv}>
+              CSVで保存
+            </button>
           </div>
           <svg
             className="decay-chart"
@@ -710,6 +779,10 @@ export default function Home() {
 
       <footer>
         <span>NUCLEAR DECAY LAB / 2026</span>
+        <nav aria-label="ShymohnのSNS">
+          <a href="https://x.com/Shymohn" target="_blank" rel="noopener noreferrer">X</a>
+          <a href="https://github.com/shymohn99" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </nav>
         <p>2026 @Shymohn all rights reserved.</p>
       </footer>
     </main>
