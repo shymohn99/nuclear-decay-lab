@@ -57,6 +57,9 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /observedPoints/);
   assert.match(page, /stroke=\{daughterColor\}/);
   assert.match(page, /fill=\{particleColor\}/);
+  assert.match(page, /appendHistoryPoint/);
+  assert.match(page, /VISUAL_UPDATE_INTERVAL_MS/);
+  assert.doesNotMatch(page, /feGaussianBlur/);
   assert.match(page, /iodine-131/);
   assert.match(page, /carbon-14/);
   assert.match(page, /cobalt-60/);
