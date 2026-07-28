@@ -37,7 +37,8 @@ test("server-renders the nuclear decay lab", async () => {
   assert.match(html, /class="particle-svg"/i);
   assert.match(html, /aria-label="シミュレーション設定"/);
   assert.match(html, /N\(t\) = N₀/);
-  assert.match(html, /¹³¹₅₃I → ¹³¹₅₄Xe/);
+  assert.match(html, /<sup>131<\/sup><sub>53<\/sub>/);
+  assert.match(html, /<sup>131<\/sup><sub>54<\/sub>/);
   assert.match(html, /@Shymohn all rights reserved/);
   assert.match(html, /fill="rgb\(221, 80, 78\)"/);
   assert.match(html, /stroke="rgb\(49, 163, 177\)"/);
@@ -63,6 +64,8 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.doesNotMatch(page, /SIMULATION_FRAME_INTERVAL_MS/);
   assert.match(page, /copyEquation/);
   assert.match(page, /exportHistoryCsv/);
+  assert.match(page, /function NuclideSymbol/);
+  assert.match(page, /massNumber: 131, protonNumber: 53/);
   assert.match(page, /className="decay-flow"/);
   assert.match(page, /https:\/\/x\.com\/Shymohn/);
   assert.match(page, /https:\/\/github\.com\/shymohn99/);
