@@ -61,6 +61,11 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /VISUAL_UPDATE_INTERVAL_MS/);
   assert.match(page, /particleNodeRefs/);
   assert.doesNotMatch(page, /SIMULATION_FRAME_INTERVAL_MS/);
+  assert.match(page, /copyEquation/);
+  assert.match(page, /exportHistoryCsv/);
+  assert.match(page, /className="decay-flow"/);
+  assert.match(page, /https:\/\/x\.com\/Shymohn/);
+  assert.match(page, /https:\/\/github\.com\/shymohn99/);
   assert.doesNotMatch(page, /feGaussianBlur/);
   assert.match(page, /iodine-131/);
   assert.match(page, /carbon-14/);
