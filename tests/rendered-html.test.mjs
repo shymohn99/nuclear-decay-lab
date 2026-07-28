@@ -39,6 +39,8 @@ test("server-renders the nuclear decay lab", async () => {
   assert.match(html, /U-235系列/);
   assert.match(html, /<th scope="col">娘核種<\/th>/);
   assert.match(html, /<th scope="col">半減期<\/th>/);
+  assert.match(html, /現実の1秒/);
+  assert.match(html, /約(?:<!-- -->)?1\.44日/);
   assert.match(html, /class="particle-svg"/i);
   assert.match(html, /aria-label="シミュレーション設定"/);
   assert.match(html, /N\(t\) = N₀/);
@@ -90,6 +92,9 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /actinium-227/);
   assert.match(page, /seriesPresets/);
   assert.match(page, /className="nuclide-table"/);
+  assert.match(page, /function formatSimulationRate/);
+  assert.match(page, /SIMULATED_HALF_LIVES_PER_SECOND \*[\s\S]*speed/);
+  assert.match(page, /TIME SCALE \/ 現実時間との対応/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /@media \(max-width: 720px\)/);
   assert.match(layout, /lang="ja"/);
@@ -100,4 +105,3 @@ test("ships the simulation source without starter dependencies", async () => {
     access(new URL("../app/_sites-preview", import.meta.url)),
   );
 });
-

@@ -466,6 +466,38 @@ function formatElapsed(halfLives: number, preset: IsotopePreset) {
   return `${formatNumber(value)} ${preset.unit}`;
 }
 
+function formatSimulationRate(preset: IsotopePreset, speed: number) {
+  const secondsPerUnit: Record<string, number> = {
+    秒: 1,
+    分: 60,
+    時間: 60 * 60,
+    日: 24 * 60 * 60,
+    年: 365.25 * 24 * 60 * 60,
+  };
+  const simulatedSeconds =
+    preset.halfLife *
+    (secondsPerUnit[preset.unit] ?? 1) *
+    SIMULATED_HALF_LIVES_PER_SECOND *
+    speed;
+  const simulatedYears = simulatedSeconds / secondsPerUnit.年;
+
+  if (simulatedSeconds < 60) return `${formatNumber(simulatedSeconds)}秒`;
+  if (simulatedSeconds < secondsPerUnit.時間) {
+    return `${formatNumber(simulatedSeconds / secondsPerUnit.分)}分`;
+  }
+  if (simulatedSeconds < secondsPerUnit.日) {
+    return `${formatNumber(simulatedSeconds / secondsPerUnit.時間)}時間`;
+  }
+  if (simulatedSeconds < secondsPerUnit.年) {
+    return `${formatNumber(simulatedSeconds / secondsPerUnit.日)}日`;
+  }
+  if (simulatedYears < 10000) return `${formatNumber(simulatedYears)}年`;
+  if (simulatedYears < 1e8) {
+    return `${formatNumber(simulatedYears / 10000)}万年`;
+  }
+  return `${formatNumber(simulatedYears / 1e8)}億年`;
+}
+
 function appendHistoryPoint(
   points: HistoryPoint[],
   point: HistoryPoint,
@@ -537,6 +569,7 @@ export default function Home() {
   );
   const parentColor = `rgb(${preset.parentRgb})`;
   const daughterColor = `rgb(${preset.daughterRgb})`;
+  const simulationRate = formatSimulationRate(preset, speed);
 
   const selectSeries = useCallback((nextSeries: DecaySeries) => {
     const firstPreset = PRESETS.find((item) => item.series === nextSeries);
@@ -1070,6 +1103,20 @@ export default function Home() {
                 onChange={(event) => setSpeed(Number(event.target.value))}
               />
             </label>
+
+            <div className="time-rate" aria-live="polite">
+              <span>TIME SCALE / 現実時間との対応</span>
+              <div>
+                <small>現実の</small>
+                <strong>1秒</strong>
+                <b aria-hidden="true">→</b>
+                <small>シミュレーション内</small>
+                <strong>約{simulationRate}</strong>
+              </div>
+              <p>
+                現実の1秒ごとに、現在の核種の時間が約{simulationRate}進みます。
+              </p>
+            </div>
 
             <div className="control-actions">
               <button
