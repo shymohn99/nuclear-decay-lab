@@ -39,6 +39,8 @@ test("server-renders the nuclear decay lab", async () => {
   assert.match(html, /N\(t\) = N₀/);
   assert.match(html, /¹³¹₅₃I → ¹³¹₅₄Xe/);
   assert.match(html, /@Shymohn all rights reserved/);
+  assert.match(html, /fill="rgb\(221, 80, 78\)"/);
+  assert.match(html, /stroke="rgb\(49, 163, 177\)"/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/i);
 });
 
@@ -53,6 +55,8 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /requestAnimationFrame/);
   assert.match(page, /Math\.pow\(0\.5/);
   assert.match(page, /observedPoints/);
+  assert.match(page, /stroke=\{daughterColor\}/);
+  assert.match(page, /fill=\{particleColor\}/);
   assert.match(page, /iodine-131/);
   assert.match(page, /carbon-14/);
   assert.match(page, /cobalt-60/);
