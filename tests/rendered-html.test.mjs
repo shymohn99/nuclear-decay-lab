@@ -66,6 +66,9 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /exportHistoryCsv/);
   assert.match(page, /function NuclideSymbol/);
   assert.match(page, /massNumber: 131, protonNumber: 53/);
+  assert.match(page, /chartScale === "log"/);
+  assert.match(page, /Math\.log10/);
+  assert.match(page, /setChartScale\("log"\)/);
   assert.match(page, /className="decay-flow"/);
   assert.match(page, /https:\/\/x\.com\/Shymohn/);
   assert.match(page, /https:\/\/github\.com\/shymohn99/);
