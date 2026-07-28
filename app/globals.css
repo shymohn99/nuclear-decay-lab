@@ -731,6 +731,35 @@ input[type="range"] {
 .observed-line { background: var(--parent); }
 .theory-line { border-top: 2px dashed var(--daughter); }
 
+.chart-scale-toggle {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid var(--line);
+  background: #efede6;
+}
+
+.chart-scale-toggle button {
+  min-width: 48px;
+  min-height: 28px;
+  padding: 0 10px;
+  color: var(--muted);
+  border: 0;
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.chart-scale-toggle button[aria-pressed="true"] {
+  color: #faf8f2;
+  background: var(--ink);
+}
+
+.chart-scale-toggle button:focus-visible {
+  outline: 2px solid rgb(var(--parent-rgb));
+  outline-offset: 2px;
+}
+
 .chart-meta strong {
   margin-left: auto;
   color: var(--ink);
