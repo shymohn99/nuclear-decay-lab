@@ -116,6 +116,10 @@ const PRESETS: IsotopePreset[] = [
 ];
 
 const SIMULATED_HALF_LIVES_PER_SECOND = 0.18;
+const HISTORY_INTERVAL = 0.025;
+const MAX_HISTORY_POINTS = 320;
+const VISUAL_UPDATE_INTERVAL_MS = 140;
+const SIMULATION_FRAME_INTERVAL_MS = 32;
 
 function seededRandom(seed: number) {
   let value = seed >>> 0;
@@ -156,11 +160,25 @@ function formatElapsed(halfLives: number, preset: IsotopePreset) {
   return `${formatNumber(value)} ${preset.unit}`;
 }
 
+function appendHistoryPoint(
+  points: HistoryPoint[],
+  point: HistoryPoint,
+): HistoryPoint[] {
+  const appended = [...points, point];
+  if (appended.length <= MAX_HISTORY_POINTS) return appended;
+
+  const lastIndex = appended.length - 1;
+  return appended.filter(
+    (_, index) => index === 0 || index === lastIndex || index % 2 === 0,
+  );
+}
+
 export default function Home() {
   const particlesRef = useRef<Particle[]>(makeParticles(160, 131));
   const burstsRef = useRef<Burst[]>([]);
   const elapsedRef = useRef(0);
   const historyRef = useRef<HistoryPoint[]>([{ t: 0, remaining: 160 }]);
+  const lastHistoryAtRef = useRef(0);
   const resetSeedRef = useRef(131);
   const burstIdRef = useRef(0);
 
@@ -193,6 +211,7 @@ export default function Home() {
     burstsRef.current = [];
     elapsedRef.current = 0;
     historyRef.current = initialHistory;
+    lastHistoryAtRef.current = 0;
     setParticles(nextParticles.map((particle) => ({ ...particle })));
     setBursts([]);
     setHistory(initialHistory);
@@ -214,7 +233,11 @@ export default function Home() {
     ).matches;
 
     const simulate = (timestamp: number) => {
-      const dt = Math.min((timestamp - lastFrame) / 1000, 0.05);
+      frameId = requestAnimationFrame(simulate);
+      const frameElapsed = timestamp - lastFrame;
+      if (frameElapsed < SIMULATION_FRAME_INTERVAL_MS) return;
+
+      const dt = Math.min(frameElapsed / 1000, 0.08);
       lastFrame = timestamp;
       const deltaHalfLives = paused
         ? 0
@@ -252,31 +275,38 @@ export default function Home() {
 
       burstsRef.current = burstsRef.current
         .map((burst) => ({ ...burst, life: burst.life - dt * 1.25 }))
-        .filter((burst) => burst.life > 0);
+        .filter((burst) => burst.life > 0)
+        .slice(-20);
 
-      if (timestamp - lastSnapshot >= 90) {
+      if (timestamp - lastSnapshot >= VISUAL_UPDATE_INTERVAL_MS) {
         const currentRemaining = particlesRef.current.reduce(
           (total, particle) =>
             total + (particle.phase === "parent" ? 1 : 0),
           0,
         );
-        const nextHistory = [
-          ...historyRef.current,
-          { t: elapsedRef.current, remaining: currentRemaining },
-        ].slice(-220);
+        const shouldRecordHistory =
+          !paused &&
+          (elapsedRef.current - lastHistoryAtRef.current >= HISTORY_INTERVAL ||
+            (currentRemaining === 0 &&
+              historyRef.current.at(-1)?.remaining !== 0));
 
-        historyRef.current = nextHistory;
+        if (shouldRecordHistory) {
+          const nextHistory = appendHistoryPoint(historyRef.current, {
+            t: elapsedRef.current,
+            remaining: currentRemaining,
+          });
+          historyRef.current = nextHistory;
+          lastHistoryAtRef.current = elapsedRef.current;
+          setHistory(nextHistory);
+        }
         setParticles(
           particlesRef.current.map((particle) => ({ ...particle })),
         );
         setBursts(burstsRef.current.map((burst) => ({ ...burst })));
         setRemaining(currentRemaining);
         setElapsed(elapsedRef.current);
-        setHistory(nextHistory);
         lastSnapshot = timestamp;
       }
-
-      frameId = requestAnimationFrame(simulate);
     };
 
     frameId = requestAnimationFrame(simulate);
@@ -332,12 +362,16 @@ export default function Home() {
     const observed = history
       .filter((point) => point.t <= maxT)
       .map((point) => ({ t: point.t, value: point.remaining }));
+    const observedPointStep = Math.max(1, Math.ceil(observed.length / 55));
 
     return {
       theoreticalPath: toPath(theoretical),
       observedPath: toPath(observed),
       observedPoints: observed
-        .filter((_, index) => index % 5 === 0 || index === observed.length - 1)
+        .filter(
+          (_, index) =>
+            index % observedPointStep === 0 || index === observed.length - 1,
+        )
         .map((point) => position(point.t, point.value)),
       maxT,
       left,
@@ -435,10 +469,6 @@ export default function Home() {
                 aria-label={`${preset.parent}の原子核${atomCount}個が確率的に壊変し、${preset.daughter}へ変わる粒子シミュレーション`}
               >
                 <defs>
-                  <filter id="particle-halo" x="-200%" y="-200%" width="400%" height="400%">
-                    <feGaussianBlur stdDeviation="4.5" result="blur" />
-                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                  </filter>
                   <pattern id="field-grid" width="50" height="50" patternUnits="userSpaceOnUse">
                     <path d="M 50 0 L 0 0 0 50" className="field-grid-line" />
                   </pattern>
