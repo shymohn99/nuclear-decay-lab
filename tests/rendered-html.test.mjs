@@ -33,7 +33,12 @@ test("server-renders the nuclear decay lab", async () => {
   assert.match(html, /<title>Decay Lab \| 原子核崩壊シミュレーター<\/title>/i);
   assert.match(html, /核崩壊シミュレーター/);
   assert.match(html, /ヨウ素131/);
-  assert.match(html, /ポロニウム210/);
+  assert.match(html, /核種と放射系列/);
+  assert.match(html, /U-238系列/);
+  assert.match(html, /Th-232系列/);
+  assert.match(html, /U-235系列/);
+  assert.match(html, /<th scope="col">娘核種<\/th>/);
+  assert.match(html, /<th scope="col">半減期<\/th>/);
   assert.match(html, /class="particle-svg"/i);
   assert.match(html, /aria-label="シミュレーション設定"/);
   assert.match(html, /N\(t\) = N₀/);
@@ -77,6 +82,14 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /carbon-14/);
   assert.match(page, /cobalt-60/);
   assert.match(page, /polonium-210/);
+  assert.match(page, /uranium-238/);
+  assert.match(page, /thorium-232/);
+  assert.match(page, /uranium-235/);
+  assert.match(page, /radium-226/);
+  assert.match(page, /radon-220/);
+  assert.match(page, /actinium-227/);
+  assert.match(page, /seriesPresets/);
+  assert.match(page, /className="nuclide-table"/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /@media \(max-width: 720px\)/);
   assert.match(layout, /lang="ja"/);
@@ -87,3 +100,4 @@ test("ships the simulation source without starter dependencies", async () => {
     access(new URL("../app/_sites-preview", import.meta.url)),
   );
 });
+
