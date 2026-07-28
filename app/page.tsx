@@ -182,6 +182,8 @@ export default function Home() {
     () => PRESETS.find((item) => item.key === presetKey) ?? PRESETS[0],
     [presetKey],
   );
+  const parentColor = `rgb(${preset.parentRgb})`;
+  const daughterColor = `rgb(${preset.daughterRgb})`;
 
   const resetSimulation = useCallback(() => {
     resetSeedRef.current += 97;
@@ -417,8 +419,8 @@ export default function Home() {
                 <strong>{remaining} / {atomCount} 個が未壊変</strong>
               </div>
               <div className="legend" aria-label="粒子の凡例">
-                <span><i className="legend-parent" />親核種</span>
-                <span><i className="legend-daughter" />娘核種</span>
+                <span><i className="legend-parent" style={{ backgroundColor: parentColor }} />親核種</span>
+                <span><i className="legend-daughter" style={{ backgroundColor: daughterColor }} />娘核種</span>
                 <span><i className="legend-emission" />放出反応</span>
               </div>
             </div>
@@ -444,19 +446,34 @@ export default function Home() {
                 <rect width="1000" height="520" className="field-background" />
                 <rect width="1000" height="520" fill="url(#field-grid)" />
                 <ellipse cx="500" cy="260" rx="390" ry="196" className="field-orbit" />
-                {particles.map((particle) => (
-                  <g
-                    key={particle.id}
-                    className={`particle particle-${particle.phase}`}
-                    transform={`translate(${particle.x * 1000} ${particle.y * 520})`}
-                  >
-                    <circle className="particle-halo" r={particle.radius * 2.5} />
-                    <circle
-                      className="particle-core"
-                      r={particle.radius * (0.94 + Math.sin(particle.pulse) * 0.06)}
-                    />
-                  </g>
-                ))}
+                {particles.map((particle) => {
+                  const particleColor =
+                    particle.phase === "parent" ? parentColor : daughterColor;
+                  return (
+                    <g
+                      key={particle.id}
+                      className={`particle particle-${particle.phase}`}
+                      transform={`translate(${particle.x * 1000} ${particle.y * 520})`}
+                    >
+                      <circle
+                        className="particle-halo"
+                        fill={particleColor}
+                        r={particle.radius * 3.4}
+                      />
+                      <circle
+                        className="particle-core"
+                        fill={particleColor}
+                        stroke="#fffdf4"
+                        strokeOpacity="0.62"
+                        strokeWidth="1.15"
+                        r={
+                          particle.radius *
+                          (1.22 + Math.sin(particle.pulse) * 0.08)
+                        }
+                      />
+                    </g>
+                  );
+                })}
                 {bursts.map((burst) => {
                   const distance = (1 - burst.life) * 88;
                   const x1 = burst.x * 1000;
@@ -504,6 +521,7 @@ export default function Home() {
                 max="240"
                 step="20"
                 value={atomCount}
+                style={{ accentColor: parentColor }}
                 onChange={(event) => setAtomCount(Number(event.target.value))}
               />
             </label>
@@ -516,6 +534,7 @@ export default function Home() {
                 max="5"
                 step="0.5"
                 value={speed}
+                style={{ accentColor: parentColor }}
                 onChange={(event) => setSpeed(Number(event.target.value))}
               />
             </label>
@@ -572,8 +591,8 @@ export default function Home() {
 
         <div className="chart-panel">
           <div className="chart-meta">
-            <span><i className="observed-line" />観測値</span>
-            <span><i className="theory-line" />理論値</span>
+            <span><i className="observed-line" style={{ backgroundColor: parentColor }} />観測値</span>
+            <span><i className="theory-line" style={{ borderTopColor: daughterColor }} />理論値</span>
             <strong>推定活動度 {activity.toFixed(1)} / T½</strong>
           </div>
           <svg
@@ -625,13 +644,23 @@ export default function Home() {
               y1={chart.height - chart.bottom}
               y2={chart.height - chart.bottom}
             />
-            <path className="theory-path" d={chart.theoreticalPath} />
-            <path className="observed-path" d={chart.observedPath} />
+            <path
+              className="theory-path"
+              d={chart.theoreticalPath}
+              stroke={daughterColor}
+            />
+            <path
+              className="observed-path"
+              d={chart.observedPath}
+              stroke={parentColor}
+            />
             {chart.observedPoints.map((point, index) => (
               <circle
                 className="observed-point"
                 cx={point.x}
                 cy={point.y}
+                fill={parentColor}
+                stroke="#faf8f2"
                 r="3.2"
                 key={`${index}-${point.x}`}
               />
