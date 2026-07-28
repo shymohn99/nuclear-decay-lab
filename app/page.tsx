@@ -61,6 +61,8 @@ type HistoryPoint = {
   remaining: number;
 };
 
+type ChartScale = "linear" | "log";
+
 const PRESETS: IsotopePreset[] = [
   {
     key: "iodine-131",
@@ -238,6 +240,7 @@ export default function Home() {
     { t: 0, remaining: 160 },
   ]);
   const [equationCopied, setEquationCopied] = useState(false);
+  const [chartScale, setChartScale] = useState<ChartScale>("linear");
 
   const preset = useMemo(
     () => PRESETS.find((item) => item.key === presetKey) ?? PRESETS[0],
@@ -423,11 +426,22 @@ export default function Home() {
     const maxT = Math.max(1, Math.ceil(elapsed * 2) / 2);
     const plotWidth = width - left - right;
     const plotHeight = height - top - bottom;
+    const logMinimum = 0.001;
 
-    const position = (t: number, value: number) => ({
-      x: left + (t / maxT) * plotWidth,
-      y: top + (1 - value / atomCount) * plotHeight,
-    });
+    const position = (t: number, value: number) => {
+      const fraction = value / atomCount;
+      const y =
+        chartScale === "log"
+          ? top +
+            (-Math.log10(Math.max(logMinimum, Math.min(1, fraction))) /
+              -Math.log10(logMinimum)) *
+              plotHeight
+          : top + (1 - fraction) * plotHeight;
+      return {
+        x: left + (t / maxT) * plotWidth,
+        y,
+      };
+    };
     const toPath = (points: Array<{ t: number; value: number }>) =>
       points
         .map((point, index) => {
@@ -440,13 +454,25 @@ export default function Home() {
       const t = (index / 99) * maxT;
       return { t, value: atomCount * Math.pow(0.5, t) };
     });
+    const visibleTheoretical =
+      chartScale === "log"
+        ? theoretical.filter((point) => point.value / atomCount >= logMinimum)
+        : theoretical;
     const observed = history
-      .filter((point) => point.t <= maxT)
+      .filter(
+        (point) =>
+          point.t <= maxT &&
+          (chartScale === "linear" || point.remaining > 0),
+      )
       .map((point) => ({ t: point.t, value: point.remaining }));
     const observedPointStep = Math.max(1, Math.ceil(observed.length / 55));
+    const yTickFractions =
+      chartScale === "log"
+        ? [1, 0.1, 0.01, 0.001]
+        : [1, 0.75, 0.5, 0.25, 0];
 
     return {
-      theoreticalPath: toPath(theoretical),
+      theoreticalPath: toPath(visibleTheoretical),
       observedPath: toPath(observed),
       observedPoints: observed
         .filter(
@@ -454,6 +480,13 @@ export default function Home() {
             index % observedPointStep === 0 || index === observed.length - 1,
         )
         .map((point) => position(point.t, point.value)),
+      yTicks: yTickFractions.map((fraction) => ({
+        y: position(0, fraction * atomCount).y,
+        label:
+          fraction >= 0.01
+            ? `${Math.round(fraction * 100)}%`
+            : `${(fraction * 100).toFixed(1)}%`,
+      })),
       maxT,
       left,
       right,
@@ -464,7 +497,7 @@ export default function Home() {
       plotWidth,
       plotHeight,
     };
-  }, [atomCount, elapsed, history]);
+  }, [atomCount, chartScale, elapsed, history]);
 
   return (
     <main
@@ -734,6 +767,22 @@ export default function Home() {
           <div className="chart-meta">
             <span><i className="observed-line" style={{ backgroundColor: parentColor }} />観測値</span>
             <span><i className="theory-line" style={{ borderTopColor: daughterColor }} />理論値</span>
+            <div className="chart-scale-toggle" role="group" aria-label="グラフの目盛り">
+              <button
+                type="button"
+                aria-pressed={chartScale === "linear"}
+                onClick={() => setChartScale("linear")}
+              >
+                線形
+              </button>
+              <button
+                type="button"
+                aria-pressed={chartScale === "log"}
+                onClick={() => setChartScale("log")}
+              >
+                対数
+              </button>
+            </div>
             <strong>推定活動度 {activity.toFixed(1)} / T½</strong>
             <button type="button" className="export-button" onClick={exportHistoryCsv}>
               CSVで保存
@@ -745,22 +794,24 @@ export default function Home() {
             role="img"
             aria-labelledby="chart-title chart-description"
           >
-            <title id="chart-title">未壊変原子核数の時間変化</title>
+            <title id="chart-title">
+              未壊変原子核数の時間変化（{chartScale === "log" ? "対数" : "線形"}目盛り）
+            </title>
             <desc id="chart-description">
-              {preset.parent}の観測値と指数関数による理論値を半減期単位で比較したグラフです。
+              {preset.parent}の観測値と指数関数による理論値を
+              {chartScale === "log" ? "対数" : "線形"}目盛りで比較したグラフです。
             </desc>
-            {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
-              const y = chart.top + ratio * chart.plotHeight;
+            {chart.yTicks.map((tick) => {
               return (
-                <g key={ratio}>
+                <g key={tick.label}>
                   <line
                     className="chart-grid-line"
                     x1={chart.left}
                     x2={chart.width - chart.right}
-                    y1={y}
-                    y2={y}
+                    y1={tick.y}
+                    y2={tick.y}
                   />
-                  <text x="8" y={y + 4}>{Math.round((1 - ratio) * 100)}%</text>
+                  <text x="8" y={tick.y + 4}>{tick.label}</text>
                 </g>
               );
             })}
