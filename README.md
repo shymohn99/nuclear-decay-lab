@@ -4,6 +4,8 @@
 
 **Live Demo:** https://nuclear-decay-lab-shymohn.shymohn.chatgpt.site
 
+**GitHub Pages:** https://shymohn99.github.io/nuclear-decay-lab/
+
 ## Features
 
 - ヨウ素131、炭素14、コバルト60、ポロニウム210を切り替え
