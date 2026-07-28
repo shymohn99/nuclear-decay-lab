@@ -180,6 +180,57 @@ footer {
   font-size: 9px;
 }
 
+.nuclide-symbol {
+  display: inline-grid;
+  width: max-content;
+  grid-template-columns: auto auto;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+  color: currentColor;
+  font-family: var(--mono);
+  font-size: 1em;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.nuclide-indexes {
+  display: grid;
+  grid-column: 1;
+  grid-row: 1 / 3;
+  height: 1.38em;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+  margin-right: 0.08em;
+  color: currentColor;
+  text-align: right;
+}
+
+.nuclide-indexes sup,
+.nuclide-indexes sub {
+  position: static;
+  align-self: center;
+  min-width: 1.75em;
+  margin: 0;
+  font-size: 0.46em;
+  line-height: 0.9;
+  text-align: right;
+  vertical-align: baseline;
+}
+
+.nuclide-element {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  align-self: center;
+  color: currentColor;
+  font-size: 1em;
+  line-height: 1;
+}
+
+.nuclide-symbol-small {
+  margin-right: 0.22em;
+  font-size: 1.22em;
+}
+
 .equation-panel {
   display: grid;
   gap: 22px;
@@ -203,7 +254,7 @@ footer {
 }
 
 .equation-heading span,
-.reaction-species > span {
+.reaction-species > span:first-child {
   color: var(--muted);
   font-family: var(--mono);
   font-size: 9px;
@@ -297,6 +348,12 @@ footer a:focus-visible {
   white-space: nowrap;
 }
 
+.reaction-symbol {
+  color: var(--ink);
+  font-size: clamp(1.55rem, 3vw, 2.5rem);
+  font-weight: 600;
+}
+
 .reaction-species small {
   overflow: hidden;
   color: var(--muted);
@@ -332,14 +389,6 @@ footer a:focus-visible {
   color: var(--muted);
   font-size: 1.3rem;
   font-weight: 400;
-}
-
-.equation-plain {
-  margin: -6px 0 0;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.04em;
 }
 
 .simulator-grid {
@@ -475,10 +524,12 @@ footer a:focus-visible {
   transform: translate(-50%, -50%);
 }
 
-.field-readout span {
+.field-readout > span {
   font-family: var(--mono);
   font-size: 22px;
 }
+
+.nuclide-symbol-field { color: #f0f2ed; }
 
 .field-readout small {
   margin-top: 5px;
