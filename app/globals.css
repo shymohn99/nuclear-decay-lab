@@ -340,11 +340,7 @@ footer {
 
 .particle { pointer-events: none; }
 .particle-core { filter: url(#particle-halo); }
-.particle-halo { opacity: 0.18; }
-.particle-parent .particle-core,
-.particle-parent .particle-halo { fill: var(--parent); }
-.particle-daughter .particle-core,
-.particle-daughter .particle-halo { fill: var(--daughter); }
+.particle-halo { opacity: 0.34; }
 
 .burst-line,
 .burst-gamma {
@@ -623,21 +619,18 @@ input[type="range"] {
 }
 
 .theory-path {
-  stroke: var(--daughter);
   stroke-width: 2;
   stroke-dasharray: 7 6;
 }
 
 .observed-path {
-  stroke: var(--parent);
-  stroke-width: 2.5;
+  stroke-width: 3;
+  stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .observed-point {
-  fill: #faf8f2;
-  stroke: var(--parent);
-  stroke-width: 2;
+  stroke-width: 1.5;
   vector-effect: non-scaling-stroke;
 }
 
