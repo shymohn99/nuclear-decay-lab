@@ -34,9 +34,11 @@ test("server-renders the nuclear decay lab", async () => {
   assert.match(html, /核崩壊シミュレーター/);
   assert.match(html, /ヨウ素131/);
   assert.match(html, /ポロニウム210/);
-  assert.match(html, /<canvas/i);
+  assert.match(html, /class="particle-svg"/i);
   assert.match(html, /aria-label="シミュレーション設定"/);
   assert.match(html, /N\(t\) = N₀/);
+  assert.match(html, /¹³¹₅₃I → ¹³¹₅₄Xe/);
+  assert.match(html, /@Shymohn all rights reserved/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/i);
 });
 
@@ -49,14 +51,14 @@ test("ships the simulation source without starter dependencies", async () => {
   ]);
 
   assert.match(page, /requestAnimationFrame/);
-  assert.match(page, /ResizeObserver/);
   assert.match(page, /Math\.pow\(0\.5/);
+  assert.match(page, /observedPoints/);
   assert.match(page, /iodine-131/);
   assert.match(page, /carbon-14/);
   assert.match(page, /cobalt-60/);
   assert.match(page, /polonium-210/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.match(css, /@media \(max-width: 640px\)/);
+  assert.match(css, /@media \(max-width: 720px\)/);
   assert.match(layout, /lang="ja"/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.doesNotMatch(page, /_sites-preview|SkeletonPreview/);
