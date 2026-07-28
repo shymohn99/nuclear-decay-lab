@@ -182,60 +182,164 @@ footer {
 
 .equation-panel {
   display: grid;
-  grid-template-columns: 120px minmax(360px, 1fr) minmax(380px, 0.8fr);
-  gap: 24px;
-  align-items: center;
-  min-height: 126px;
-  padding: 24px;
+  gap: 22px;
+  padding: 26px 28px 28px;
   border-bottom: 1px solid var(--ink);
-  background: #faf8f2;
+  background:
+    linear-gradient(90deg, rgba(var(--parent-rgb), 0.05), transparent 42%),
+    #faf8f2;
 }
 
-.equation-panel > div:first-child {
+.equation-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.equation-heading > div:first-child {
   display: grid;
-  gap: 8px;
+  gap: 5px;
 }
 
-.equation-panel span,
-.equation-panel dt {
+.equation-heading span,
+.reaction-species > span {
   color: var(--muted);
   font-family: var(--mono);
   font-size: 9px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
 }
 
-.equation-panel small {
-  font-size: 12px;
+.equation-heading strong {
+  font-size: 18px;
   font-weight: 600;
 }
 
-.equation-panel code {
+.equation-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.equation-heading-actions small {
+  padding: 7px 10px;
+  color: rgb(var(--parent-rgb));
+  border: 1px solid rgba(var(--parent-rgb), 0.32);
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.equation-heading-actions button,
+.export-button {
+  min-height: 34px;
+  padding: 0 13px;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.equation-heading-actions button:hover,
+.export-button:hover {
+  color: #faf8f2;
+  background: var(--ink);
+}
+
+.equation-heading-actions button:focus-visible,
+.export-button:focus-visible,
+footer a:focus-visible {
+  outline: 2px solid rgb(var(--parent-rgb));
+  outline-offset: 3px;
+}
+
+.decay-flow {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.9fr) 88px minmax(150px, 0.9fr) auto minmax(210px, 1.2fr);
+  align-items: stretch;
+  gap: 12px;
+}
+
+.reaction-species {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 116px;
+  align-content: center;
+  gap: 8px;
+  padding: 18px 20px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.44);
+}
+
+.reaction-species::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  content: "";
+  background: rgb(var(--parent-rgb));
+}
+
+.reaction-daughter::before { background: rgb(var(--daughter-rgb)); }
+.reaction-emission::before { background: #c89f2d; }
+
+.reaction-species code {
   color: var(--ink);
   font-family: var(--mono);
-  font-size: clamp(1.25rem, 2.35vw, 2rem);
+  font-size: clamp(1.55rem, 3vw, 2.5rem);
   font-weight: 600;
   white-space: nowrap;
 }
 
-.equation-panel dl {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin: 0;
-}
-
-.equation-panel dl div {
-  min-width: 0;
-  padding-left: 12px;
-  border-left: 1px solid var(--line);
-}
-
-.equation-panel dt { margin-bottom: 6px; }
-.equation-panel dd {
-  margin: 0;
+.reaction-species small {
   overflow: hidden;
-  font-size: 11px;
+  color: var(--muted);
+  font-size: 10px;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reaction-arrow {
+  display: grid;
+  place-content: center;
+  gap: 5px;
+  text-align: center;
+}
+
+.reaction-arrow span {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 8px;
+}
+
+.reaction-arrow b {
+  color: rgb(var(--parent-rgb));
+  font-family: var(--mono);
+  font-size: 2.4rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.reaction-plus {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+
+.equation-plain {
+  margin: -6px 0 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
 }
 
 .simulator-grid {
@@ -647,6 +751,19 @@ footer {
 
 footer p { margin: 0; }
 
+footer nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+footer a {
+  color: var(--ink);
+  text-underline-offset: 4px;
+}
+
+footer a:hover { color: rgb(var(--parent-rgb)); }
+
 @media (max-width: 980px) {
   .hero-copy {
     grid-template-columns: 100px 1fr;
@@ -657,12 +774,14 @@ footer p { margin: 0; }
     max-width: 620px;
   }
 
-  .equation-panel {
-    grid-template-columns: 100px 1fr;
+  .decay-flow {
+    grid-template-columns: minmax(140px, 1fr) 72px minmax(140px, 1fr);
   }
 
-  .equation-panel dl {
-    grid-column: 2;
+  .reaction-plus { display: none; }
+  .reaction-emission {
+    grid-column: 1 / -1;
+    min-height: 92px;
   }
 
   .simulator-grid { grid-template-columns: 1fr; }
@@ -703,23 +822,30 @@ footer p { margin: 0; }
   .preset-rail button:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
 
   .equation-panel {
-    display: block;
     padding: 20px 16px;
   }
 
-  .equation-panel > div:first-child {
-    display: flex;
+  .equation-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .equation-heading-actions {
+    width: 100%;
     justify-content: space-between;
   }
 
-  .equation-panel code {
-    display: block;
-    margin: 22px 0;
-    overflow-x: auto;
-    font-size: clamp(1.1rem, 5.2vw, 1.55rem);
+  .decay-flow {
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
 
-  .equation-panel dl { grid-template-columns: 1fr; }
+  .reaction-species { min-height: 98px; }
+  .reaction-arrow { min-height: 52px; }
+  .reaction-arrow b { transform: rotate(90deg); }
+  .reaction-daughter,
+  .reaction-emission { grid-column: 1; }
+  .reaction-plus { display: none; }
 
   .particle-field,
   .particle-svg { min-height: 440px; }
@@ -739,7 +865,10 @@ footer p { margin: 0; }
   .stats-grid article:last-child { border-bottom: 0; }
   .chart-panel { padding: 18px 8px 8px; }
   .chart-meta strong { width: 100%; margin-left: 0; }
-  footer { align-items: flex-start; flex-direction: column; }
+  footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 430px) {
