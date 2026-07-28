@@ -339,7 +339,6 @@ footer {
 }
 
 .particle { pointer-events: none; }
-.particle-core { filter: url(#particle-halo); }
 .particle-halo { opacity: 0.34; }
 
 .burst-line,
