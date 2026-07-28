@@ -11,12 +11,20 @@ import {
 
 type DecayMode = "alpha" | "beta" | "gamma";
 
+type Nuclide = {
+  massNumber: number;
+  protonNumber: number;
+  element: string;
+};
+
 type IsotopePreset = {
   key: string;
   parent: string;
   daughter: string;
   symbol: string;
   daughterSymbol: string;
+  parentNuclide: Nuclide;
+  daughterNuclide: Nuclide;
   equation: string;
   emissionSymbol: string;
   halfLife: number;
@@ -56,6 +64,8 @@ type HistoryPoint = {
 const PRESETS: IsotopePreset[] = [
   {
     key: "iodine-131",
+    parentNuclide: { massNumber: 131, protonNumber: 53, element: "I" },
+    daughterNuclide: { massNumber: 131, protonNumber: 54, element: "Xe" },
     parent: "ヨウ素131",
     daughter: "キセノン131",
     symbol: "¹³¹₅₃I",
@@ -72,6 +82,8 @@ const PRESETS: IsotopePreset[] = [
   },
   {
     key: "carbon-14",
+    parentNuclide: { massNumber: 14, protonNumber: 6, element: "C" },
+    daughterNuclide: { massNumber: 14, protonNumber: 7, element: "N" },
     parent: "炭素14",
     daughter: "窒素14",
     symbol: "¹⁴₆C",
@@ -88,6 +100,8 @@ const PRESETS: IsotopePreset[] = [
   },
   {
     key: "cobalt-60",
+    parentNuclide: { massNumber: 60, protonNumber: 27, element: "Co" },
+    daughterNuclide: { massNumber: 60, protonNumber: 28, element: "Ni" },
     parent: "コバルト60",
     daughter: "ニッケル60",
     symbol: "⁶⁰₂₇Co",
@@ -104,6 +118,8 @@ const PRESETS: IsotopePreset[] = [
   },
   {
     key: "polonium-210",
+    parentNuclide: { massNumber: 210, protonNumber: 84, element: "Po" },
+    daughterNuclide: { massNumber: 206, protonNumber: 82, element: "Pb" },
     parent: "ポロニウム210",
     daughter: "鉛206",
     symbol: "²¹⁰₈₄Po",
@@ -174,6 +190,27 @@ function appendHistoryPoint(
   const lastIndex = appended.length - 1;
   return appended.filter(
     (_, index) => index === 0 || index === lastIndex || index % 2 === 0,
+  );
+}
+
+function NuclideSymbol({
+  nuclide,
+  className = "",
+}: {
+  nuclide: Nuclide;
+  className?: string;
+}) {
+  return (
+    <span
+      className={`nuclide-symbol ${className}`.trim()}
+      aria-label={`${nuclide.element}、質量数${nuclide.massNumber}、陽子数${nuclide.protonNumber}`}
+    >
+      <span className="nuclide-indexes" aria-hidden="true">
+        <sup>{nuclide.massNumber}</sup>
+        <sub>{nuclide.protonNumber}</sub>
+      </span>
+      <span className="nuclide-element" aria-hidden="true">{nuclide.element}</span>
+    </span>
   );
 }
 
@@ -470,7 +507,10 @@ export default function Home() {
               <span className="preset-number">0{index + 1}</span>
               <span>
                 <strong>{item.parent}</strong>
-                <small>{item.symbol}　T½ = {item.halfLife} {item.unit}</small>
+                <small>
+                  <NuclideSymbol nuclide={item.parentNuclide} className="nuclide-symbol-small" />
+                  <span> T½ = {item.halfLife} {item.unit}</span>
+                </small>
               </span>
             </button>
           ))}
@@ -492,7 +532,7 @@ export default function Home() {
           <div className="decay-flow">
             <div className="reaction-species reaction-parent">
               <span>親核種</span>
-              <code>{preset.symbol}</code>
+              <NuclideSymbol nuclide={preset.parentNuclide} className="reaction-symbol" />
               <small>{preset.parent}</small>
             </div>
             <div className="reaction-arrow" aria-hidden="true">
@@ -501,7 +541,7 @@ export default function Home() {
             </div>
             <div className="reaction-species reaction-daughter">
               <span>娘核種</span>
-              <code>{preset.daughterSymbol}</code>
+              <NuclideSymbol nuclide={preset.daughterNuclide} className="reaction-symbol" />
               <small>{preset.daughter}</small>
             </div>
             <b className="reaction-plus" aria-hidden="true">＋</b>
@@ -511,7 +551,6 @@ export default function Home() {
               <small>{preset.emission}</small>
             </div>
           </div>
-          <p className="equation-plain">{preset.equation}</p>
         </div>
 
         <div className="simulator-grid">
@@ -601,7 +640,7 @@ export default function Home() {
                 })}
               </svg>
               <div className="field-readout" aria-hidden="true">
-                <span>{preset.symbol}</span>
+                <NuclideSymbol nuclide={preset.parentNuclide} className="nuclide-symbol-field" />
                 <small>{preset.modeLabel}</small>
               </div>
               <span className="field-hint">画面を押すと検出パルスを表示</span>
