@@ -1046,7 +1046,436 @@ footer a:focus-visible {
   background: var(--field);
 }
 
-.visual-status…1924 tokens truncated…
+.visual-status {
+  display: grid;
+  gap: 6px;
+}
+
+.visual-status > span {
+  color: #aab2ab;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.visual-status strong {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--mono);
+  font-weight: 400;
+}
+
+.visual-status strong b {
+  color: #f5f6f2;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.visual-status strong small {
+  color: #c6ccc6;
+  font-size: 12px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px 18px;
+  color: #c0c7c0;
+  font-size: 11px;
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.045);
+}
+
+.legend-parent { background: var(--parent); }
+.legend-daughter { background: var(--daughter); }
+.legend-emission { background: #f0cf68; }
+
+.chain-progress {
+  display: grid;
+  gap: 18px;
+  padding: 24px 24px 22px;
+  overflow: hidden;
+  color: #d8ddd7;
+  border-bottom: 1px solid #3d443e;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 34%),
+    #171c18;
+}
+
+.chain-progress-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.chain-progress-heading > div {
+  display: grid;
+  gap: 5px;
+}
+
+.chain-progress-heading > div > span {
+  color: #8f9890;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+.chain-progress-heading > div > strong {
+  color: #f0f2ed;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.chain-progress-heading > p {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin: 0;
+  color: #aab2ab;
+  font-size: 10px;
+}
+
+.chain-progress-heading > p span,
+.chain-progress-heading > p small {
+  font-family: var(--mono);
+}
+
+.chain-progress-heading > p strong {
+  color: #f0cf68;
+  font-family: var(--mono);
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.chain-progress > p {
+  margin: 0;
+  color: #aab2ab;
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+.chain-progress > p > span {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 3px 7px;
+  color: #d9ded9;
+  border: 1px solid #49524a;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+}
+
+.chain-track {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+  padding: 2px 2px 14px;
+  scroll-padding-inline: 2px;
+  scroll-snap-type: x proximity;
+  scrollbar-color: #778179 #252b26;
+  scrollbar-width: auto;
+}
+
+.chain-stage-group {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.chain-stage {
+  position: relative;
+  display: grid;
+  width: 166px;
+  min-height: 184px;
+  grid-template-rows: auto auto 1fr;
+  gap: 10px;
+  padding: 17px 16px 16px;
+  scroll-snap-align: start;
+  overflow: hidden;
+  border: 1px solid #555f56;
+  border-top: 4px solid var(--stage-color);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--stage-color) 8%, transparent), transparent 46%),
+    #111512;
+}
+
+.chain-stage-index {
+  color: #8f998f;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.nuclide-symbol-chain {
+  color: var(--stage-color);
+  font-size: 2.35rem;
+}
+
+.chain-stage-copy {
+  display: grid;
+  align-self: end;
+  gap: 8px;
+}
+
+.chain-stage-copy strong {
+  color: #eef1ec;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.chain-stage-copy small {
+  display: grid;
+  gap: 3px;
+  color: #c4cbc4;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.chain-stage-copy small span {
+  color: #7f8980;
+  font-size: 8px;
+  letter-spacing: 0.07em;
+}
+
+.chain-stage output {
+  position: absolute;
+  top: 14px;
+  right: 13px;
+  display: inline-flex;
+  min-width: 42px;
+  min-height: 32px;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 8px;
+  color: #111512;
+  border-radius: 999px;
+  background: var(--stage-color);
+  font-family: var(--mono);
+  text-align: center;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+}
+
+.chain-stage output b {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.chain-stage output span {
+  font-size: 8px;
+}
+
+.chain-stage.is-stable {
+  border-color: color-mix(in srgb, var(--stage-color) 68%, #fff);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--stage-color) 16%, transparent), transparent 54%),
+    #1b211c;
+}
+
+.chain-stage.is-stable::after {
+  position: absolute;
+  right: 13px;
+  bottom: 12px;
+  color: var(--stage-color);
+  content: "STABLE";
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+}
+
+.chain-arrow {
+  display: grid;
+  min-width: 54px;
+  place-items: center;
+  gap: 4px;
+  color: #d2d8d2;
+  font-family: var(--mono);
+}
+
+.chain-arrow span {
+  min-width: 29px;
+  padding: 3px 6px;
+  border: 1px solid #4f5951;
+  border-radius: 999px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.chain-arrow b {
+  color: #7f8a81;
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+/*
+ * The chain is intentionally scrollable: fitting every nuclide into one row
+ * made the scientific labels too small to read.
+ */
+.chain-stage strong {
+  align-self: end;
+}
+
+.particle-field {
+  position: relative;
+  min-height: 500px;
+  overflow: hidden;
+  background: var(--field);
+}
+
+.particle-svg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  cursor: crosshair;
+  touch-action: manipulation;
+}
+
+.field-background { fill: var(--field); }
+.field-grid-line {
+  fill: none;
+  stroke: var(--field-line);
+  stroke-width: 1;
+}
+
+.field-orbit {
+  fill: none;
+  stroke: #384139;
+  stroke-width: 1;
+  stroke-dasharray: 7 9;
+}
+
+.particle { pointer-events: none; }
+.particle-halo { opacity: 0.34; }
+.particle-chain .particle-halo { opacity: 0.44; }
+
+.burst-line,
+.burst-gamma {
+  pointer-events: none;
+  fill: none;
+  stroke-linecap: round;
+}
+
+.burst-line { stroke-width: 4; }
+.burst-alpha { stroke: #f0cf68; }
+.burst-beta { stroke: #8cdee5; }
+.burst-gamma { stroke: #d8b7ef; stroke-width: 2; }
+
+.field-readout {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  width: 112px;
+  height: 112px;
+  place-content: center;
+  border: 1px solid #687168;
+  border-radius: 50%;
+  color: #f0f2ed;
+  background: rgba(17, 21, 18, 0.88);
+  pointer-events: none;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.field-readout > span {
+  font-family: var(--mono);
+  font-size: 22px;
+}
+
+.nuclide-symbol-field { color: #f0f2ed; }
+
+.field-readout small {
+  margin-top: 5px;
+  color: #a6aea6;
+  font-size: 9px;
+}
+
+.field-hint {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  z-index: 2;
+  color: #7f8880;
+  font-family: var(--mono);
+  font-size: 8px;
+  pointer-events: none;
+}
+
+.control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 28px;
+  background: var(--paper-dark);
+}
+
+.control-heading {
+  display: grid;
+  gap: 6px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.control-heading span,
+.control-heading small {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+}
+
+.control-heading strong {
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.control-field {
+  display: grid;
+  gap: 14px;
+}
+
+.control-field > span {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.control-field output {
+  font-family: var(--mono);
+  font-size: 15px;
+}
+
+.control-field-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 16px;
   font-size: 12px;
 }
@@ -2026,4 +2455,3 @@ footer a:hover { color: rgb(var(--parent-rgb)); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
-
