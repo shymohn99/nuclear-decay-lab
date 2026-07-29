@@ -149,6 +149,9 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /Math\.log10\(speed\)/);
   assert.match(page, /setSpeed\(10 \*\* Number\(event\.target\.value\)\)/);
   assert.match(page, /時間倍率（対数）/);
+  assert.match(page, /min="-15"/);
+  assert.match(page, /max="6"/);
+  assert.match(page, /10⁻¹⁵×〜10⁶×の21桁/);
   assert.match(page, /x: 0\.045 \+ random\(\) \* 0\.91/);
   assert.match(page, /y: 0\.07 \+ random\(\) \* 0\.86/);
   assert.match(page, /preserveAspectRatio="xMidYMid meet"/);
