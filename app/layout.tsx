@@ -64,28 +64,6 @@ export const metadata: Metadata = {
   },
 };
 
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  name: "nuclear-decay-lab",
-  url: `${siteOrigin}${siteBasePath}/`,
-  description,
-  applicationCategory: "EducationalApplication",
-  operatingSystem: "Any",
-  isAccessibleForFree: true,
-  image: `${siteOrigin}${siteBasePath}/og.png`,
-  inLanguage: ["ja", "en"],
-  creator: {
-    "@type": "Person",
-    name: "Shymohn",
-    url: "https://shymohn99.github.io/portfolio/",
-    sameAs: [
-      "https://github.com/shymohn99",
-      "https://x.com/Shymohn",
-    ],
-  },
-};
-
 export const viewport: Viewport = {
   themeColor: "#f1efe8",
   colorScheme: "light",
@@ -98,13 +76,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <head>
-        <script
-          id="nuclear-decay-lab-structured-data"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
-      </head>
       <body>{children}</body>
     </html>
   );
