@@ -217,6 +217,43 @@ footer {
   font-weight: 500;
 }
 
+.catalog-view-toggle,
+.simulation-mode-toggle {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.catalog-view-toggle button,
+.simulation-mode-toggle button {
+  min-height: 30px;
+  padding: 0 13px;
+  color: var(--muted);
+  border: 0;
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.catalog-view-toggle button[aria-pressed="true"],
+.simulation-mode-toggle button[aria-pressed="true"] {
+  color: #faf8f2;
+  background: var(--ink);
+}
+
+.catalog-view-toggle button:focus-visible,
+.simulation-mode-toggle button:focus-visible {
+  outline: 2px solid rgb(var(--parent-rgb));
+  outline-offset: 2px;
+}
+
+.simulation-mode-toggle button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
 .nuclide-table-wrap {
   overflow-x: auto;
   border-top: 1px solid var(--ink);
@@ -313,6 +350,119 @@ footer {
   font-size: 9px;
 }
 
+.nuclide-map-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  min-height: 430px;
+  border: 1px solid var(--ink);
+  background: #faf8f2;
+}
+
+.nuclide-map {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 430px;
+  border-right: 1px solid var(--line);
+}
+
+.nuclide-map-grid {
+  stroke: #dedad0;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.nuclide-map-axis-label,
+.nuclide-map-y-label,
+.nuclide-map-caption,
+.nuclide-map-mass,
+.nuclide-map-element {
+  font-family: var(--mono);
+}
+
+.nuclide-map-axis-label,
+.nuclide-map-y-label {
+  fill: var(--muted);
+  font-size: 9px;
+}
+
+.nuclide-map-axis-label { text-anchor: middle; }
+.nuclide-map-y-label { text-anchor: end; }
+
+.nuclide-map-caption {
+  fill: var(--ink);
+  font-size: 10px;
+  font-weight: 600;
+  text-anchor: end;
+}
+
+.nuclide-map-caption-y { text-anchor: start; }
+
+.nuclide-map-node {
+  cursor: pointer;
+  outline: none;
+}
+
+.nuclide-map-node rect {
+  stroke: #faf8f2;
+  stroke-width: 2;
+  transition: stroke-width 120ms ease, transform 120ms ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.nuclide-map-node:hover rect,
+.nuclide-map-node:focus-visible rect {
+  stroke: var(--ink);
+  stroke-width: 3;
+  transform: scale(1.14);
+}
+
+.nuclide-map-node.is-active rect {
+  stroke: var(--ink);
+  stroke-width: 4;
+}
+
+.nuclide-map-mass {
+  fill: rgba(255, 255, 255, 0.88);
+  font-size: 6px;
+  pointer-events: none;
+}
+
+.nuclide-map-element {
+  fill: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  pointer-events: none;
+  text-anchor: middle;
+}
+
+.nuclide-map-selection {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  padding: 28px 24px;
+  background:
+    linear-gradient(180deg, rgba(var(--parent-rgb), 0.08), transparent 55%);
+}
+
+.nuclide-map-selection .nuclide-symbol {
+  color: rgb(var(--parent-rgb));
+  font-size: 2.25rem;
+}
+
+.nuclide-map-selection strong {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.nuclide-map-selection span,
+.nuclide-map-selection small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.7;
+}
+
 .nuclide-symbol {
   display: inline-grid;
   width: max-content;
@@ -362,6 +512,25 @@ footer {
 .nuclide-symbol-small {
   margin-right: 0.22em;
   font-size: 1.22em;
+}
+
+.simulation-mode-bar {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 11px 28px;
+  border-bottom: 1px solid var(--ink);
+  background: var(--paper-dark);
+}
+
+.simulation-mode-bar p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.6;
+  text-align: right;
 }
 
 .equation-panel {
@@ -591,6 +760,123 @@ footer a:focus-visible {
 .legend-daughter { background: var(--daughter); }
 .legend-emission { background: #f0cf68; }
 
+.chain-progress {
+  display: grid;
+  gap: 12px;
+  padding: 18px 20px 16px;
+  overflow: hidden;
+  color: #d8ddd7;
+  border-bottom: 1px solid #3d443e;
+  background: #171c18;
+}
+
+.chain-progress-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.chain-progress-heading span,
+.chain-progress-heading small,
+.chain-progress > p {
+  color: #8f9890;
+  font-family: var(--mono);
+  font-size: 8px;
+}
+
+.chain-progress > p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.chain-track {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+  padding: 2px 1px 8px;
+  scrollbar-color: #4d574f transparent;
+  scrollbar-width: thin;
+}
+
+.chain-stage-group {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.chain-stage {
+  position: relative;
+  display: grid;
+  width: 108px;
+  min-height: 128px;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 5px;
+  padding: 12px 11px 11px;
+  border: 1px solid #4a534b;
+  border-top: 3px solid var(--stage-color);
+  background: #111512;
+}
+
+.chain-stage > span {
+  color: #69736b;
+  font-family: var(--mono);
+  font-size: 7px;
+}
+
+.nuclide-symbol-chain {
+  color: var(--stage-color);
+  font-size: 1.55rem;
+}
+
+.chain-stage strong {
+  align-self: end;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.chain-stage small {
+  color: #8f9890;
+  font-family: var(--mono);
+  font-size: 7px;
+  white-space: nowrap;
+}
+
+.chain-stage output {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  min-width: 22px;
+  padding: 3px 5px;
+  color: #111512;
+  border-radius: 999px;
+  background: var(--stage-color);
+  font-family: var(--mono);
+  font-size: 8px;
+  text-align: center;
+}
+
+.chain-stage.is-stable {
+  border-style: double;
+  background: #1e231f;
+}
+
+.chain-arrow {
+  display: grid;
+  min-width: 36px;
+  place-items: center;
+  color: #b9c0b9;
+  font-family: var(--mono);
+  font-size: 8px;
+}
+
+.chain-arrow b {
+  color: #667068;
+  font-size: 18px;
+  font-weight: 400;
+}
+
 .particle-field {
   position: relative;
   min-height: 500px;
@@ -626,6 +912,7 @@ footer a:focus-visible {
 
 .particle { pointer-events: none; }
 .particle-halo { opacity: 0.34; }
+.particle-chain .particle-halo { opacity: 0.44; }
 
 .burst-line,
 .burst-gamma {
@@ -781,6 +1068,14 @@ input[type="range"] {
   color: var(--muted);
   font-size: 9px;
   line-height: 1.6;
+}
+
+.chain-time-rate > strong {
+  color: rgb(var(--parent-rgb));
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: normal;
 }
 
 .control-actions {
@@ -1048,6 +1343,14 @@ footer a:hover { color: rgb(var(--parent-rgb)); }
     min-height: 92px;
   }
 
+  .nuclide-map-wrap { grid-template-columns: 1fr; }
+  .nuclide-map { border-right: 0; border-bottom: 1px solid var(--line); }
+  .nuclide-map-selection {
+    grid-template-columns: auto auto 1fr;
+    align-items: center;
+  }
+  .nuclide-map-selection small { grid-column: 2 / -1; }
+
   .simulator-grid { grid-template-columns: 1fr; }
   .visual-panel { border-right: 0; }
   .control-panel { border-top: 1px solid var(--ink); }
@@ -1092,6 +1395,40 @@ footer a:hover { color: rgb(var(--parent-rgb)); }
   .series-tabs button:nth-child(2) { border-right: 0; }
   .series-tabs button:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
 
+  .nuclide-table-meta {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+  .catalog-view-toggle { order: 3; width: 100%; }
+  .catalog-view-toggle button { flex: 1; }
+  .nuclide-map-wrap {
+    min-height: 0;
+    overflow-x: auto;
+  }
+  .nuclide-map {
+    width: 780px;
+    min-height: 350px;
+  }
+  .nuclide-map-selection {
+    position: sticky;
+    left: 0;
+    width: calc(100vw - 58px);
+    grid-template-columns: auto 1fr;
+    padding: 20px 18px;
+  }
+  .nuclide-map-selection > span { grid-column: 2; }
+  .nuclide-map-selection small { grid-column: 1 / -1; }
+
+  .simulation-mode-bar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 9px;
+    padding: 13px 16px;
+  }
+  .simulation-mode-toggle { width: 100%; }
+  .simulation-mode-toggle button { flex: 1; }
+  .simulation-mode-bar p { text-align: left; }
+
   .equation-panel {
     padding: 20px 16px;
   }
@@ -1123,6 +1460,11 @@ footer a:hover { color: rgb(var(--parent-rgb)); }
   .visual-toolbar {
     align-items: flex-start;
     flex-direction: column;
+  }
+  .chain-progress-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .control-panel { padding: 24px 18px; }
