@@ -49,6 +49,7 @@ input:focus-visible {
 .lab-header,
 .hero-copy,
 .simulator,
+.detector-section,
 .data-section,
 footer {
   width: min(1180px, calc(100% - 48px));
@@ -629,6 +630,209 @@ footer {
 .nuclide-symbol-small {
   margin-right: 0.22em;
   font-size: 1.22em;
+}
+
+.genealogy-panel {
+  padding: 28px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--ink);
+  background:
+    linear-gradient(135deg, rgba(var(--parent-rgb), 0.07), transparent 34%),
+    #e9e6dd;
+}
+
+.genealogy-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+
+.genealogy-heading > div {
+  display: grid;
+  gap: 5px;
+}
+
+.genealogy-heading span,
+.genealogy-rail-label {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+}
+
+.genealogy-heading strong {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.genealogy-heading p {
+  max-width: 470px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.75;
+  text-align: right;
+}
+
+.genealogy-ancestors,
+.genealogy-lineage {
+  display: grid;
+  grid-template-columns: 178px minmax(0, 1fr);
+  border-top: 1px solid var(--line);
+}
+
+.genealogy-rail-label {
+  padding: 18px 18px 18px 0;
+  border-right: 1px solid var(--line);
+  line-height: 1.6;
+}
+
+.genealogy-ancestors > div {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0 14px 18px;
+  overflow-x: auto;
+}
+
+.genealogy-ancestors > div > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.genealogy-ancestors > div > small {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 8px;
+}
+
+.genealogy-parent-link {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 9px;
+}
+
+.genealogy-parent-link > span {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 8px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.genealogy-lineage {
+  border-bottom: 1px solid var(--line);
+}
+
+.genealogy-track {
+  display: flex;
+  min-width: 0;
+  align-items: stretch;
+  gap: 0;
+  padding: 18px 0 18px 18px;
+  overflow-x: auto;
+}
+
+.genealogy-step {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.genealogy-node {
+  display: grid;
+  width: 132px;
+  min-height: 138px;
+  flex: 0 0 auto;
+  align-content: space-between;
+  gap: 7px;
+  padding: 13px 12px;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-top: 3px solid rgb(var(--parent-rgb));
+  background: #f7f5ef;
+  cursor: pointer;
+  text-align: left;
+}
+
+.genealogy-node:hover {
+  border-color: var(--ink);
+  background: #fff;
+}
+
+.genealogy-node.is-root {
+  color: #faf8f2;
+  border-color: rgb(var(--parent-rgb));
+  background: rgb(var(--parent-rgb));
+}
+
+.genealogy-node.is-terminal {
+  border-top-color: #767970;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(23, 24, 21, 0.03) 0 7px,
+      transparent 7px 14px
+    ),
+    #f7f5ef;
+  cursor: default;
+}
+
+.genealogy-node > span,
+.genealogy-node > small {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 7px;
+  line-height: 1.45;
+}
+
+.genealogy-node.is-root > span,
+.genealogy-node.is-root > small {
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.genealogy-node > strong {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.nuclide-symbol-genealogy {
+  font-size: 1.72rem;
+}
+
+.genealogy-arrow {
+  display: grid;
+  width: 74px;
+  flex: 0 0 auto;
+  justify-items: center;
+  gap: 5px;
+  padding: 0 8px;
+}
+
+.genealogy-arrow small {
+  max-width: 72px;
+  color: currentColor;
+  font-family: var(--mono);
+  font-size: 7px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.genealogy-arrow b {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.genealogy-tail {
+  display: flex;
+  flex: 0 0 auto;
 }
 
 .simulation-mode-bar {
@@ -1421,6 +1625,378 @@ input[type="range"] {
   line-height: 1.6;
 }
 
+.detector-section {
+  padding: 108px 0 92px;
+}
+
+.detector-section-heading {
+  margin-bottom: 30px;
+}
+
+.detector-lab-grid {
+  display: grid;
+  grid-template-columns: 390px minmax(0, 1fr);
+  border: 1px solid var(--ink);
+  background: #f8f6f0;
+}
+
+.detector-controls {
+  display: grid;
+  align-content: start;
+  gap: 24px;
+  padding: 26px;
+  border-right: 1px solid var(--ink);
+  background: var(--paper-dark);
+}
+
+.detector-controls fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.detector-controls legend,
+.detector-range > span {
+  width: 100%;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+}
+
+.detector-options {
+  display: grid;
+  gap: 7px;
+}
+
+.detector-options button {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 3px 12px;
+  min-height: 72px;
+  align-items: center;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  background: #f3f0e8;
+  cursor: pointer;
+  text-align: left;
+}
+
+.detector-options button:hover { border-color: var(--ink); }
+
+.detector-options button[aria-pressed="true"] {
+  color: #faf8f2;
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.detector-options button > span {
+  grid-row: 1 / 3;
+  color: rgb(var(--parent-rgb));
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.detector-options button > strong {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.detector-options button > small {
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.detector-options button[aria-pressed="true"] > small {
+  color: #b9bdb7;
+}
+
+.detector-range {
+  display: grid;
+  gap: 7px;
+}
+
+.detector-range > span {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+}
+
+.detector-range output {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.detector-range input {
+  width: 100%;
+  accent-color: rgb(var(--parent-rgb));
+}
+
+.detector-range input:disabled { opacity: 0.28; }
+
+.shield-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line);
+}
+
+.shield-options button {
+  display: grid;
+  min-height: 62px;
+  place-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: #f3f0e8;
+  cursor: pointer;
+}
+
+.shield-options button:last-child { border-right: 0; }
+.shield-options button:hover { background: #fff; }
+
+.shield-options button[aria-pressed="true"] {
+  color: #faf8f2;
+  background: rgb(var(--parent-rgb));
+}
+
+.shield-options b {
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.shield-options span {
+  font-size: 7px;
+}
+
+.detector-console {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  background: #121713;
+}
+
+.detector-apparatus {
+  display: grid;
+  min-height: 235px;
+  grid-template-columns: 130px minmax(70px, 1fr) auto 150px;
+  align-items: center;
+  padding: 30px;
+  color: #edf0e9;
+  border-bottom: 1px solid #465047;
+  background:
+    linear-gradient(rgba(74, 91, 78, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 91, 78, 0.15) 1px, transparent 1px),
+    #121713;
+  background-size: 34px 34px;
+}
+
+.detector-source,
+.detector-device {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.detector-source > span,
+.detector-device > span,
+.detector-source > strong,
+.detector-device > strong,
+.detector-flight small,
+.detector-shield small {
+  color: #a5aea7;
+  font-family: var(--mono);
+  font-size: 8px;
+}
+
+.nuclide-symbol-detector {
+  color: #f0cf68;
+  font-size: 2.2rem;
+  filter: drop-shadow(0 0 12px rgba(240, 207, 104, 0.42));
+}
+
+.detector-flight {
+  position: relative;
+  display: grid;
+  height: 70px;
+  align-items: center;
+}
+
+.detector-flight::before {
+  width: 100%;
+  height: 1px;
+  content: "";
+  background: #506057;
+}
+
+.detector-flight > span {
+  position: absolute;
+  left: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: #f0cf68;
+  box-shadow: 0 0 12px #f0cf68;
+  transition: width 180ms ease;
+}
+
+.detector-flight small {
+  position: absolute;
+  right: 8px;
+  bottom: 0;
+}
+
+.detector-shield {
+  display: grid;
+  width: var(--shield-thickness);
+  min-width: 12px;
+  height: 126px;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  margin: 0 18px;
+  color: #161813;
+  border: 1px solid #d5d7cf;
+  background: #b8b9b2;
+  transition: width 180ms ease;
+}
+
+.detector-shield b {
+  font-family: var(--mono);
+  font-size: 11px;
+  writing-mode: vertical-rl;
+}
+
+.detector-shield small {
+  color: #30332e;
+  font-size: 6px;
+  writing-mode: vertical-rl;
+}
+
+.detector-shield.shield-none {
+  border-style: dashed;
+  background: transparent;
+}
+
+.detector-shield.shield-paper { background: #ece5ce; }
+.detector-shield.shield-aluminum { background: #b9c2c5; }
+.detector-shield.shield-lead {
+  color: #f2f1eb;
+  background: #555b61;
+}
+.detector-shield.shield-lead small { color: #d7d9da; }
+
+.detector-device > span {
+  display: grid;
+  width: 92px;
+  height: 92px;
+  place-items: center;
+  color: #f5f3ec;
+  border: 1px solid #78877b;
+  border-radius: 50%;
+  background: #252d27;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 8px #171c18;
+}
+
+.detector-device i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #56d6ad;
+  box-shadow: 0 0 12px #56d6ad;
+}
+
+.detector-scope {
+  padding: 22px 26px 18px;
+  color: #edf0e9;
+  border-bottom: 1px solid #465047;
+}
+
+.scope-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  font-family: var(--mono);
+}
+
+.scope-heading span {
+  color: #92a096;
+  font-size: 8px;
+  letter-spacing: 0.09em;
+}
+
+.scope-heading strong {
+  color: #f0cf68;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.scope-bars {
+  display: flex;
+  height: 90px;
+  align-items: end;
+  gap: 4px;
+  padding: 10px 8px 0;
+  border-bottom: 1px solid #6a776d;
+  background:
+    linear-gradient(rgba(97, 124, 105, 0.12) 1px, transparent 1px);
+  background-size: 100% 25%;
+}
+
+.scope-bars i {
+  width: 100%;
+  min-width: 2px;
+  background: #334038;
+}
+
+.scope-bars i.is-hit {
+  background: #58d5ae;
+  box-shadow: 0 0 8px rgba(88, 213, 174, 0.55);
+}
+
+.detector-readouts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  color: #edf0e9;
+}
+
+.detector-readouts article {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  padding: 20px;
+  border-right: 1px solid #465047;
+}
+
+.detector-readouts article:last-child { border-right: 0; }
+
+.detector-readouts span,
+.detector-readouts small {
+  color: #94a097;
+  font-family: var(--mono);
+  font-size: 7px;
+}
+
+.detector-readouts strong {
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: clamp(1.25rem, 2vw, 1.9rem);
+  font-weight: 400;
+  text-overflow: ellipsis;
+}
+
+.detector-readouts strong small {
+  color: inherit;
+  font-size: 8px;
+}
+
 .data-section { padding: 110px 0 88px; }
 
 .section-heading {
@@ -1655,12 +2231,22 @@ footer a:hover { color: rgb(var(--parent-rgb)); }
   .visual-panel { border-right: 0; }
   .control-panel { border-top: 1px solid var(--ink); }
   .formula { margin-top: 0; }
+
+  .detector-lab-grid { grid-template-columns: 1fr; }
+  .detector-controls { border-right: 0; border-bottom: 1px solid var(--ink); }
+  .detector-options { grid-template-columns: repeat(3, 1fr); }
+  .detector-options button {
+    grid-template-columns: 1fr;
+    align-content: start;
+  }
+  .detector-options button > span { grid-row: auto; }
 }
 
 @media (max-width: 720px) {
   .lab-header,
   .hero-copy,
   .simulator,
+  .detector-section,
   .data-section,
   footer {
     width: min(100% - 24px, 1180px);
@@ -1720,6 +2306,23 @@ footer a:hover { color: rgb(var(--parent-rgb)); }
   }
   .nuclide-map-selection > span { grid-column: 2; }
   .nuclide-map-selection small { grid-column: 1 / -1; }
+
+  .genealogy-panel { padding: 22px 16px; }
+  .genealogy-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .genealogy-heading p { text-align: left; }
+  .genealogy-ancestors,
+  .genealogy-lineage { grid-template-columns: 1fr; }
+  .genealogy-rail-label {
+    padding: 12px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .genealogy-ancestors > div,
+  .genealogy-track { padding-left: 0; }
 
   .simulation-mode-bar {
     align-items: stretch;
@@ -1790,6 +2393,24 @@ footer a:hover { color: rgb(var(--parent-rgb)); }
   .chain-progress > p { font-size: 10px; }
 
   .control-panel { padding: 24px 18px; }
+  .detector-section { padding: 78px 0 64px; }
+  .detector-section-heading { margin-bottom: 24px; }
+  .detector-controls { padding: 20px 16px; }
+  .detector-options { grid-template-columns: 1fr; }
+  .detector-options button {
+    grid-template-columns: 52px minmax(0, 1fr);
+  }
+  .detector-options button > span { grid-row: 1 / 3; }
+  .detector-apparatus {
+    min-height: 210px;
+    grid-template-columns: 92px minmax(40px, 1fr) auto 106px;
+    padding: 20px 14px;
+  }
+  .detector-device > span { width: 72px; height: 72px; }
+  .detector-shield { margin: 0 9px; }
+  .detector-readouts { grid-template-columns: repeat(2, 1fr); }
+  .detector-readouts article:nth-child(2) { border-right: 0; }
+  .detector-readouts article:nth-child(-n + 2) { border-bottom: 1px solid #465047; }
   .section-heading { grid-template-columns: 1fr; gap: 18px; }
   .data-section { padding: 78px 0 60px; }
   .stats-grid { grid-template-columns: 1fr; }

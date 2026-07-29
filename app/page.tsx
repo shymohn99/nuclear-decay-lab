@@ -18,6 +18,8 @@ type DecayMode = "alpha" | "beta" | "gamma";
 type DecaySeries = "independent" | "uranium-238" | "thorium-232" | "uranium-235";
 type SimulationMode = "single" | "chain";
 type CatalogView = "table" | "map";
+type DetectorKey = "gm" | "scintillator" | "semiconductor";
+type ShieldKey = "none" | "paper" | "aluminum" | "lead";
 
 type Nuclide = {
   massNumber: number;
@@ -163,6 +165,69 @@ const CHAIN_STAGE_COLORS = [
   "#526ea2",
   "#8563a0",
 ];
+
+const DETECTORS: Record<
+  DetectorKey,
+  {
+    name: string;
+    shortName: string;
+    description: string;
+    background: number;
+    efficiency: Record<DecayMode, number>;
+  }
+> = {
+  gm: {
+    name: "GM計数管",
+    shortName: "GM",
+    description: "壊変の回数を軽快なパルスとして数えます。",
+    background: 0.35,
+    efficiency: { alpha: 0.32, beta: 0.72, gamma: 0.11 },
+  },
+  scintillator: {
+    name: "シンチレーション検出器",
+    shortName: "SCINT",
+    description: "放射線を微かな光へ変換し、高感度で観測します。",
+    background: 0.18,
+    efficiency: { alpha: 0.58, beta: 0.84, gamma: 0.76 },
+  },
+  semiconductor: {
+    name: "半導体検出器",
+    shortName: "HPGe",
+    description: "高い分解能で放射線の信号を読み分けます。",
+    background: 0.08,
+    efficiency: { alpha: 0.9, beta: 0.88, gamma: 0.93 },
+  },
+};
+
+const SHIELDS: Record<
+  ShieldKey,
+  {
+    name: string;
+    symbol: string;
+    coefficient: Record<DecayMode, number>;
+  }
+> = {
+  none: {
+    name: "遮蔽なし",
+    symbol: "—",
+    coefficient: { alpha: 0, beta: 0, gamma: 0 },
+  },
+  paper: {
+    name: "紙",
+    symbol: "P",
+    coefficient: { alpha: 3.2, beta: 0.07, gamma: 0.002 },
+  },
+  aluminum: {
+    name: "アルミニウム",
+    symbol: "Al",
+    coefficient: { alpha: 5.8, beta: 0.24, gamma: 0.018 },
+  },
+  lead: {
+    name: "鉛",
+    symbol: "Pb",
+    coefficient: { alpha: 8.5, beta: 0.48, gamma: 0.18 },
+  },
+};
 
 // NNDC NuDat ground-state export (3,149 known nuclides), compressed as
 // contiguous neutron-number ranges for each proton number.
@@ -672,6 +737,22 @@ const PRESETS: IsotopePreset[] = [
   ...MAP_ONLY_PRESETS,
 ];
 
+function nuclideIdentity(nuclide: Nuclide) {
+  return `${nuclide.element.replace("ᵐ", "")}-${nuclide.massNumber}-${nuclide.protonNumber}`;
+}
+
+const PRESET_BY_PARENT = new Map(
+  PRESETS.map((item) => [nuclideIdentity(item.parentNuclide), item]),
+);
+
+const PRESETS_BY_DAUGHTER = new Map<string, IsotopePreset[]>();
+for (const item of PRESETS) {
+  const key = nuclideIdentity(item.daughterNuclide);
+  const parents = PRESETS_BY_DAUGHTER.get(key) ?? [];
+  parents.push(item);
+  PRESETS_BY_DAUGHTER.set(key, parents);
+}
+
 function getChainStages(series: DecaySeries): ChainStage[] {
   if (series === "independent") return [];
 
@@ -1129,6 +1210,369 @@ function NuclideMapExplorer({
   );
 }
 
+function NuclideGenealogy({
+  preset,
+  onSelectPreset,
+}: {
+  preset: IsotopePreset;
+  onSelectPreset: (preset: IsotopePreset) => void;
+}) {
+  const rootKey = nuclideIdentity(preset.parentNuclide);
+  const allAncestors = PRESETS_BY_DAUGHTER.get(rootKey) ?? [];
+  const ancestors = allAncestors.slice(0, 4);
+  const lineage: IsotopePreset[] = [];
+  const visited = new Set<string>();
+  let cursor: IsotopePreset | undefined = preset;
+
+  while (cursor && lineage.length < 6 && !visited.has(cursor.key)) {
+    lineage.push(cursor);
+    visited.add(cursor.key);
+    cursor = PRESET_BY_PARENT.get(nuclideIdentity(cursor.daughterNuclide));
+  }
+
+  const finalStep = lineage.at(-1) ?? preset;
+  const continuation = PRESET_BY_PARENT.get(
+    nuclideIdentity(finalStep.daughterNuclide),
+  );
+
+  const renderSelectableNode = (
+    item: IsotopePreset,
+    relationship: string,
+    isRoot = false,
+  ) => (
+    <button
+      type="button"
+      className={`genealogy-node ${isRoot ? "is-root" : ""}`}
+      onClick={() => onSelectPreset(item)}
+      aria-label={`${relationship}、${item.parent}、半減期${item.halfLife}${item.unit}`}
+    >
+      <span>{relationship}</span>
+      <NuclideSymbol
+        nuclide={item.parentNuclide}
+        className="nuclide-symbol-genealogy"
+      />
+      <strong>{item.parent}</strong>
+      <small>{formatNumber(item.halfLife)} {item.unit}</small>
+    </button>
+  );
+
+  return (
+    <section className="genealogy-panel" aria-labelledby="genealogy-title">
+      <div className="genealogy-heading">
+        <div>
+          <span>NUCLIDE GENEALOGY</span>
+          <strong id="genealogy-title">核種の系譜図</strong>
+        </div>
+        <p>
+          選択中の核種へ至る親核種と、その先の娘核種をたどれます。
+          色付きの核種を選ぶと実験条件も切り替わります。
+        </p>
+      </div>
+
+      <div className="genealogy-ancestors">
+        <span className="genealogy-rail-label">PARENTS / この核種へ至る経路</span>
+        <div>
+          {ancestors.length > 0 ? (
+            ancestors.map((item) => (
+              <div className="genealogy-parent-link" key={item.key}>
+                {renderSelectableNode(item, "親核種")}
+                <span aria-hidden="true">{item.modeLabel} ↓</span>
+              </div>
+            ))
+          ) : (
+            <p>収録データ内に直接の親核種はありません。</p>
+          )}
+          {allAncestors.length > ancestors.length && (
+            <small>ほか {allAncestors.length - ancestors.length} 経路</small>
+          )}
+        </div>
+      </div>
+
+      <div className="genealogy-lineage">
+        <span className="genealogy-rail-label">DESCENDANTS / 娘核種への流れ</span>
+        <div className="genealogy-track">
+          {lineage.map((item, index) => (
+            <div className="genealogy-step" key={item.key}>
+              {renderSelectableNode(item, index === 0 ? "現在" : `${index}世代後`, index === 0)}
+              <span className={`genealogy-arrow mode-${item.mode}`} aria-hidden="true">
+                <small>{item.modeLabel}</small>
+                <b>→</b>
+              </span>
+            </div>
+          ))}
+          {continuation ? (
+            <div className="genealogy-tail">
+              {renderSelectableNode(
+                continuation,
+                lineage.length >= 6 ? "さらに続く" : `${lineage.length}世代後`,
+              )}
+            </div>
+          ) : (
+            <article className="genealogy-node is-terminal">
+              <span>到達核種</span>
+              <NuclideSymbol
+                nuclide={finalStep.daughterNuclide}
+                className="nuclide-symbol-genealogy"
+              />
+              <strong>{finalStep.daughter}</strong>
+              <small>この先の壊変データなし</small>
+            </article>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DetectorLab({
+  preset,
+  remaining,
+  atomCount,
+  detectorKey,
+  onDetectorChange,
+  shieldKey,
+  onShieldChange,
+  distance,
+  onDistanceChange,
+  thickness,
+  onThicknessChange,
+  measurementSeconds,
+  onMeasurementSecondsChange,
+}: {
+  preset: IsotopePreset;
+  remaining: number;
+  atomCount: number;
+  detectorKey: DetectorKey;
+  onDetectorChange: (detector: DetectorKey) => void;
+  shieldKey: ShieldKey;
+  onShieldChange: (shield: ShieldKey) => void;
+  distance: number;
+  onDistanceChange: (distance: number) => void;
+  thickness: number;
+  onThicknessChange: (thickness: number) => void;
+  measurementSeconds: number;
+  onMeasurementSecondsChange: (seconds: number) => void;
+}) {
+  const detector = DETECTORS[detectorKey];
+  const shield = SHIELDS[shieldKey];
+  const observedMode: DecayMode = preset.modeLabel.includes("γ")
+    ? "gamma"
+    : preset.mode;
+  const activityRatio = Math.max(0, remaining / Math.max(1, atomCount));
+  const distanceFactor = Math.min(1, Math.pow(10 / distance, 2));
+  const transmission =
+    shieldKey === "none"
+      ? 1
+      : Math.exp(-shield.coefficient[observedMode] * thickness);
+  const signalRate =
+    180 *
+    activityRatio *
+    distanceFactor *
+    detector.efficiency[observedMode] *
+    transmission;
+  const countRate = signalRate + detector.background;
+  const totalCounts = Math.round(countRate * measurementSeconds);
+  const uncertainty =
+    totalCounts > 0 ? Math.min(100, 100 / Math.sqrt(totalCounts)) : 100;
+  const signalToNoise = signalRate / detector.background;
+  const response =
+    transmission < 0.02
+      ? "ほぼ遮蔽"
+      : transmission < 0.25
+        ? "大きく減衰"
+        : transmission < 0.7
+          ? "一部を透過"
+          : "明瞭に検出";
+  const bars = Array.from({ length: 42 }, (_, index) => {
+    const seed =
+      ((index + 1) * 37 +
+        preset.parentNuclide.massNumber * 11 +
+        distance * 3 +
+        thickness * 7 +
+        detectorKey.length * 13) %
+      101;
+    const normalized = seed / 100;
+    const hit = normalized < Math.min(0.92, 0.08 + countRate / 72);
+    return {
+      hit,
+      height: hit ? 22 + ((seed * 17) % 72) : 5 + (seed % 9),
+    };
+  });
+
+  return (
+    <section className="detector-section" id="detector-lab" aria-labelledby="detector-title">
+      <div className="section-heading detector-section-heading">
+        <div>
+          <p className="section-number">02 / DETECTOR LAB</p>
+          <h2 id="detector-title">検出器ラボ</h2>
+        </div>
+        <p>
+          検出器、距離、遮蔽物を変え、同じ核種でも計数率がどう変わるか比較できます。
+        </p>
+      </div>
+
+      <div className="detector-lab-grid">
+        <div className="detector-controls">
+          <fieldset>
+            <legend>検出器を選択</legend>
+            <div className="detector-options">
+              {(Object.entries(DETECTORS) as Array<[DetectorKey, (typeof DETECTORS)[DetectorKey]]>).map(
+                ([key, item]) => (
+                  <button
+                    type="button"
+                    aria-pressed={detectorKey === key}
+                    onClick={() => onDetectorChange(key)}
+                    key={key}
+                  >
+                    <span>{item.shortName}</span>
+                    <strong>{item.name}</strong>
+                    <small>{item.description}</small>
+                  </button>
+                ),
+              )}
+            </div>
+          </fieldset>
+
+          <label className="detector-range">
+            <span>
+              線源からの距離
+              <output>{distance} cm</output>
+            </span>
+            <input
+              type="range"
+              min="5"
+              max="100"
+              step="5"
+              value={distance}
+              onChange={(event) => onDistanceChange(Number(event.target.value))}
+            />
+          </label>
+
+          <fieldset>
+            <legend>遮蔽物</legend>
+            <div className="shield-options">
+              {(Object.entries(SHIELDS) as Array<[ShieldKey, (typeof SHIELDS)[ShieldKey]]>).map(
+                ([key, item]) => (
+                  <button
+                    type="button"
+                    aria-pressed={shieldKey === key}
+                    onClick={() => onShieldChange(key)}
+                    key={key}
+                  >
+                    <b>{item.symbol}</b>
+                    <span>{item.name}</span>
+                  </button>
+                ),
+              )}
+            </div>
+          </fieldset>
+
+          <label className="detector-range">
+            <span>
+              遮蔽厚
+              <output>{shieldKey === "none" ? "—" : `${thickness} mm`}</output>
+            </span>
+            <input
+              type="range"
+              min="0"
+              max="20"
+              step="1"
+              value={thickness}
+              disabled={shieldKey === "none"}
+              onChange={(event) => onThicknessChange(Number(event.target.value))}
+            />
+          </label>
+
+          <label className="detector-range">
+            <span>
+              測定時間
+              <output>{measurementSeconds} 秒</output>
+            </span>
+            <input
+              type="range"
+              min="1"
+              max="60"
+              step="1"
+              value={measurementSeconds}
+              onChange={(event) =>
+                onMeasurementSecondsChange(Number(event.target.value))
+              }
+            />
+          </label>
+        </div>
+
+        <div className="detector-console">
+          <div className="detector-apparatus" aria-label={`${preset.parent}の検出実験配置`}>
+            <div className="detector-source">
+              <span>SOURCE</span>
+              <NuclideSymbol
+                nuclide={preset.parentNuclide}
+                className="nuclide-symbol-detector"
+              />
+              <strong>{preset.parent}</strong>
+            </div>
+            <div className="detector-flight">
+              <span style={{ width: `${Math.max(8, transmission * 100)}%` }} />
+              <small>{distance} cm</small>
+            </div>
+            <div
+              className={`detector-shield shield-${shieldKey}`}
+              style={{ "--shield-thickness": `${6 + thickness * 1.4}px` } as React.CSSProperties}
+            >
+              <b>{shield.symbol}</b>
+              <small>{shield.name}</small>
+            </div>
+            <div className="detector-device">
+              <span>{detector.shortName}</span>
+              <i />
+              <strong>{detector.name}</strong>
+            </div>
+          </div>
+
+          <div className="detector-scope">
+            <div className="scope-heading">
+              <span>LIVE COUNTS / {observedMode.toUpperCase()}</span>
+              <strong>{response}</strong>
+            </div>
+            <div className="scope-bars" aria-hidden="true">
+              {bars.map((bar, index) => (
+                <i
+                  className={bar.hit ? "is-hit" : ""}
+                  style={{ height: `${bar.height}%` }}
+                  key={index}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="detector-readouts">
+            <article>
+              <span>計数率</span>
+              <strong>{formatNumber(countRate)} <small>cps</small></strong>
+              <small>{formatNumber(countRate * 60)} cpm</small>
+            </article>
+            <article>
+              <span>{measurementSeconds}秒間の計数</span>
+              <strong>{totalCounts.toLocaleString("ja-JP")}</strong>
+              <small>統計誤差 ±{uncertainty.toFixed(1)}%</small>
+            </article>
+            <article>
+              <span>透過率</span>
+              <strong>{(transmission * 100).toFixed(1)}<small>%</small></strong>
+              <small>{shield.name} / {thickness} mm</small>
+            </article>
+            <article>
+              <span>信号 / 背景</span>
+              <strong>{formatNumber(signalToNoise)}</strong>
+              <small>{signalToNoise >= 5 ? "識別しやすい" : "背景に埋もれやすい"}</small>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   const particlesRef = useRef<Particle[]>(makeParticles(160, 131));
   const particleNodeRefs = useRef<Array<SVGGElement | null>>([]);
@@ -1158,6 +1602,12 @@ export default function Home() {
   ]);
   const [equationCopied, setEquationCopied] = useState(false);
   const [chartScale, setChartScale] = useState<ChartScale>("linear");
+  const [detectorKey, setDetectorKey] =
+    useState<DetectorKey>("scintillator");
+  const [shieldKey, setShieldKey] = useState<ShieldKey>("none");
+  const [detectorDistance, setDetectorDistance] = useState(25);
+  const [shieldThickness, setShieldThickness] = useState(2);
+  const [measurementSeconds, setMeasurementSeconds] = useState(10);
 
   const preset = useMemo(
     () => PRESETS.find((item) => item.key === presetKey) ?? PRESETS[0],
@@ -1641,6 +2091,11 @@ export default function Home() {
           )}
         </div>
 
+        <NuclideGenealogy
+          preset={preset}
+          onSelectPreset={selectPreset}
+        />
+
         <div className="simulation-mode-bar">
           <div className="simulation-mode-toggle" role="group" aria-label="シミュレーション形式">
             <button
@@ -2020,10 +2475,26 @@ export default function Home() {
         </div>
       </section>
 
+      <DetectorLab
+        preset={preset}
+        remaining={remaining}
+        atomCount={atomCount}
+        detectorKey={detectorKey}
+        onDetectorChange={setDetectorKey}
+        shieldKey={shieldKey}
+        onShieldChange={setShieldKey}
+        distance={detectorDistance}
+        onDistanceChange={setDetectorDistance}
+        thickness={shieldThickness}
+        onThicknessChange={setShieldThickness}
+        measurementSeconds={measurementSeconds}
+        onMeasurementSecondsChange={setMeasurementSeconds}
+      />
+
       <section className="data-section" aria-labelledby="observation-title">
         <div className="section-heading">
           <div>
-            <p className="section-number">02 / OBSERVATION</p>
+            <p className="section-number">03 / OBSERVATION</p>
             <h2 id="observation-title">観測値と理論値</h2>
           </div>
           <p>
