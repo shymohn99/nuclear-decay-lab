@@ -55,12 +55,18 @@ test("server-renders the nuclear decay lab", async () => {
 });
 
 test("ships the simulation source without starter dependencies", async () => {
-  const [page, css, layout, packageJson] = await Promise.all([
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
-    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../package.json", import.meta.url), "utf8"),
-  ]);
+  const [page, css, layout, packageJson, radionuclides, dataLicense] =
+    await Promise.all([
+      readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+      readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+      readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+      readFile(new URL("../package.json", import.meta.url), "utf8"),
+      readFile(new URL("../app/radionuclides.ts", import.meta.url), "utf8"),
+      readFile(
+        new URL("../public/data/LICENSE.ICRP-07.txt", import.meta.url),
+        "utf8",
+      ),
+    ]);
 
   assert.match(page, /requestAnimationFrame/);
   assert.match(page, /Math\.pow\(0\.5/);
@@ -110,10 +116,15 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /STEP \{String\(index \+ 1\)/);
   assert.match(page, /KNOWN_NUCLIDE_RANGES/);
   assert.match(page, /KNOWN_NUCLIDE_PATH/);
+  assert.match(page, /MAP_RADIONUCLIDES/);
+  assert.match(page, /MAP_ONLY_PRESETS/);
+  assert.match(page, /FEATURED_INDEPENDENT_KEYS/);
+  assert.match(page, /CORE_PRESETS\.filter/);
+  assert.match(page, /選択可能/);
   assert.match(page, /handleMapPointerMove/);
   assert.match(page, /addEventListener\("wheel", handleWheel, \{ passive: false \}\)/);
   assert.match(page, /event\.stopPropagation\(\)/);
-  assert.match(page, /既知核種データ: NNDC NuDat/);
+  assert.match(page, /既知核種マップ: NNDC NuDat/);
   assert.match(page, /function formatSimulationRate/);
   assert.match(page, /SIMULATED_HALF_LIVES_PER_SECOND \*[\s\S]*speed/);
   assert.match(page, /TIME SCALE \/ 現実時間との対応/);
@@ -128,6 +139,12 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(css, /\.number-input/);
   assert.match(css, /@media \(max-width: 720px\)/);
   assert.match(layout, /lang="ja"/);
+  assert.match(radionuclides, /ICRP-107 \/ AME2020 \/ Nubase2020/);
+  assert.ok(
+    (radionuclides.match(/^\s+\["/gm) ?? []).length > 900,
+    "核種マップ用データが900核種を超えている",
+  );
+  assert.match(dataLicense, /Copyright \(c\) 2008 A\. Endo and K\.F\. Eckerman/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.doesNotMatch(page, /_sites-preview|SkeletonPreview/);
 
