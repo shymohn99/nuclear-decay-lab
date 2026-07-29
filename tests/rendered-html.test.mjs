@@ -121,6 +121,17 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /FEATURED_INDEPENDENT_KEYS/);
   assert.match(page, /CORE_PRESETS\.filter/);
   assert.match(page, /選択可能/);
+  assert.match(page, /function NuclideGenealogy/);
+  assert.match(page, /NUCLIDE GENEALOGY/);
+  assert.match(page, /PRESETS_BY_DAUGHTER/);
+  assert.match(page, /DESCENDANTS \/ 娘核種への流れ/);
+  assert.match(page, /function DetectorLab/);
+  assert.match(page, /02 \/ DETECTOR LAB/);
+  assert.match(page, /GM計数管/);
+  assert.match(page, /シンチレーション検出器/);
+  assert.match(page, /半導体検出器/);
+  assert.match(page, /Math\.exp\(-shield\.coefficient/);
+  assert.match(page, /信号 \/ 背景/);
   assert.match(page, /handleMapPointerMove/);
   assert.match(page, /addEventListener\("wheel", handleWheel, \{ passive: false \}\)/);
   assert.match(page, /event\.stopPropagation\(\)/);
@@ -140,6 +151,9 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(css, /scroll-snap-type:\s*x proximity/);
   assert.match(css, /\.chain-stage-copy/);
   assert.match(css, /\.number-input/);
+  assert.match(css, /\.genealogy-panel/);
+  assert.match(css, /\.detector-lab-grid/);
+  assert.match(css, /\.scope-bars/);
   assert.match(css, /@media \(max-width: 720px\)/);
   assert.match(layout, /lang="ja"/);
   assert.match(radionuclides, /ICRP-107 \/ AME2020 \/ Nubase2020/);
