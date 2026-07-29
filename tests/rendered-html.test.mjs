@@ -212,7 +212,7 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(layout, /summary_large_image/);
   assert.match(layout, /alternates/);
   assert.match(layout, /max-image-preview/);
-  assert.match(layout, /WebApplication/);
+  assert.match(page, /WebApplication/);
   assert.match(radionuclides, /ICRP-107 \/ AME2020 \/ Nubase2020/);
   assert.ok(
     (radionuclides.match(/^\s+\["/gm) ?? []).length > 900,
