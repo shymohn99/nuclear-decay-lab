@@ -1548,12 +1548,18 @@ export default function Home() {
         <div className="simulator-grid">
           <div className="visual-panel">
             <div className="visual-toolbar">
-              <div>
-                <span>{simulationMode === "chain" ? "連鎖粒子表示" : "粒子表示"}</span>
+              <div className="visual-status">
+                <span>{simulationMode === "chain" ? "連鎖の進行状況" : "粒子表示"}</span>
                 <strong>
-                  {simulationMode === "chain"
-                    ? `${chainStageCounts.at(-1) ?? 0} / ${atomCount} 個が安定核種へ到達`
-                    : `${remaining} / ${atomCount} 個が未壊変`}
+                  <b>
+                    {simulationMode === "chain"
+                      ? chainStageCounts.at(-1) ?? 0
+                      : remaining}
+                  </b>
+                  <small>
+                    / {atomCount} 個が
+                    {simulationMode === "chain" ? "安定核種へ到達" : "未壊変"}
+                  </small>
                 </strong>
               </div>
               <div className="legend" aria-label="粒子の凡例">
@@ -1580,14 +1586,25 @@ export default function Home() {
             {simulationMode === "chain" && (
               <div className="chain-progress">
                 <div className="chain-progress-heading">
-                  <span>MAJOR DECAY CHAIN / {seriesLabel}</span>
-                  <small>主要核種を表示・中間核種は省略</small>
+                  <div>
+                    <span>MAJOR DECAY CHAIN</span>
+                    <strong>{seriesLabel}</strong>
+                  </div>
+                  <p>
+                    <span>表示中</span>
+                    <strong>{chainStages.length}</strong>
+                    <small>段階</small>
+                  </p>
                 </div>
-                <div className="chain-track">
+                <div
+                  className="chain-track"
+                  aria-label={`${seriesLabel}の主要な壊変段階`}
+                >
                   {chainStages.map((stage, index) => (
                     <div className="chain-stage-group" key={stage.key}>
                       <article
                         className={`chain-stage ${stage.stable ? "is-stable" : ""}`}
+                        aria-label={`${index + 1}段階目、${stage.name}、半減期${stage.halfLifeLabel}、現在${chainStageCounts[index] ?? 0}個`}
                         style={
                           {
                             "--stage-color": getChainStageColor(
@@ -1597,18 +1614,30 @@ export default function Home() {
                           } as React.CSSProperties
                         }
                       >
-                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        <span className="chain-stage-index">
+                          STEP {String(index + 1).padStart(2, "0")}
+                        </span>
                         <NuclideSymbol
                           nuclide={stage.nuclide}
                           className="nuclide-symbol-chain"
                         />
-                        <strong>{stage.name}</strong>
-                        <small>{stage.halfLifeLabel}</small>
-                        <output>{chainStageCounts[index] ?? 0}</output>
+                        <div className="chain-stage-copy">
+                          <strong>{stage.name}</strong>
+                          <small>
+                            <span>{stage.stable ? "状態" : "半減期"}</span>
+                            {stage.halfLifeLabel}
+                          </small>
+                        </div>
+                        <output>
+                          <b>{chainStageCounts[index] ?? 0}</b>
+                          <span>個</span>
+                        </output>
                       </article>
                       {index < chainStages.length - 1 && (
                         <span className="chain-arrow" aria-hidden="true">
-                          {stage.mode === "beta" ? "β⁻" : stage.mode === "gamma" ? "γ" : "α"}
+                          <span>
+                            {stage.mode === "beta" ? "β⁻" : stage.mode === "gamma" ? "γ" : "α"}
+                          </span>
                           <b>→</b>
                         </span>
                       )}
@@ -1616,8 +1645,9 @@ export default function Home() {
                   ))}
                 </div>
                 <p>
-                  半減期の差が非常に大きいため、連鎖モードでは各段階の時間尺度を
-                  観察用に正規化しています。
+                  <span>観察メモ</span>
+                  主要核種のみを表示しています。横にスクロールして連鎖を追えます。
+                  半減期の差が大きいため、各段階の時間尺度は観察用に正規化しています。
                 </p>
               </div>
             )}

@@ -825,52 +825,69 @@ footer a:focus-visible {
 
 .visual-toolbar {
   display: flex;
-  min-height: 68px;
+  min-height: 82px;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 14px 20px;
+  gap: 28px;
+  padding: 16px 24px;
   color: #d8ddd7;
   border-bottom: 1px solid #3d443e;
   background: var(--field);
 }
 
-.visual-toolbar > div:first-child {
+.visual-status {
   display: grid;
-  gap: 4px;
+  gap: 6px;
 }
 
-.visual-toolbar > div:first-child span {
-  color: #8f9890;
+.visual-status > span {
+  color: #aab2ab;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
 }
 
-.visual-toolbar strong {
+.visual-status strong {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   font-family: var(--mono);
-  font-size: 12px;
   font-weight: 400;
+}
+
+.visual-status strong b {
+  color: #f5f6f2;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.visual-status strong small {
+  color: #c6ccc6;
+  font-size: 12px;
 }
 
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
-  color: #9fa7a0;
-  font-size: 9px;
+  justify-content: flex-end;
+  gap: 10px 18px;
+  color: #c0c7c0;
+  font-size: 11px;
 }
 
 .legend span {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .legend i {
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.045);
 }
 
 .legend-parent { background: var(--parent); }
@@ -879,32 +896,79 @@ footer a:focus-visible {
 
 .chain-progress {
   display: grid;
-  gap: 12px;
-  padding: 18px 20px 16px;
+  gap: 18px;
+  padding: 24px 24px 22px;
   overflow: hidden;
   color: #d8ddd7;
   border-bottom: 1px solid #3d443e;
-  background: #171c18;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 34%),
+    #171c18;
 }
 
 .chain-progress-heading {
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: space-between;
-  gap: 20px;
+  gap: 28px;
 }
 
-.chain-progress-heading span,
-.chain-progress-heading small,
-.chain-progress > p {
+.chain-progress-heading > div {
+  display: grid;
+  gap: 5px;
+}
+
+.chain-progress-heading > div > span {
   color: #8f9890;
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+.chain-progress-heading > div > strong {
+  color: #f0f2ed;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.chain-progress-heading > p {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin: 0;
+  color: #aab2ab;
+  font-size: 10px;
+}
+
+.chain-progress-heading > p span,
+.chain-progress-heading > p small {
+  font-family: var(--mono);
+}
+
+.chain-progress-heading > p strong {
+  color: #f0cf68;
+  font-family: var(--mono);
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1;
 }
 
 .chain-progress > p {
   margin: 0;
-  line-height: 1.6;
+  color: #aab2ab;
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+.chain-progress > p > span {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 3px 7px;
+  color: #d9ded9;
+  border: 1px solid #49524a;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.05em;
 }
 
 .chain-track {
@@ -912,9 +976,11 @@ footer a:focus-visible {
   align-items: stretch;
   gap: 0;
   overflow-x: auto;
-  padding: 2px 1px 8px;
-  scrollbar-color: #4d574f transparent;
-  scrollbar-width: thin;
+  padding: 2px 2px 14px;
+  scroll-padding-inline: 2px;
+  scroll-snap-type: x proximity;
+  scrollbar-color: #778179 #252b26;
+  scrollbar-width: auto;
 }
 
 .chain-stage-group {
@@ -926,72 +992,138 @@ footer a:focus-visible {
 .chain-stage {
   position: relative;
   display: grid;
-  width: 108px;
-  min-height: 128px;
-  grid-template-rows: auto auto 1fr auto;
-  gap: 5px;
-  padding: 12px 11px 11px;
-  border: 1px solid #4a534b;
-  border-top: 3px solid var(--stage-color);
-  background: #111512;
+  width: 166px;
+  min-height: 184px;
+  grid-template-rows: auto auto 1fr;
+  gap: 10px;
+  padding: 17px 16px 16px;
+  scroll-snap-align: start;
+  overflow: hidden;
+  border: 1px solid #555f56;
+  border-top: 4px solid var(--stage-color);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--stage-color) 8%, transparent), transparent 46%),
+    #111512;
 }
 
-.chain-stage > span {
-  color: #69736b;
+.chain-stage-index {
+  color: #8f998f;
   font-family: var(--mono);
-  font-size: 7px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
 }
 
 .nuclide-symbol-chain {
   color: var(--stage-color);
-  font-size: 1.55rem;
+  font-size: 2.35rem;
 }
 
-.chain-stage strong {
+.chain-stage-copy {
+  display: grid;
   align-self: end;
-  font-size: 9px;
-  font-weight: 500;
+  gap: 8px;
 }
 
-.chain-stage small {
-  color: #8f9890;
+.chain-stage-copy strong {
+  color: #eef1ec;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.chain-stage-copy small {
+  display: grid;
+  gap: 3px;
+  color: #c4cbc4;
   font-family: var(--mono);
-  font-size: 7px;
+  font-size: 10px;
+  line-height: 1.4;
   white-space: nowrap;
+}
+
+.chain-stage-copy small span {
+  color: #7f8980;
+  font-size: 8px;
+  letter-spacing: 0.07em;
 }
 
 .chain-stage output {
   position: absolute;
-  top: 9px;
-  right: 9px;
-  min-width: 22px;
-  padding: 3px 5px;
+  top: 14px;
+  right: 13px;
+  display: inline-flex;
+  min-width: 42px;
+  min-height: 32px;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 8px;
   color: #111512;
   border-radius: 999px;
   background: var(--stage-color);
   font-family: var(--mono);
-  font-size: 8px;
   text-align: center;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+}
+
+.chain-stage output b {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.chain-stage output span {
+  font-size: 8px;
 }
 
 .chain-stage.is-stable {
-  border-style: double;
-  background: #1e231f;
+  border-color: color-mix(in srgb, var(--stage-color) 68%, #fff);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--stage-color) 16%, transparent), transparent 54%),
+    #1b211c;
+}
+
+.chain-stage.is-stable::after {
+  position: absolute;
+  right: 13px;
+  bottom: 12px;
+  color: var(--stage-color);
+  content: "STABLE";
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
 }
 
 .chain-arrow {
   display: grid;
-  min-width: 36px;
+  min-width: 54px;
   place-items: center;
-  color: #b9c0b9;
+  gap: 4px;
+  color: #d2d8d2;
   font-family: var(--mono);
-  font-size: 8px;
+}
+
+.chain-arrow span {
+  min-width: 29px;
+  padding: 3px 6px;
+  border: 1px solid #4f5951;
+  border-radius: 999px;
+  font-size: 10px;
+  text-align: center;
 }
 
 .chain-arrow b {
-  color: #667068;
-  font-size: 18px;
+  color: #7f8a81;
+  font-size: 25px;
   font-weight: 400;
+  line-height: 1;
+}
+
+/*
+ * The chain is intentionally scrollable: fitting every nuclide into one row
+ * made the scientific labels too small to read.
+ */
+.chain-stage strong {
+  align-self: end;
 }
 
 .particle-field {
@@ -1583,12 +1715,32 @@ footer a:hover { color: rgb(var(--parent-rgb)); }
   .visual-toolbar {
     align-items: flex-start;
     flex-direction: column;
+    gap: 16px;
+    padding: 18px;
+  }
+  .visual-status strong b { font-size: 22px; }
+  .legend {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .chain-progress {
+    gap: 16px;
+    padding: 21px 16px 19px;
   }
   .chain-progress-heading {
     align-items: flex-start;
     flex-direction: column;
-    gap: 4px;
+    gap: 12px;
   }
+  .chain-progress-heading > p { align-self: stretch; }
+  .chain-stage {
+    width: 154px;
+    min-height: 176px;
+    padding: 15px 14px 14px;
+  }
+  .nuclide-symbol-chain { font-size: 2.15rem; }
+  .chain-arrow { min-width: 46px; }
+  .chain-progress > p { font-size: 10px; }
 
   .control-panel { padding: 24px 18px; }
   .section-heading { grid-template-columns: 1fr; gap: 18px; }
