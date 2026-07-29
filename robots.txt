@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shymohn99.github.io/nuclear-decay-lab/sitemap.xml
