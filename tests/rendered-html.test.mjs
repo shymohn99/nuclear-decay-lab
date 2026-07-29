@@ -183,6 +183,14 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(css, /\.chain-rate-selector/);
   assert.match(css, /\.header-links/);
   assert.match(css, /\.footer-brand/);
+  assert.match(
+    css,
+    /\.hero-copy\s*\{[\s\S]*grid-template-columns:\s*130px minmax\(0, 1fr\)/,
+  );
+  assert.match(
+    css,
+    /\.hero-description\s*\{[\s\S]*grid-column:\s*2/,
+  );
   assert.match(css, /\.number-input/);
   assert.match(css, /\.genealogy-panel/);
   assert.match(css, /\.detector-lab-grid/);

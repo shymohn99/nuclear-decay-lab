@@ -122,9 +122,9 @@ footer {
 
 .hero-copy {
   display: grid;
-  grid-template-columns: 160px minmax(0, 1fr) minmax(280px, 390px);
+  grid-template-columns: 130px minmax(0, 1fr);
   gap: 28px;
-  align-items: end;
+  align-items: start;
   padding: 76px 0 64px;
 }
 
@@ -153,7 +153,9 @@ footer {
 }
 
 .hero-description {
-  margin: 0 0 6px;
+  grid-column: 2;
+  width: min(100%, 720px);
+  margin: 18px 0 0;
   color: #4f514b;
   font-size: 14px;
   line-height: 1.9;
@@ -2378,7 +2380,7 @@ footer .repository-link:hover {
 
   .hero-description {
     grid-column: 2;
-    max-width: 620px;
+    max-width: 680px;
   }
 
   .decay-flow {
