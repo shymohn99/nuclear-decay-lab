@@ -98,13 +98,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body>
+      <head>
         <script
+          id="nuclear-decay-lab-structured-data"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
-        {children}
-      </body>
+      </head>
+      <body>{children}</body>
     </html>
   );
 }
