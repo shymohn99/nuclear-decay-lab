@@ -578,9 +578,10 @@ function getChainStageColor(index: number, total: number) {
 }
 
 const SIMULATED_HALF_LIVES_PER_SECOND = 0.18;
-const HISTORY_INTERVAL = 0.025;
-const MAX_HISTORY_POINTS = 320;
 const VISUAL_UPDATE_INTERVAL_MS = 140;
+const MIN_ATOM_COUNT = 20;
+const MAX_ATOM_COUNT = 500;
+const ATOM_COUNT_STEP = 10;
 
 function seededRandom(seed: number) {
   let value = seed >>> 0;
@@ -658,13 +659,8 @@ function appendHistoryPoint(
   points: HistoryPoint[],
   point: HistoryPoint,
 ): HistoryPoint[] {
-  const appended = [...points, point];
-  if (appended.length <= MAX_HISTORY_POINTS) return appended;
-
-  const lastIndex = appended.length - 1;
-  return appended.filter(
-    (_, index) => index === 0 || index === lastIndex || index % 2 === 0,
-  );
+  if (points.at(-1)?.remaining === point.remaining) return points;
+  return [...points, point];
 }
 
 function NuclideSymbol({
@@ -1003,7 +999,6 @@ export default function Home() {
   const burstsRef = useRef<Burst[]>([]);
   const elapsedRef = useRef(0);
   const historyRef = useRef<HistoryPoint[]>([{ t: 0, remaining: 160 }]);
-  const lastHistoryAtRef = useRef(0);
   const resetSeedRef = useRef(131);
   const burstIdRef = useRef(0);
 
@@ -1013,6 +1008,7 @@ export default function Home() {
     useState<SimulationMode>("single");
   const [catalogView, setCatalogView] = useState<CatalogView>("table");
   const [atomCount, setAtomCount] = useState(160);
+  const [atomCountInput, setAtomCountInput] = useState("160");
   const [speed, setSpeed] = useState(1);
   const [paused, setPaused] = useState(false);
   const [remaining, setRemaining] = useState(160);
@@ -1052,6 +1048,20 @@ export default function Home() {
   const daughterColor = `rgb(${preset.daughterRgb})`;
   const simulationRate = formatSimulationRate(preset, speed);
 
+  const commitAtomCount = useCallback(() => {
+    const parsed = Number(atomCountInput);
+    const nextCount = Number.isFinite(parsed)
+      ? Math.max(MIN_ATOM_COUNT, Math.min(MAX_ATOM_COUNT, Math.round(parsed)))
+      : atomCount;
+    setAtomCount(nextCount);
+    setAtomCountInput(String(nextCount));
+  }, [atomCount, atomCountInput]);
+
+  const updateAtomCount = useCallback((nextCount: number) => {
+    setAtomCount(nextCount);
+    setAtomCountInput(String(nextCount));
+  }, []);
+
   const selectSeries = useCallback((nextSeries: DecaySeries) => {
     const firstPreset = PRESETS.find((item) => item.series === nextSeries);
     setSeriesKey(nextSeries);
@@ -1080,7 +1090,6 @@ export default function Home() {
     burstsRef.current = [];
     elapsedRef.current = 0;
     historyRef.current = initialHistory;
-    lastHistoryAtRef.current = 0;
     setParticles(nextParticles.map((particle) => ({ ...particle })));
     setBursts([]);
     setHistory(initialHistory);
@@ -1176,9 +1185,7 @@ export default function Home() {
         );
         const shouldRecordHistory =
           !paused &&
-          (elapsedRef.current - lastHistoryAtRef.current >= HISTORY_INTERVAL ||
-            (currentRemaining === 0 &&
-              historyRef.current.at(-1)?.remaining !== 0));
+          currentRemaining !== historyRef.current.at(-1)?.remaining;
 
         if (shouldRecordHistory) {
           const nextHistory = appendHistoryPoint(historyRef.current, {
@@ -1186,7 +1193,6 @@ export default function Home() {
             remaining: currentRemaining,
           });
           historyRef.current = nextHistory;
-          lastHistoryAtRef.current = elapsedRef.current;
           setHistory(nextHistory);
         }
         setParticles(
@@ -1290,6 +1296,14 @@ export default function Home() {
           return `${index === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
         })
         .join(" ");
+    const toStepPath = (points: Array<{ t: number; value: number }>) =>
+      points
+        .map((point, index) => {
+          const { x, y } = position(point.t, point.value);
+          if (index === 0) return `M ${x.toFixed(2)} ${y.toFixed(2)}`;
+          return `H ${x.toFixed(2)} V ${y.toFixed(2)}`;
+        })
+        .join(" ");
 
     const theoretical = Array.from({ length: 100 }, (_, index) => {
       const t = (index / 99) * maxT;
@@ -1299,7 +1313,11 @@ export default function Home() {
       chartScale === "log"
         ? theoretical.filter((point) => point.value / atomCount >= logMinimum)
         : theoretical;
-    const observed = history
+    const completeHistory =
+      history.at(-1)?.t === elapsed
+        ? history
+        : [...history, { t: elapsed, remaining }];
+    const observed = completeHistory
       .filter(
         (point) =>
           point.t <= maxT &&
@@ -1314,7 +1332,7 @@ export default function Home() {
 
     return {
       theoreticalPath: toPath(visibleTheoretical),
-      observedPath: toPath(observed),
+      observedPath: toStepPath(observed),
       observedPoints: observed
         .filter(
           (_, index) =>
@@ -1338,7 +1356,7 @@ export default function Home() {
       plotWidth,
       plotHeight,
     };
-  }, [atomCount, chartScale, elapsed, history]);
+  }, [atomCount, chartScale, elapsed, history, remaining]);
 
   return (
     <main
@@ -1762,18 +1780,44 @@ export default function Home() {
               </small>
             </div>
 
-            <label className="control-field">
-              <span>原子核の数 <output>{atomCount}</output></span>
+            <div className="control-field particle-count-field">
+              <div className="control-field-heading">
+                <label htmlFor="atom-count-input">原子核の数</label>
+                <div className="number-input">
+                  <input
+                    id="atom-count-input"
+                    type="number"
+                    min={MIN_ATOM_COUNT}
+                    max={MAX_ATOM_COUNT}
+                    step="1"
+                    inputMode="numeric"
+                    value={atomCountInput}
+                    onChange={(event) => setAtomCountInput(event.target.value)}
+                    onBlur={commitAtomCount}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") event.currentTarget.blur();
+                    }}
+                    aria-describedby="atom-count-help"
+                  />
+                  <span>個</span>
+                </div>
+              </div>
               <input
                 type="range"
-                min="60"
-                max="240"
-                step="20"
+                min={MIN_ATOM_COUNT}
+                max={MAX_ATOM_COUNT}
+                step={ATOM_COUNT_STEP}
                 value={atomCount}
                 style={{ accentColor: parentColor }}
-                onChange={(event) => setAtomCount(Number(event.target.value))}
+                onChange={(event) =>
+                  updateAtomCount(Number(event.target.value))
+                }
+                aria-label="原子核の数"
               />
-            </label>
+              <small id="atom-count-help">
+                {MIN_ATOM_COUNT}〜{MAX_ATOM_COUNT}個。数値を直接入力できます。
+              </small>
+            </div>
 
             <label className="control-field">
               <span>時間倍率 <output>{speed.toFixed(1)}×</output></span>
