@@ -833,9 +833,17 @@ function formatNumber(value: number) {
 }
 
 function formatSpeedMultiplier(value: number) {
-  if (value < 0.1) return value.toFixed(2);
-  if (value < 1) return value.toFixed(1);
-  return formatNumber(value);
+  if (value >= 0.01 && value < 10000) {
+    return `${formatNumber(value)}×`;
+  }
+
+  const exponent = Math.floor(Math.log10(value));
+  const coefficient = value / 10 ** exponent;
+  const exponentLabel = `${exponent < 0 ? "⁻" : ""}${scriptNumber(
+    Math.abs(exponent),
+    SUPERSCRIPT_DIGITS,
+  )}`;
+  return `${formatNumber(coefficient)}×10${exponentLabel}`;
 }
 
 function formatElapsed(halfLives: number, preset: IsotopePreset) {
@@ -2458,12 +2466,12 @@ export default function Home() {
             <label className="control-field speed-control">
               <span>
                 時間倍率
-                <output>{formatSpeedMultiplier(speed)}×</output>
+                <output>{formatSpeedMultiplier(speed)}</output>
               </span>
               <input
                 type="range"
-                min="-2"
-                max="3"
+                min="-15"
+                max="6"
                 step="0.05"
                 value={Math.log10(speed)}
                 style={{ accentColor: parentColor }}
@@ -2471,17 +2479,19 @@ export default function Home() {
                   setSpeed(10 ** Number(event.target.value))
                 }
                 aria-label="時間倍率（対数）"
-                aria-valuetext={`${formatSpeedMultiplier(speed)}倍`}
+                aria-valuetext={formatSpeedMultiplier(speed)}
               />
               <div className="log-scale-marks" aria-hidden="true">
-                <span>0.01×</span>
-                <span>0.1×</span>
-                <span>1×</span>
-                <span>10×</span>
-                <span>100×</span>
-                <span>1,000×</span>
+                <span>10⁻¹⁵</span>
+                <span>10⁻¹²</span>
+                <span>10⁻⁹</span>
+                <span>10⁻⁶</span>
+                <span>10⁻³</span>
+                <span>1</span>
+                <span>10³</span>
+                <span>10⁶</span>
               </div>
-              <small>倍率の桁を連続的に調整します。</small>
+              <small>10⁻¹⁵×〜10⁶×の21桁を連続的に調整します。</small>
             </label>
 
             <div
