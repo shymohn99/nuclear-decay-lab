@@ -633,20 +633,18 @@ footer {
 }
 
 .genealogy-panel {
-  padding: 28px;
+  padding: 32px 28px 36px;
   overflow: hidden;
   border-bottom: 1px solid var(--ink);
-  background:
-    linear-gradient(135deg, rgba(var(--parent-rgb), 0.07), transparent 34%),
-    #e9e6dd;
+  background: #efede6;
 }
 
 .genealogy-heading {
   display: flex;
-  align-items: end;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 22px;
+  margin-bottom: 28px;
 }
 
 .genealogy-heading > div {
@@ -658,13 +656,13 @@ footer {
 .genealogy-rail-label {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 0.1em;
+  font-size: 9px;
+  letter-spacing: 0.08em;
 }
 
 .genealogy-heading strong {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 500;
 }
 
 .genealogy-heading p {
@@ -679,13 +677,12 @@ footer {
 .genealogy-ancestors,
 .genealogy-lineage {
   display: grid;
-  grid-template-columns: 178px minmax(0, 1fr);
-  border-top: 1px solid var(--line);
+  grid-template-columns: 156px minmax(0, 1fr);
+  border-top: 1px solid #aaa79e;
 }
 
 .genealogy-rail-label {
-  padding: 18px 18px 18px 0;
-  border-right: 1px solid var(--line);
+  padding: 20px 18px 20px 0;
   line-height: 1.6;
 }
 
@@ -693,8 +690,8 @@ footer {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 12px;
-  padding: 14px 0 14px 18px;
+  gap: 16px;
+  padding: 16px 0 16px 20px;
   overflow-x: auto;
 }
 
@@ -727,15 +724,15 @@ footer {
 }
 
 .genealogy-lineage {
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid #aaa79e;
 }
 
 .genealogy-track {
   display: flex;
   min-width: 0;
-  align-items: stretch;
+  align-items: center;
   gap: 0;
-  padding: 18px 0 18px 18px;
+  padding: 20px 0 20px 20px;
   overflow-x: auto;
 }
 
@@ -747,40 +744,38 @@ footer {
 
 .genealogy-node {
   display: grid;
-  width: 132px;
-  min-height: 138px;
+  width: 148px;
+  min-height: 104px;
   flex: 0 0 auto;
-  align-content: space-between;
-  gap: 7px;
-  padding: 13px 12px;
+  grid-template-columns: 44px minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 11px 13px 12px;
   color: var(--ink);
-  border: 1px solid var(--line);
-  border-top: 3px solid rgb(var(--parent-rgb));
-  background: #f7f5ef;
+  border: 0;
+  border-left: 2px solid rgb(var(--parent-rgb));
+  border-bottom: 1px solid #aaa79e;
+  background: transparent;
   cursor: pointer;
   text-align: left;
 }
 
 .genealogy-node:hover {
-  border-color: var(--ink);
-  background: #fff;
+  border-left-color: var(--ink);
+  background: rgba(255, 255, 255, 0.52);
 }
 
 .genealogy-node.is-root {
-  color: #faf8f2;
-  border-color: rgb(var(--parent-rgb));
-  background: rgb(var(--parent-rgb));
+  color: var(--ink);
+  border-left-width: 5px;
+  border-left-color: rgb(var(--parent-rgb));
+  background: rgba(var(--parent-rgb), 0.08);
 }
 
 .genealogy-node.is-terminal {
-  border-top-color: #767970;
-  background:
-    repeating-linear-gradient(
-      135deg,
-      rgba(23, 24, 21, 0.03) 0 7px,
-      transparent 7px 14px
-    ),
-    #f7f5ef;
+  border-left-color: #767970;
+  background: transparent;
   cursor: default;
 }
 
@@ -788,31 +783,38 @@ footer {
 .genealogy-node > small {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 7px;
+  font-size: 8px;
   line-height: 1.45;
 }
 
-.genealogy-node.is-root > span,
-.genealogy-node.is-root > small {
-  color: rgba(255, 255, 255, 0.74);
+.genealogy-node > span {
+  grid-column: 1 / -1;
 }
 
 .genealogy-node > strong {
-  font-size: 10px;
+  align-self: end;
+  font-size: 11px;
   font-weight: 600;
 }
 
+.genealogy-node > small {
+  grid-column: 2;
+  align-self: start;
+}
+
 .nuclide-symbol-genealogy {
-  font-size: 1.72rem;
+  grid-column: 1;
+  grid-row: 2 / 4;
+  font-size: 1.65rem;
 }
 
 .genealogy-arrow {
   display: grid;
-  width: 74px;
+  width: 86px;
   flex: 0 0 auto;
   justify-items: center;
-  gap: 5px;
-  padding: 0 8px;
+  gap: 7px;
+  padding: 0 10px;
 }
 
 .genealogy-arrow small {
@@ -825,9 +827,14 @@ footer {
 }
 
 .genealogy-arrow b {
+  width: 100%;
+  overflow: hidden;
+  color: var(--muted);
   font-family: var(--mono);
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 400;
+  letter-spacing: -0.12em;
+  text-align: center;
 }
 
 .genealogy-tail {
@@ -1039,436 +1046,7 @@ footer a:focus-visible {
   background: var(--field);
 }
 
-.visual-status {
-  display: grid;
-  gap: 6px;
-}
-
-.visual-status > span {
-  color: #aab2ab;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-}
-
-.visual-status strong {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  font-family: var(--mono);
-  font-weight: 400;
-}
-
-.visual-status strong b {
-  color: #f5f6f2;
-  font-size: 24px;
-  font-weight: 500;
-  line-height: 1;
-}
-
-.visual-status strong small {
-  color: #c6ccc6;
-  font-size: 12px;
-}
-
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 10px 18px;
-  color: #c0c7c0;
-  font-size: 11px;
-}
-
-.legend span {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.legend i {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.045);
-}
-
-.legend-parent { background: var(--parent); }
-.legend-daughter { background: var(--daughter); }
-.legend-emission { background: #f0cf68; }
-
-.chain-progress {
-  display: grid;
-  gap: 18px;
-  padding: 24px 24px 22px;
-  overflow: hidden;
-  color: #d8ddd7;
-  border-bottom: 1px solid #3d443e;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 34%),
-    #171c18;
-}
-
-.chain-progress-heading {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 28px;
-}
-
-.chain-progress-heading > div {
-  display: grid;
-  gap: 5px;
-}
-
-.chain-progress-heading > div > span {
-  color: #8f9890;
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-}
-
-.chain-progress-heading > div > strong {
-  color: #f0f2ed;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.chain-progress-heading > p {
-  display: flex;
-  align-items: baseline;
-  gap: 7px;
-  margin: 0;
-  color: #aab2ab;
-  font-size: 10px;
-}
-
-.chain-progress-heading > p span,
-.chain-progress-heading > p small {
-  font-family: var(--mono);
-}
-
-.chain-progress-heading > p strong {
-  color: #f0cf68;
-  font-family: var(--mono);
-  font-size: 23px;
-  font-weight: 500;
-  line-height: 1;
-}
-
-.chain-progress > p {
-  margin: 0;
-  color: #aab2ab;
-  font-size: 11px;
-  line-height: 1.75;
-}
-
-.chain-progress > p > span {
-  display: inline-block;
-  margin-right: 10px;
-  padding: 3px 7px;
-  color: #d9ded9;
-  border: 1px solid #49524a;
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.05em;
-}
-
-.chain-track {
-  display: flex;
-  align-items: stretch;
-  gap: 0;
-  overflow-x: auto;
-  padding: 2px 2px 14px;
-  scroll-padding-inline: 2px;
-  scroll-snap-type: x proximity;
-  scrollbar-color: #778179 #252b26;
-  scrollbar-width: auto;
-}
-
-.chain-stage-group {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-}
-
-.chain-stage {
-  position: relative;
-  display: grid;
-  width: 166px;
-  min-height: 184px;
-  grid-template-rows: auto auto 1fr;
-  gap: 10px;
-  padding: 17px 16px 16px;
-  scroll-snap-align: start;
-  overflow: hidden;
-  border: 1px solid #555f56;
-  border-top: 4px solid var(--stage-color);
-  background:
-    linear-gradient(145deg, color-mix(in srgb, var(--stage-color) 8%, transparent), transparent 46%),
-    #111512;
-}
-
-.chain-stage-index {
-  color: #8f998f;
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.08em;
-}
-
-.nuclide-symbol-chain {
-  color: var(--stage-color);
-  font-size: 2.35rem;
-}
-
-.chain-stage-copy {
-  display: grid;
-  align-self: end;
-  gap: 8px;
-}
-
-.chain-stage-copy strong {
-  color: #eef1ec;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.45;
-}
-
-.chain-stage-copy small {
-  display: grid;
-  gap: 3px;
-  color: #c4cbc4;
-  font-family: var(--mono);
-  font-size: 10px;
-  line-height: 1.4;
-  white-space: nowrap;
-}
-
-.chain-stage-copy small span {
-  color: #7f8980;
-  font-size: 8px;
-  letter-spacing: 0.07em;
-}
-
-.chain-stage output {
-  position: absolute;
-  top: 14px;
-  right: 13px;
-  display: inline-flex;
-  min-width: 42px;
-  min-height: 32px;
-  align-items: baseline;
-  justify-content: center;
-  gap: 2px;
-  padding: 6px 8px;
-  color: #111512;
-  border-radius: 999px;
-  background: var(--stage-color);
-  font-family: var(--mono);
-  text-align: center;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
-}
-
-.chain-stage output b {
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.chain-stage output span {
-  font-size: 8px;
-}
-
-.chain-stage.is-stable {
-  border-color: color-mix(in srgb, var(--stage-color) 68%, #fff);
-  background:
-    linear-gradient(145deg, color-mix(in srgb, var(--stage-color) 16%, transparent), transparent 54%),
-    #1b211c;
-}
-
-.chain-stage.is-stable::after {
-  position: absolute;
-  right: 13px;
-  bottom: 12px;
-  color: var(--stage-color);
-  content: "STABLE";
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 0.08em;
-}
-
-.chain-arrow {
-  display: grid;
-  min-width: 54px;
-  place-items: center;
-  gap: 4px;
-  color: #d2d8d2;
-  font-family: var(--mono);
-}
-
-.chain-arrow span {
-  min-width: 29px;
-  padding: 3px 6px;
-  border: 1px solid #4f5951;
-  border-radius: 999px;
-  font-size: 10px;
-  text-align: center;
-}
-
-.chain-arrow b {
-  color: #7f8a81;
-  font-size: 25px;
-  font-weight: 400;
-  line-height: 1;
-}
-
-/*
- * The chain is intentionally scrollable: fitting every nuclide into one row
- * made the scientific labels too small to read.
- */
-.chain-stage strong {
-  align-self: end;
-}
-
-.particle-field {
-  position: relative;
-  min-height: 500px;
-  overflow: hidden;
-  background: var(--field);
-}
-
-.particle-svg {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-height: 500px;
-  cursor: crosshair;
-  touch-action: manipulation;
-}
-
-.field-background { fill: var(--field); }
-.field-grid-line {
-  fill: none;
-  stroke: var(--field-line);
-  stroke-width: 1;
-}
-
-.field-orbit {
-  fill: none;
-  stroke: #384139;
-  stroke-width: 1;
-  stroke-dasharray: 7 9;
-}
-
-.particle { pointer-events: none; }
-.particle-halo { opacity: 0.34; }
-.particle-chain .particle-halo { opacity: 0.44; }
-
-.burst-line,
-.burst-gamma {
-  pointer-events: none;
-  fill: none;
-  stroke-linecap: round;
-}
-
-.burst-line { stroke-width: 4; }
-.burst-alpha { stroke: #f0cf68; }
-.burst-beta { stroke: #8cdee5; }
-.burst-gamma { stroke: #d8b7ef; stroke-width: 2; }
-
-.field-readout {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 2;
-  display: grid;
-  width: 112px;
-  height: 112px;
-  place-content: center;
-  border: 1px solid #687168;
-  border-radius: 50%;
-  color: #f0f2ed;
-  background: rgba(17, 21, 18, 0.88);
-  pointer-events: none;
-  text-align: center;
-  transform: translate(-50%, -50%);
-}
-
-.field-readout > span {
-  font-family: var(--mono);
-  font-size: 22px;
-}
-
-.nuclide-symbol-field { color: #f0f2ed; }
-
-.field-readout small {
-  margin-top: 5px;
-  color: #a6aea6;
-  font-size: 9px;
-}
-
-.field-hint {
-  position: absolute;
-  right: 14px;
-  bottom: 12px;
-  z-index: 2;
-  color: #7f8880;
-  font-family: var(--mono);
-  font-size: 8px;
-  pointer-events: none;
-}
-
-.control-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  padding: 28px;
-  background: var(--paper-dark);
-}
-
-.control-heading {
-  display: grid;
-  gap: 6px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--line);
-}
-
-.control-heading span,
-.control-heading small {
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 9px;
-}
-
-.control-heading strong {
-  font-size: 21px;
-  font-weight: 600;
-}
-
-.control-field {
-  display: grid;
-  gap: 14px;
-}
-
-.control-field > span {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  font-size: 12px;
-}
-
-.control-field output {
-  font-family: var(--mono);
-  font-size: 15px;
-}
-
-.control-field-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.visual-status…1924 tokens truncated…
   gap: 16px;
   font-size: 12px;
 }
@@ -1635,18 +1213,18 @@ input[type="range"] {
 
 .detector-lab-grid {
   display: grid;
-  grid-template-columns: 390px minmax(0, 1fr);
+  grid-template-columns: 360px minmax(0, 1fr);
   border: 1px solid var(--ink);
-  background: #f8f6f0;
+  background: #f5f2ea;
 }
 
 .detector-controls {
   display: grid;
   align-content: start;
-  gap: 24px;
-  padding: 26px;
+  gap: 28px;
+  padding: 30px 26px;
   border-right: 1px solid var(--ink);
-  background: var(--paper-dark);
+  background: #ebe7dc;
 }
 
 .detector-controls fieldset {
@@ -1668,28 +1246,29 @@ input[type="range"] {
 
 .detector-options {
   display: grid;
-  gap: 7px;
+  border-top: 1px solid #aaa79e;
 }
 
 .detector-options button {
   display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
+  grid-template-columns: 48px minmax(0, 1fr);
   gap: 3px 12px;
-  min-height: 72px;
+  min-height: 68px;
   align-items: center;
-  padding: 11px 12px;
-  border: 1px solid var(--line);
-  background: #f3f0e8;
+  padding: 11px 7px;
+  border: 0;
+  border-bottom: 1px solid #aaa79e;
+  background: transparent;
   cursor: pointer;
   text-align: left;
 }
 
-.detector-options button:hover { border-color: var(--ink); }
+.detector-options button:hover { background: rgba(255, 255, 255, 0.45); }
 
 .detector-options button[aria-pressed="true"] {
-  color: #faf8f2;
-  border-color: var(--ink);
-  background: var(--ink);
+  padding-left: 12px;
+  border-left: 4px solid rgb(var(--parent-rgb));
+  background: #f8f6f0;
 }
 
 .detector-options button > span {
@@ -1712,7 +1291,7 @@ input[type="range"] {
 }
 
 .detector-options button[aria-pressed="true"] > small {
-  color: #b9bdb7;
+  color: var(--muted);
 }
 
 .detector-range {
@@ -1741,18 +1320,19 @@ input[type="range"] {
 .shield-options {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  border: 1px solid var(--line);
+  border-top: 1px solid #aaa79e;
+  border-bottom: 1px solid #aaa79e;
 }
 
 .shield-options button {
   display: grid;
-  min-height: 62px;
+  min-height: 58px;
   place-items: center;
   gap: 4px;
   padding: 8px 4px;
   border: 0;
-  border-right: 1px solid var(--line);
-  background: #f3f0e8;
+  border-right: 1px solid #aaa79e;
+  background: transparent;
   cursor: pointer;
 }
 
@@ -1760,8 +1340,9 @@ input[type="range"] {
 .shield-options button:hover { background: #fff; }
 
 .shield-options button[aria-pressed="true"] {
-  color: #faf8f2;
-  background: rgb(var(--parent-rgb));
+  color: var(--ink);
+  box-shadow: inset 0 -4px 0 rgb(var(--parent-rgb));
+  background: #f8f6f0;
 }
 
 .shield-options b {
@@ -1777,22 +1358,22 @@ input[type="range"] {
   display: grid;
   min-width: 0;
   align-content: start;
-  background: #121713;
+  padding: 30px;
+  background:
+    linear-gradient(90deg, transparent 49.9%, rgba(23, 24, 21, 0.045) 50%, transparent 50.1%),
+    #f8f6f0;
 }
 
 .detector-apparatus {
   display: grid;
-  min-height: 235px;
+  min-height: 210px;
   grid-template-columns: 130px minmax(70px, 1fr) auto 150px;
   align-items: center;
-  padding: 30px;
-  color: #edf0e9;
-  border-bottom: 1px solid #465047;
-  background:
-    linear-gradient(rgba(74, 91, 78, 0.15) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(74, 91, 78, 0.15) 1px, transparent 1px),
-    #121713;
-  background-size: 34px 34px;
+  padding: 22px 12px 28px;
+  color: var(--ink);
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  background: transparent;
 }
 
 .detector-source,
@@ -1809,15 +1390,14 @@ input[type="range"] {
 .detector-device > strong,
 .detector-flight small,
 .detector-shield small {
-  color: #a5aea7;
+  color: var(--muted);
   font-family: var(--mono);
   font-size: 8px;
 }
 
 .nuclide-symbol-detector {
-  color: #f0cf68;
+  color: rgb(var(--parent-rgb));
   font-size: 2.2rem;
-  filter: drop-shadow(0 0 12px rgba(240, 207, 104, 0.42));
 }
 
 .detector-flight {
@@ -1829,18 +1409,16 @@ input[type="range"] {
 
 .detector-flight::before {
   width: 100%;
-  height: 1px;
+  height: 0;
   content: "";
-  background: #506057;
+  border-top: 1px dashed #8b8982;
 }
 
 .detector-flight > span {
   position: absolute;
   left: 0;
-  height: 3px;
-  border-radius: 999px;
-  background: #f0cf68;
-  box-shadow: 0 0 12px #f0cf68;
+  height: 2px;
+  background: rgb(var(--parent-rgb));
   transition: width 180ms ease;
 }
 
@@ -1860,7 +1438,7 @@ input[type="range"] {
   gap: 6px;
   margin: 0 18px;
   color: #161813;
-  border: 1px solid #d5d7cf;
+  border: 1px solid #73736e;
   background: #b8b9b2;
   transition: width 180ms ease;
 }
@@ -1892,30 +1470,31 @@ input[type="range"] {
 
 .detector-device > span {
   display: grid;
-  width: 92px;
-  height: 92px;
+  width: 104px;
+  height: 68px;
   place-items: center;
-  color: #f5f3ec;
-  border: 1px solid #78877b;
-  border-radius: 50%;
-  background: #252d27;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  background: #e6e2d8;
   font-size: 12px;
   font-weight: 700;
-  box-shadow: inset 0 0 0 8px #171c18;
+  box-shadow: inset 0 0 0 6px #f8f6f0;
 }
 
 .detector-device i {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #56d6ad;
-  box-shadow: 0 0 12px #56d6ad;
+  width: 18px;
+  height: 5px;
+  background: #35765f;
 }
 
 .detector-scope {
-  padding: 22px 26px 18px;
-  color: #edf0e9;
-  border-bottom: 1px solid #465047;
+  width: min(100%, 620px);
+  margin: 28px auto 0;
+  padding: 16px 18px 14px;
+  color: #dbe2d8;
+  border: 7px solid #343731;
+  outline: 1px solid var(--ink);
+  background: #182019;
 }
 
 .scope-heading {
@@ -1933,7 +1512,7 @@ input[type="range"] {
 }
 
 .scope-heading strong {
-  color: #f0cf68;
+  color: #d4c269;
   font-size: 10px;
   font-weight: 500;
 }
@@ -1957,37 +1536,41 @@ input[type="range"] {
 }
 
 .scope-bars i.is-hit {
-  background: #58d5ae;
-  box-shadow: 0 0 8px rgba(88, 213, 174, 0.55);
+  background: #8fbb89;
 }
 
 .detector-readouts {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  color: #edf0e9;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 32px;
+  color: var(--ink);
+  border-top: 1px solid var(--ink);
 }
 
 .detector-readouts article {
   display: grid;
+  grid-template-columns: minmax(88px, 0.7fr) minmax(0, 1fr);
   min-width: 0;
-  gap: 7px;
-  padding: 20px;
-  border-right: 1px solid #465047;
+  align-items: baseline;
+  gap: 4px 14px;
+  padding: 15px 12px;
+  border-right: 1px solid #aaa79e;
+  border-bottom: 1px solid #aaa79e;
 }
 
-.detector-readouts article:last-child { border-right: 0; }
+.detector-readouts article:nth-child(2n) { border-right: 0; }
 
 .detector-readouts span,
 .detector-readouts small {
-  color: #94a097;
+  color: var(--muted);
   font-family: var(--mono);
-  font-size: 7px;
+  font-size: 8px;
 }
 
 .detector-readouts strong {
   overflow: hidden;
   font-family: var(--mono);
-  font-size: clamp(1.25rem, 2vw, 1.9rem);
+  font-size: clamp(1.05rem, 1.7vw, 1.45rem);
   font-weight: 400;
   text-overflow: ellipsis;
 }
@@ -1995,6 +1578,10 @@ input[type="range"] {
 .detector-readouts strong small {
   color: inherit;
   font-size: 8px;
+}
+
+.detector-readouts article > small {
+  grid-column: 2;
 }
 
 .data-section { padding: 110px 0 88px; }
@@ -2408,9 +1995,10 @@ footer a:hover { color: rgb(var(--parent-rgb)); }
   }
   .detector-device > span { width: 72px; height: 72px; }
   .detector-shield { margin: 0 9px; }
-  .detector-readouts { grid-template-columns: repeat(2, 1fr); }
-  .detector-readouts article:nth-child(2) { border-right: 0; }
-  .detector-readouts article:nth-child(-n + 2) { border-bottom: 1px solid #465047; }
+  .detector-console { padding: 20px 14px; }
+  .detector-readouts { grid-template-columns: 1fr; }
+  .detector-readouts article,
+  .detector-readouts article:nth-child(2n) { border-right: 0; }
   .section-heading { grid-template-columns: 1fr; gap: 18px; }
   .data-section { padding: 78px 0 60px; }
   .stats-grid { grid-template-columns: 1fr; }
@@ -2438,3 +2026,4 @@ footer a:hover { color: rgb(var(--parent-rgb)); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
