@@ -1807,7 +1807,7 @@ export default function Home() {
                 <p>
                   <span>観察メモ</span>
                   主要核種のみを表示しています。横にスクロールして連鎖を追えます。
-                  半減期の差が大きいため、各段階の時間尺度は観察用に正規化しています。
+                  半減期の差が大きいため、連鎖の進行速度は観察用に調整しています。
                 </p>
               </div>
             )}
@@ -1974,29 +1974,31 @@ export default function Home() {
               />
             </label>
 
-            {simulationMode === "chain" ? (
-              <div className="time-rate chain-time-rate" aria-live="polite">
-                <span>CHAIN TIME SCALE</span>
-                <strong>段階ごとに時間尺度を正規化</strong>
-                <p>
-                  半減期が秒未満から億年単位まで異なるため、すべての段階を観察できる速度に揃えています。
-                </p>
+            <div
+              className={`time-rate ${
+                simulationMode === "chain" ? "chain-time-rate" : ""
+              }`}
+              aria-live="polite"
+            >
+              <span>TIME SCALE / 現実時間との対応</span>
+              <div>
+                <small>現実の</small>
+                <strong>1秒</strong>
+                <b aria-hidden="true">→</b>
+                <small>シミュレーション内</small>
+                <strong>約{simulationRate}</strong>
               </div>
-            ) : (
-              <div className="time-rate" aria-live="polite">
-                <span>TIME SCALE / 現実時間との対応</span>
-                <div>
-                  <small>現実の</small>
-                  <strong>1秒</strong>
-                  <b aria-hidden="true">→</b>
-                  <small>シミュレーション内</small>
-                  <strong>約{simulationRate}</strong>
-                </div>
+              {simulationMode === "chain" ? (
+                <p>
+                  {preset.parent}の半減期を基準に、現実の1秒ごとに実時間が約
+                  {simulationRate}進みます。連鎖内の進行速度は観察用に調整しています。
+                </p>
+              ) : (
                 <p>
                   現実の1秒ごとに、現在の核種の時間が約{simulationRate}進みます。
                 </p>
-              </div>
-            )}
+              )}
+            </div>
 
             <div className="control-actions">
               <button
@@ -2033,15 +2035,11 @@ export default function Home() {
 
         <div className="stats-grid">
           <article>
-            <span>{simulationMode === "chain" ? "規格化時間" : "経過時間"}</span>
-            <strong>
-              {simulationMode === "chain"
-                ? `${elapsed.toFixed(2)} × 段階T½`
-                : formatElapsed(elapsed, preset)}
-            </strong>
+            <span>経過時間</span>
+            <strong>{formatElapsed(elapsed, preset)}</strong>
             <small>
               {simulationMode === "chain"
-                ? "各段階の半減期を同じ長さで表示"
+                ? `${elapsed.toFixed(2)} × ${preset.parent}のT½`
                 : `${elapsed.toFixed(2)} × T½`}
             </small>
           </article>
@@ -2127,7 +2125,9 @@ export default function Home() {
                     y2={chart.height - chart.bottom + 6}
                   />
                   <text className="x-tick-label" x={x} y={chart.height - 18}>
-                    {(chart.maxT * ratio).toFixed(2)}
+                    {simulationMode === "chain"
+                      ? formatNumber(chart.maxT * ratio * preset.halfLife)
+                      : (chart.maxT * ratio).toFixed(2)}
                   </text>
                 </g>
               );
@@ -2161,7 +2161,9 @@ export default function Home() {
               />
             ))}
             <text className="axis-caption" x={chart.width - chart.right} y={chart.height - 2}>
-              経過時間（半減期 T½）
+              {simulationMode === "chain"
+                ? `経過時間（${preset.unit} / ${preset.parent}基準）`
+                : "経過時間（半減期 T½）"}
             </text>
           </svg>
         </div>
