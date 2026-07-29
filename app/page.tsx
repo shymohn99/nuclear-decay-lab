@@ -11,6 +11,8 @@ import {
 
 type DecayMode = "alpha" | "beta" | "gamma";
 type DecaySeries = "independent" | "uranium-238" | "thorium-232" | "uranium-235";
+type SimulationMode = "single" | "chain";
+type CatalogView = "table" | "map";
 
 type Nuclide = {
   massNumber: number;
@@ -43,6 +45,7 @@ type Particle = {
   vx: number;
   vy: number;
   phase: "parent" | "daughter";
+  chainStage: number;
   pulse: number;
   radius: number;
 };
@@ -62,6 +65,15 @@ type HistoryPoint = {
 };
 
 type ChartScale = "linear" | "log";
+
+type ChainStage = {
+  key: string;
+  name: string;
+  nuclide: Nuclide;
+  halfLifeLabel: string;
+  mode?: DecayMode;
+  stable?: boolean;
+};
 
 const SUPERSCRIPT_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
 const SUBSCRIPT_DIGITS = "₀₁₂₃₄₅₆₇₈₉";
@@ -127,6 +139,17 @@ const SERIES_OPTIONS: Array<{
   { key: "uranium-238", label: "U-238系列", caption: "ウラン系列" },
   { key: "thorium-232", label: "Th-232系列", caption: "トリウム系列" },
   { key: "uranium-235", label: "U-235系列", caption: "アクチニウム系列" },
+];
+
+const CHAIN_STAGE_COLORS = [
+  "#dc504e",
+  "#cf762f",
+  "#b39732",
+  "#75904d",
+  "#3e8c78",
+  "#3197aa",
+  "#526ea2",
+  "#8563a0",
 ];
 
 const PRESETS: IsotopePreset[] = [
@@ -422,6 +445,37 @@ const PRESETS: IsotopePreset[] = [
   }),
 ];
 
+function getChainStages(series: DecaySeries): ChainStage[] {
+  if (series === "independent") return [];
+
+  const presets = PRESETS.filter((item) => item.series === series);
+  const stages: ChainStage[] = presets.map((item) => ({
+    key: item.key,
+    name: item.parent,
+    nuclide: item.parentNuclide,
+    halfLifeLabel: `${formatNumber(item.halfLife)} ${item.unit}`,
+    mode: item.mode,
+  }));
+  const terminal = presets.at(-1);
+
+  if (terminal) {
+    stages.push({
+      key: `${terminal.key}-stable`,
+      name: terminal.daughter,
+      nuclide: terminal.daughterNuclide,
+      halfLifeLabel: "安定核種",
+      stable: true,
+    });
+  }
+
+  return stages;
+}
+
+function getChainStageColor(index: number, total: number) {
+  if (index === total - 1) return "#d8d4c9";
+  return CHAIN_STAGE_COLORS[index % CHAIN_STAGE_COLORS.length];
+}
+
 const SIMULATED_HALF_LIVES_PER_SECOND = 0.18;
 const HISTORY_INTERVAL = 0.025;
 const MAX_HISTORY_POINTS = 320;
@@ -447,6 +501,7 @@ function makeParticles(count: number, seed: number): Particle[] {
       vx: (random() - 0.5) * 0.025,
       vy: (random() - 0.5) * 0.025,
       phase: "parent",
+      chainStage: 0,
       pulse: random() * Math.PI * 2,
       radius: 4.2 + random() * 2.8,
     };
@@ -544,6 +599,9 @@ export default function Home() {
 
   const [presetKey, setPresetKey] = useState(PRESETS[0].key);
   const [seriesKey, setSeriesKey] = useState<DecaySeries>("independent");
+  const [simulationMode, setSimulationMode] =
+    useState<SimulationMode>("single");
+  const [catalogView, setCatalogView] = useState<CatalogView>("table");
   const [atomCount, setAtomCount] = useState(160);
   const [speed, setSpeed] = useState(1);
   const [paused, setPaused] = useState(false);
@@ -567,6 +625,19 @@ export default function Home() {
     () => PRESETS.filter((item) => item.series === seriesKey),
     [seriesKey],
   );
+  const chainStages = useMemo(() => getChainStages(seriesKey), [seriesKey]);
+  const chainStageCounts = useMemo(() => {
+    const counts = Array.from({ length: chainStages.length }, () => 0);
+    for (const particle of particles) {
+      if (counts[particle.chainStage] !== undefined) {
+        counts[particle.chainStage] += 1;
+      }
+    }
+    return counts;
+  }, [chainStages.length, particles]);
+  const seriesLabel =
+    SERIES_OPTIONS.find((series) => series.key === seriesKey)?.label ??
+    "単独核種";
   const parentColor = `rgb(${preset.parentRgb})`;
   const daughterColor = `rgb(${preset.daughterRgb})`;
   const simulationRate = formatSimulationRate(preset, speed);
@@ -574,8 +645,22 @@ export default function Home() {
   const selectSeries = useCallback((nextSeries: DecaySeries) => {
     const firstPreset = PRESETS.find((item) => item.series === nextSeries);
     setSeriesKey(nextSeries);
+    if (nextSeries === "independent") setSimulationMode("single");
     if (firstPreset) setPresetKey(firstPreset.key);
   }, []);
+
+  const selectPreset = useCallback((item: IsotopePreset) => {
+    setSeriesKey(item.series);
+    setPresetKey(item.key);
+    setSimulationMode("single");
+  }, []);
+
+  const startChainMode = useCallback(() => {
+    if (seriesKey === "independent") return;
+    const firstPreset = PRESETS.find((item) => item.series === seriesKey);
+    if (firstPreset) setPresetKey(firstPreset.key);
+    setSimulationMode("chain");
+  }, [seriesKey]);
 
   const resetSimulation = useCallback(() => {
     resetSeedRef.current += 97;
@@ -596,7 +681,7 @@ export default function Home() {
 
   useEffect(() => {
     resetSimulation();
-  }, [presetKey, resetSimulation]);
+  }, [presetKey, resetSimulation, simulationMode]);
 
   useEffect(() => {
     let frameId = 0;
@@ -633,19 +718,30 @@ export default function Home() {
           `translate(${particle.x * 1000} ${particle.y * 520})`,
         );
 
-        if (
-          particle.phase === "parent" &&
-          decayProbability > 0 &&
-          Math.random() < decayProbability
-        ) {
-          particle.phase = "daughter";
+        const canDecay =
+          simulationMode === "chain"
+            ? particle.chainStage < chainStages.length - 1
+            : particle.phase === "parent";
+
+        if (canDecay && decayProbability > 0 && Math.random() < decayProbability) {
+          const burstMode =
+            simulationMode === "chain"
+              ? chainStages[particle.chainStage]?.mode ?? "alpha"
+              : preset.mode;
+
+          if (simulationMode === "chain") {
+            particle.chainStage += 1;
+            particle.phase = "daughter";
+          } else {
+            particle.phase = "daughter";
+          }
           burstsRef.current.push({
             id: burstIdRef.current++,
             x: particle.x,
             y: particle.y,
             life: 1,
             angle: Math.random() * Math.PI * 2,
-            kind: preset.mode,
+            kind: burstMode,
           });
         }
       }
@@ -658,7 +754,14 @@ export default function Home() {
       if (timestamp - lastSnapshot >= VISUAL_UPDATE_INTERVAL_MS) {
         const currentRemaining = particlesRef.current.reduce(
           (total, particle) =>
-            total + (particle.phase === "parent" ? 1 : 0),
+            total +
+            (simulationMode === "chain"
+              ? particle.chainStage === 0
+                ? 1
+                : 0
+              : particle.phase === "parent"
+                ? 1
+                : 0),
           0,
         );
         const shouldRecordHistory =
@@ -688,7 +791,7 @@ export default function Home() {
 
     frameId = requestAnimationFrame(simulate);
     return () => cancelAnimationFrame(frameId);
-  }, [paused, preset.mode, speed]);
+  }, [chainStages, paused, preset.mode, simulationMode, speed]);
 
   const handleDetectorPulse = (
     event: ReactPointerEvent<SVGSVGElement>,
@@ -743,6 +846,50 @@ export default function Home() {
   const decayed = atomCount - remaining;
   const activity = remaining * Math.LN2;
   const remainingPercent = (remaining / atomCount) * 100;
+  const nuclideMap = useMemo(() => {
+    const width = 960;
+    const height = 430;
+    const left = 56;
+    const right = 24;
+    const top = 24;
+    const bottom = 46;
+    const maxNeutrons = 150;
+    const maxProtons = 100;
+    const plotWidth = width - left - right;
+    const plotHeight = height - top - bottom;
+    const position = (neutrons: number, protons: number) => ({
+      x: left + (neutrons / maxNeutrons) * plotWidth,
+      y: top + (1 - protons / maxProtons) * plotHeight,
+    });
+
+    return {
+      width,
+      height,
+      left,
+      right,
+      top,
+      bottom,
+      plotWidth,
+      plotHeight,
+      xTicks: [0, 25, 50, 75, 100, 125, 150].map((value) => ({
+        value,
+        x: position(value, 0).x,
+      })),
+      yTicks: [0, 20, 40, 60, 80, 100].map((value) => ({
+        value,
+        y: position(0, value).y,
+      })),
+      points: PRESETS.map((item) => {
+        const neutronNumber =
+          item.parentNuclide.massNumber - item.parentNuclide.protonNumber;
+        return {
+          item,
+          neutronNumber,
+          ...position(neutronNumber, item.parentNuclide.protonNumber),
+        };
+      }),
+    };
+  }, []);
 
   const chart = useMemo(() => {
     const width = 760;
@@ -880,71 +1027,221 @@ export default function Home() {
           </div>
 
           <div className="nuclide-table-meta">
-            <span>{SERIES_OPTIONS.find((series) => series.key === seriesKey)?.label}</span>
-            <strong>{seriesPresets.length} 核種</strong>
+            <span>{catalogView === "table" ? seriesLabel : "収録核種マップ"}</span>
+            <div className="catalog-view-toggle" role="group" aria-label="核種の表示形式">
+              <button
+                type="button"
+                aria-pressed={catalogView === "table"}
+                onClick={() => setCatalogView("table")}
+              >
+                リスト
+              </button>
+              <button
+                type="button"
+                aria-pressed={catalogView === "map"}
+                onClick={() => setCatalogView("map")}
+              >
+                核種マップ
+              </button>
+            </div>
+            <strong>
+              {catalogView === "table" ? seriesPresets.length : PRESETS.length} 核種
+            </strong>
           </div>
-          <div className="nuclide-table-wrap">
-            <table className="nuclide-table">
-              <thead>
-                <tr>
-                  <th scope="col">親核種</th>
-                  <th scope="col">壊変</th>
-                  <th scope="col">娘核種</th>
-                  <th scope="col">半減期</th>
-                </tr>
-              </thead>
-              <tbody>
-                {seriesPresets.map((item) => (
-                  <tr
-                    className={presetKey === item.key ? "is-active" : ""}
+          {catalogView === "table" ? (
+            <div className="nuclide-table-wrap">
+              <table className="nuclide-table">
+                <thead>
+                  <tr>
+                    <th scope="col">親核種</th>
+                    <th scope="col">壊変</th>
+                    <th scope="col">娘核種</th>
+                    <th scope="col">半減期</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {seriesPresets.map((item) => (
+                    <tr
+                      className={presetKey === item.key ? "is-active" : ""}
+                      key={item.key}
+                    >
+                      <td>
+                        <button
+                          type="button"
+                          className="nuclide-select"
+                          aria-pressed={presetKey === item.key}
+                          onClick={() => selectPreset(item)}
+                        >
+                          <NuclideSymbol
+                            nuclide={item.parentNuclide}
+                            className="nuclide-symbol-table"
+                          />
+                          <span>{item.parent}</span>
+                        </button>
+                      </td>
+                      <td>
+                        <span className={`decay-mode mode-${item.mode}`}>
+                          {item.modeLabel}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="daughter-cell">
+                          <NuclideSymbol
+                            nuclide={item.daughterNuclide}
+                            className="nuclide-symbol-table"
+                          />
+                          <span>{item.daughter}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <strong className="half-life-value">
+                          {formatNumber(item.halfLife)}
+                        </strong>
+                        <span className="half-life-unit">{item.unit}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="nuclide-map-wrap">
+              <svg
+                className="nuclide-map"
+                viewBox={`0 0 ${nuclideMap.width} ${nuclideMap.height}`}
+                role="img"
+                aria-labelledby="nuclide-map-title nuclide-map-description"
+              >
+                <title id="nuclide-map-title">収録核種マップ</title>
+                <desc id="nuclide-map-description">
+                  横軸が中性子数、縦軸が陽子数です。核種を選ぶと単独壊変モードへ切り替わります。
+                </desc>
+                {nuclideMap.xTicks.map((tick) => (
+                  <g key={`n-${tick.value}`}>
+                    <line
+                      className="nuclide-map-grid"
+                      x1={tick.x}
+                      x2={tick.x}
+                      y1={nuclideMap.top}
+                      y2={nuclideMap.height - nuclideMap.bottom}
+                    />
+                    <text
+                      className="nuclide-map-axis-label"
+                      x={tick.x}
+                      y={nuclideMap.height - 17}
+                    >
+                      {tick.value}
+                    </text>
+                  </g>
+                ))}
+                {nuclideMap.yTicks.map((tick) => (
+                  <g key={`z-${tick.value}`}>
+                    <line
+                      className="nuclide-map-grid"
+                      x1={nuclideMap.left}
+                      x2={nuclideMap.width - nuclideMap.right}
+                      y1={tick.y}
+                      y2={tick.y}
+                    />
+                    <text className="nuclide-map-y-label" x="28" y={tick.y + 4}>
+                      {tick.value}
+                    </text>
+                  </g>
+                ))}
+                <text
+                  className="nuclide-map-caption"
+                  x={nuclideMap.width - nuclideMap.right}
+                  y={nuclideMap.height - 2}
+                >
+                  中性子数 N
+                </text>
+                <text
+                  className="nuclide-map-caption nuclide-map-caption-y"
+                  x="10"
+                  y={nuclideMap.top}
+                >
+                  陽子数 Z
+                </text>
+                {nuclideMap.points.map(({ item, neutronNumber, x, y }) => (
+                  <g
+                    className={`nuclide-map-node ${
+                      presetKey === item.key ? "is-active" : ""
+                    }`}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${item.parent}、中性子数${neutronNumber}、${item.modeLabel}、半減期${item.halfLife}${item.unit}`}
+                    onClick={() => selectPreset(item)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        selectPreset(item);
+                      }
+                    }}
                     key={item.key}
                   >
-                    <td>
-                      <button
-                        type="button"
-                        className="nuclide-select"
-                        aria-pressed={presetKey === item.key}
-                        onClick={() => setPresetKey(item.key)}
-                      >
-                        <NuclideSymbol
-                          nuclide={item.parentNuclide}
-                          className="nuclide-symbol-table"
-                        />
-                        <span>{item.parent}</span>
-                      </button>
-                    </td>
-                    <td>
-                      <span className={`decay-mode mode-${item.mode}`}>
-                        {item.modeLabel}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="daughter-cell">
-                        <NuclideSymbol
-                          nuclide={item.daughterNuclide}
-                          className="nuclide-symbol-table"
-                        />
-                        <span>{item.daughter}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <strong className="half-life-value">
-                        {formatNumber(item.halfLife)}
-                      </strong>
-                      <span className="half-life-unit">{item.unit}</span>
-                    </td>
-                  </tr>
+                    <rect
+                      x={x - 15}
+                      y={y - 15}
+                      width="30"
+                      height="30"
+                      fill={`rgb(${item.parentRgb})`}
+                    />
+                    <text className="nuclide-map-mass" x={x - 12} y={y - 4}>
+                      {item.parentNuclide.massNumber}
+                    </text>
+                    <text className="nuclide-map-element" x={x} y={y + 9}>
+                      {item.parentNuclide.element}
+                    </text>
+                  </g>
                 ))}
-              </tbody>
-            </table>
+              </svg>
+              <div className="nuclide-map-selection" aria-live="polite">
+                <NuclideSymbol
+                  nuclide={preset.parentNuclide}
+                  className="nuclide-symbol-table"
+                />
+                <strong>{preset.parent}</strong>
+                <span>→ {preset.daughter}</span>
+                <small>
+                  {preset.modeLabel} / 半減期 {formatNumber(preset.halfLife)} {preset.unit}
+                </small>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="simulation-mode-bar">
+          <div className="simulation-mode-toggle" role="group" aria-label="シミュレーション形式">
+            <button
+              type="button"
+              aria-pressed={simulationMode === "single"}
+              onClick={() => setSimulationMode("single")}
+            >
+              単独壊変
+            </button>
+            <button
+              type="button"
+              aria-pressed={simulationMode === "chain"}
+              disabled={seriesKey === "independent"}
+              onClick={startChainMode}
+            >
+              放射系列の連鎖
+            </button>
           </div>
+          <p>
+            {seriesKey === "independent"
+              ? "U-238・Th-232・U-235系列を選ぶと、連鎖モードを開始できます。"
+              : simulationMode === "chain"
+                ? `${seriesLabel}の主要核種を順に追跡中です。`
+                : "単独核種の壊変を観察しています。"}
+          </p>
         </div>
 
         <div className="equation-panel" aria-label={`${preset.parent}の壊変式`}>
           <div className="equation-heading">
             <div>
               <span>DECAY REACTION</span>
-              <strong>壊変式</strong>
+              <strong>{simulationMode === "chain" ? "最初の壊変" : "壊変式"}</strong>
             </div>
             <div className="equation-heading-actions">
               <small>{preset.modeLabel}</small>
@@ -981,15 +1278,78 @@ export default function Home() {
           <div className="visual-panel">
             <div className="visual-toolbar">
               <div>
-                <span>粒子表示</span>
-                <strong>{remaining} / {atomCount} 個が未壊変</strong>
+                <span>{simulationMode === "chain" ? "連鎖粒子表示" : "粒子表示"}</span>
+                <strong>
+                  {simulationMode === "chain"
+                    ? `${chainStageCounts.at(-1) ?? 0} / ${atomCount} 個が安定核種へ到達`
+                    : `${remaining} / ${atomCount} 個が未壊変`}
+                </strong>
               </div>
               <div className="legend" aria-label="粒子の凡例">
-                <span><i className="legend-parent" style={{ backgroundColor: parentColor }} />親核種</span>
-                <span><i className="legend-daughter" style={{ backgroundColor: daughterColor }} />娘核種</span>
+                <span>
+                  <i className="legend-parent" style={{ backgroundColor: parentColor }} />
+                  {simulationMode === "chain" ? "初期核種" : "親核種"}
+                </span>
+                <span>
+                  <i
+                    className="legend-daughter"
+                    style={{
+                      backgroundColor:
+                        simulationMode === "chain"
+                          ? CHAIN_STAGE_COLORS[3]
+                          : daughterColor,
+                    }}
+                  />
+                  {simulationMode === "chain" ? "連鎖中" : "娘核種"}
+                </span>
                 <span><i className="legend-emission" />放出反応</span>
               </div>
             </div>
+
+            {simulationMode === "chain" && (
+              <div className="chain-progress">
+                <div className="chain-progress-heading">
+                  <span>MAJOR DECAY CHAIN / {seriesLabel}</span>
+                  <small>主要核種を表示・中間核種は省略</small>
+                </div>
+                <div className="chain-track">
+                  {chainStages.map((stage, index) => (
+                    <div className="chain-stage-group" key={stage.key}>
+                      <article
+                        className={`chain-stage ${stage.stable ? "is-stable" : ""}`}
+                        style={
+                          {
+                            "--stage-color": getChainStageColor(
+                              index,
+                              chainStages.length,
+                            ),
+                          } as React.CSSProperties
+                        }
+                      >
+                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        <NuclideSymbol
+                          nuclide={stage.nuclide}
+                          className="nuclide-symbol-chain"
+                        />
+                        <strong>{stage.name}</strong>
+                        <small>{stage.halfLifeLabel}</small>
+                        <output>{chainStageCounts[index] ?? 0}</output>
+                      </article>
+                      {index < chainStages.length - 1 && (
+                        <span className="chain-arrow" aria-hidden="true">
+                          {stage.mode === "beta" ? "β⁻" : stage.mode === "gamma" ? "γ" : "α"}
+                          <b>→</b>
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <p>
+                  半減期の差が非常に大きいため、連鎖モードでは各段階の時間尺度を
+                  観察用に正規化しています。
+                </p>
+              </div>
+            )}
 
             <div className="particle-field">
               <svg
@@ -998,7 +1358,11 @@ export default function Home() {
                 preserveAspectRatio="none"
                 onPointerDown={handleDetectorPulse}
                 role="img"
-                aria-label={`${preset.parent}の原子核${atomCount}個が確率的に壊変し、${preset.daughter}へ変わる粒子シミュレーション`}
+                aria-label={
+                  simulationMode === "chain"
+                    ? `${seriesLabel}の原子核${atomCount}個が主要核種を順に壊変する連鎖シミュレーション`
+                    : `${preset.parent}の原子核${atomCount}個が確率的に壊変し、${preset.daughter}へ変わる粒子シミュレーション`
+                }
               >
                 <defs>
                   <pattern id="field-grid" width="50" height="50" patternUnits="userSpaceOnUse">
@@ -1010,14 +1374,23 @@ export default function Home() {
                 <ellipse cx="500" cy="260" rx="390" ry="196" className="field-orbit" />
                 {particles.map((particle) => {
                   const particleColor =
-                    particle.phase === "parent" ? parentColor : daughterColor;
+                    simulationMode === "chain"
+                      ? getChainStageColor(
+                          particle.chainStage,
+                          chainStages.length,
+                        )
+                      : particle.phase === "parent"
+                        ? parentColor
+                        : daughterColor;
                   return (
                     <g
                       key={particle.id}
                       ref={(node) => {
                         particleNodeRefs.current[particle.id] = node;
                       }}
-                      className={`particle particle-${particle.phase}`}
+                      className={`particle particle-${particle.phase} ${
+                        simulationMode === "chain" ? "particle-chain" : ""
+                      }`}
                       transform={`translate(${particle.x * 1000} ${particle.y * 520})`}
                     >
                       <circle
@@ -1065,7 +1438,11 @@ export default function Home() {
               </svg>
               <div className="field-readout" aria-hidden="true">
                 <NuclideSymbol nuclide={preset.parentNuclide} className="nuclide-symbol-field" />
-                <small>{preset.modeLabel}</small>
+                <small>
+                  {simulationMode === "chain"
+                    ? `${seriesLabel}・${chainStages.length}段階`
+                    : preset.modeLabel}
+                </small>
               </div>
               <span className="field-hint">画面を押すと検出パルスを表示</span>
             </div>
@@ -1074,8 +1451,14 @@ export default function Home() {
           <aside className="control-panel" aria-label="シミュレーション設定">
             <div className="control-heading">
               <span>実験条件</span>
-              <strong>{preset.parent}</strong>
-              <small>半減期 {preset.halfLife} {preset.unit}</small>
+              <strong>
+                {simulationMode === "chain" ? seriesLabel : preset.parent}
+              </strong>
+              <small>
+                {simulationMode === "chain"
+                  ? `主要核種 ${chainStages.length}段階`
+                  : `半減期 ${preset.halfLife} ${preset.unit}`}
+              </small>
             </div>
 
             <label className="control-field">
@@ -1104,19 +1487,29 @@ export default function Home() {
               />
             </label>
 
-            <div className="time-rate" aria-live="polite">
-              <span>TIME SCALE / 現実時間との対応</span>
-              <div>
-                <small>現実の</small>
-                <strong>1秒</strong>
-                <b aria-hidden="true">→</b>
-                <small>シミュレーション内</small>
-                <strong>約{simulationRate}</strong>
+            {simulationMode === "chain" ? (
+              <div className="time-rate chain-time-rate" aria-live="polite">
+                <span>CHAIN TIME SCALE</span>
+                <strong>段階ごとに時間尺度を正規化</strong>
+                <p>
+                  半減期が秒未満から億年単位まで異なるため、すべての段階を観察できる速度に揃えています。
+                </p>
               </div>
-              <p>
-                現実の1秒ごとに、現在の核種の時間が約{simulationRate}進みます。
-              </p>
-            </div>
+            ) : (
+              <div className="time-rate" aria-live="polite">
+                <span>TIME SCALE / 現実時間との対応</span>
+                <div>
+                  <small>現実の</small>
+                  <strong>1秒</strong>
+                  <b aria-hidden="true">→</b>
+                  <small>シミュレーション内</small>
+                  <strong>約{simulationRate}</strong>
+                </div>
+                <p>
+                  現実の1秒ごとに、現在の核種の時間が約{simulationRate}進みます。
+                </p>
+              </div>
+            )}
 
             <div className="control-actions">
               <button
@@ -1145,24 +1538,37 @@ export default function Home() {
             <h2 id="observation-title">観測値と理論値</h2>
           </div>
           <p>
-            赤い点と実線が今回の試行、青い破線が理論値です。
-            リセットするたびに、確率による揺らぎ方が変わります。
+            {simulationMode === "chain"
+              ? "初期核種が系列の次段階へ移った割合を、理論的な指数減衰と比較します。"
+              : "赤い点と実線が今回の試行、青い破線が理論値です。リセットするたびに、確率による揺らぎ方が変わります。"}
           </p>
         </div>
 
         <div className="stats-grid">
           <article>
-            <span>経過時間</span>
-            <strong>{formatElapsed(elapsed, preset)}</strong>
-            <small>{elapsed.toFixed(2)} × T½</small>
+            <span>{simulationMode === "chain" ? "規格化時間" : "経過時間"}</span>
+            <strong>
+              {simulationMode === "chain"
+                ? `${elapsed.toFixed(2)} × 段階T½`
+                : formatElapsed(elapsed, preset)}
+            </strong>
+            <small>
+              {simulationMode === "chain"
+                ? "各段階の半減期を同じ長さで表示"
+                : `${elapsed.toFixed(2)} × T½`}
+            </small>
           </article>
           <article>
-            <span>未壊変の原子核</span>
+            <span>
+              {simulationMode === "chain" ? "初期核種に残る原子核" : "未壊変の原子核"}
+            </span>
             <strong>{remaining}<small> / {atomCount}</small></strong>
             <small>{remainingPercent.toFixed(1)}%</small>
           </article>
           <article>
-            <span>壊変した原子核</span>
+            <span>
+              {simulationMode === "chain" ? "系列へ移った原子核" : "壊変した原子核"}
+            </span>
             <strong>{decayed}</strong>
             <small>理論上は {Math.round(atomCount - expected)}</small>
           </article>
@@ -1200,10 +1606,12 @@ export default function Home() {
             aria-labelledby="chart-title chart-description"
           >
             <title id="chart-title">
-              未壊変原子核数の時間変化（{chartScale === "log" ? "対数" : "線形"}目盛り）
+              {simulationMode === "chain" ? "初期核種数" : "未壊変原子核数"}
+              の時間変化（{chartScale === "log" ? "対数" : "線形"}目盛り）
             </title>
             <desc id="chart-description">
-              {preset.parent}の観測値と指数関数による理論値を
+              {simulationMode === "chain" ? seriesLabel : preset.parent}
+              の観測値と指数関数による理論値を
               {chartScale === "log" ? "対数" : "線形"}目盛りで比較したグラフです。
             </desc>
             {chart.yTicks.map((tick) => {
