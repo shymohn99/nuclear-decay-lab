@@ -91,6 +91,29 @@ type MapViewport = {
   height: number;
 };
 
+const DECAY_LAB_STRUCTURED_DATA = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "nuclear-decay-lab",
+  url: "https://shymohn99.github.io/nuclear-decay-lab/",
+  description:
+    "Explore radioactive decay, major decay chains, nuclide relationships, and detector response in an interactive Monte Carlo laboratory.",
+  applicationCategory: "EducationalApplication",
+  operatingSystem: "Any",
+  isAccessibleForFree: true,
+  image: "https://shymohn99.github.io/nuclear-decay-lab/og.png",
+  inLanguage: ["ja", "en"],
+  creator: {
+    "@type": "Person",
+    name: "Shymohn",
+    url: "https://shymohn99.github.io/portfolio/",
+    sameAs: [
+      "https://github.com/shymohn99",
+      "https://x.com/Shymohn",
+    ],
+  },
+};
+
 const SUPERSCRIPT_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
 const SUBSCRIPT_DIGITS = "₀₁₂₃₄₅₆₇₈₉";
 
@@ -2023,8 +2046,16 @@ export default function Home() {
   }, [atomCount, chartScale, elapsed, history, remaining]);
 
   return (
-    <main
-      className="lab-shell"
+    <>
+      <script
+        id="nuclear-decay-lab-structured-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(DECAY_LAB_STRUCTURED_DATA),
+        }}
+      />
+      <main
+        className="lab-shell"
       style={
         {
           "--parent-rgb": preset.parentRgb,
@@ -2818,6 +2849,7 @@ export default function Home() {
         </nav>
         <p>2026 @Shymohn all rights reserved.</p>
       </footer>
-    </main>
+      </main>
+    </>
   );
 }
