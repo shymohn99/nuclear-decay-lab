@@ -103,7 +103,8 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /KNOWN_NUCLIDE_RANGES/);
   assert.match(page, /KNOWN_NUCLIDE_PATH/);
   assert.match(page, /handleMapPointerMove/);
-  assert.match(page, /handleMapWheel/);
+  assert.match(page, /addEventListener\("wheel", handleWheel, \{ passive: false \}\)/);
+  assert.match(page, /event\.stopPropagation\(\)/);
   assert.match(page, /既知核種データ: NNDC NuDat/);
   assert.match(page, /function formatSimulationRate/);
   assert.match(page, /SIMULATED_HALF_LIVES_PER_SECOND \*[\s\S]*speed/);
