@@ -812,12 +812,10 @@ function seededRandom(seed: number) {
 function makeParticles(count: number, seed: number): Particle[] {
   const random = seededRandom(seed);
   return Array.from({ length: count }, (_, index) => {
-    const angle = index * 2.399963 + random() * 0.16;
-    const radius = Math.sqrt((index + 0.5) / count) * 0.44;
     return {
       id: index,
-      x: 0.5 + Math.cos(angle) * radius,
-      y: 0.5 + Math.sin(angle) * radius * 0.78,
+      x: 0.045 + random() * 0.91,
+      y: 0.07 + random() * 0.86,
       vx: (random() - 0.5) * 0.025,
       vy: (random() - 0.5) * 0.025,
       phase: "parent",
@@ -832,6 +830,12 @@ function formatNumber(value: number) {
   return new Intl.NumberFormat("ja-JP", {
     maximumFractionDigits: value < 10 ? 2 : 1,
   }).format(value);
+}
+
+function formatSpeedMultiplier(value: number) {
+  if (value < 0.1) return value.toFixed(2);
+  if (value < 1) return value.toFixed(1);
+  return formatNumber(value);
 }
 
 function formatElapsed(halfLives: number, preset: IsotopePreset) {
@@ -2306,7 +2310,7 @@ export default function Home() {
               <svg
                 className="particle-svg"
                 viewBox="0 0 1000 520"
-                preserveAspectRatio="none"
+                preserveAspectRatio="xMidYMid meet"
                 onPointerDown={handleDetectorPulse}
                 role="img"
                 aria-label={
@@ -2322,7 +2326,7 @@ export default function Home() {
                 </defs>
                 <rect width="1000" height="520" className="field-background" />
                 <rect width="1000" height="520" fill="url(#field-grid)" />
-                <ellipse cx="500" cy="260" rx="390" ry="196" className="field-orbit" />
+                <rect x="40" y="30" width="920" height="460" className="field-orbit" />
                 {particles.map((particle) => {
                   const particleColor =
                     simulationMode === "chain"
@@ -2451,17 +2455,33 @@ export default function Home() {
               </small>
             </div>
 
-            <label className="control-field">
-              <span>時間倍率 <output>{speed.toFixed(1)}×</output></span>
+            <label className="control-field speed-control">
+              <span>
+                時間倍率
+                <output>{formatSpeedMultiplier(speed)}×</output>
+              </span>
               <input
                 type="range"
-                min="0.5"
-                max="5"
-                step="0.5"
-                value={speed}
+                min="-2"
+                max="3"
+                step="0.05"
+                value={Math.log10(speed)}
                 style={{ accentColor: parentColor }}
-                onChange={(event) => setSpeed(Number(event.target.value))}
+                onChange={(event) =>
+                  setSpeed(10 ** Number(event.target.value))
+                }
+                aria-label="時間倍率（対数）"
+                aria-valuetext={`${formatSpeedMultiplier(speed)}倍`}
               />
+              <div className="log-scale-marks" aria-hidden="true">
+                <span>0.01×</span>
+                <span>0.1×</span>
+                <span>1×</span>
+                <span>10×</span>
+                <span>100×</span>
+                <span>1,000×</span>
+              </div>
+              <small>倍率の桁を連続的に調整します。</small>
             </label>
 
             <div

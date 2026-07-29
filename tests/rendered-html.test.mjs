@@ -146,6 +146,13 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /halfLifeSeconds/);
   assert.match(page, /waitSeconds[\s\S]*availableSeconds/);
   assert.match(page, /各核種の実際の半減期比/);
+  assert.match(page, /Math\.log10\(speed\)/);
+  assert.match(page, /setSpeed\(10 \*\* Number\(event\.target\.value\)\)/);
+  assert.match(page, /時間倍率（対数）/);
+  assert.match(page, /x: 0\.045 \+ random\(\) \* 0\.91/);
+  assert.match(page, /y: 0\.07 \+ random\(\) \* 0\.86/);
+  assert.match(page, /preserveAspectRatio="xMidYMid meet"/);
+  assert.doesNotMatch(page, /Math\.cos\(angle\)|Math\.sin\(angle\)/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /\.nuclide-map/);
   assert.match(css, /\.nuclide-map-known-field/);
@@ -153,6 +160,7 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(css, /touch-action:\s*none/);
   assert.match(css, /\.chain-track/);
   assert.match(css, /scroll-snap-type:\s*x proximity/);
+  assert.match(css, /\.log-scale-marks/);
   assert.match(css, /\.chain-stage-copy/);
   assert.match(css, /\.number-input/);
   assert.match(css, /\.genealogy-panel/);
