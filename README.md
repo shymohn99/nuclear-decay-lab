@@ -2,7 +2,7 @@
 
 An interactive Monte Carlo laboratory for exploring nuclear decay, decay chains, nuclide relationships, and radiation detection in the browser.
 
-[Live site](https://nuclear-decay-lab-shymohn.shymohn.chatgpt.site) · [GitHub Pages](https://shymohn99.github.io/nuclear-decay-lab/) · [Repository](https://github.com/shymohn99/nuclear-decay-lab) · [@Shymohn on X](https://x.com/Shymohn)
+[GitHub Pages](https://shymohn99.github.io/nuclear-decay-lab/) · [Repository](https://github.com/shymohn99/nuclear-decay-lab) · [@Shymohn on X](https://x.com/Shymohn)
 
 ## English
 
