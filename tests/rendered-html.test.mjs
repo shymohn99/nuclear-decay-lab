@@ -41,6 +41,7 @@ test("server-renders the nuclear decay lab", async () => {
     html,
     /https:\/\/github\.com\/shymohn99\/nuclear-decay-lab/,
   );
+  assert.match(html, /https:\/\/shymohn99\.github\.io\/portfolio\//);
   assert.match(html, /ヨウ素131/);
   assert.match(html, /核種と放射系列/);
   assert.match(html, /U-238系列/);
@@ -103,6 +104,7 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /className="decay-flow"/);
   assert.match(page, /https:\/\/x\.com\/Shymohn/);
   assert.match(page, /https:\/\/github\.com\/shymohn99/);
+  assert.match(page, /https:\/\/shymohn99\.github\.io\/portfolio\//);
   assert.doesNotMatch(page, /feGaussianBlur/);
   assert.match(page, /iodine-131/);
   assert.match(page, /carbon-14/);
