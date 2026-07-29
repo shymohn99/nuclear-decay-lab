@@ -99,7 +99,9 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /chainStage/);
   assert.match(page, /className="nuclide-map"/);
   assert.match(page, /startChainMode/);
-  assert.match(page, /主要核種を表示・中間核種は省略/);
+  assert.match(page, /主要核種のみを表示しています/);
+  assert.match(page, /className="chain-stage-copy"/);
+  assert.match(page, /STEP \{String\(index \+ 1\)/);
   assert.match(page, /KNOWN_NUCLIDE_RANGES/);
   assert.match(page, /KNOWN_NUCLIDE_PATH/);
   assert.match(page, /handleMapPointerMove/);
@@ -115,6 +117,8 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(css, /cursor:\s*grabbing/);
   assert.match(css, /touch-action:\s*none/);
   assert.match(css, /\.chain-track/);
+  assert.match(css, /scroll-snap-type:\s*x proximity/);
+  assert.match(css, /\.chain-stage-copy/);
   assert.match(css, /@media \(max-width: 720px\)/);
   assert.match(layout, /lang="ja"/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
