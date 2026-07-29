@@ -34,6 +34,12 @@ test("server-renders the nuclear decay lab", async () => {
     html,
     /<title>nuclear-decay-lab \| Monte Carlo Nuclear Decay Simulator<\/title>/i,
   );
+  assert.match(
+    html,
+    /https:\/\/shymohn99\.github\.io\/nuclear-decay-lab\//,
+  );
+  assert.match(html, /application\/ld\+json/i);
+  assert.match(html, /"@type":"WebApplication"/);
   assert.match(html, /<span>原子核崩壊<\/span>/);
   assert.match(html, /<span>シミュレーター<\/span>/);
   assert.match(html, />nuclear-decay-lab</);
@@ -204,6 +210,9 @@ test("ships the simulation source without starter dependencies", async () => {
     /nuclear-decay-lab \| Monte Carlo Nuclear Decay Simulator/,
   );
   assert.match(layout, /summary_large_image/);
+  assert.match(layout, /alternates/);
+  assert.match(layout, /max-image-preview/);
+  assert.match(layout, /WebApplication/);
   assert.match(radionuclides, /ICRP-107 \/ AME2020 \/ Nubase2020/);
   assert.ok(
     (radionuclides.match(/^\s+\["/gm) ?? []).length > 900,
