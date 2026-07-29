@@ -144,6 +144,8 @@ test("ships the simulation source without starter dependencies", async () => {
     (radionuclides.match(/^\s+\["/gm) ?? []).length > 900,
     "核種マップ用データが900核種を超えている",
   );
+  assert.doesNotMatch(radionuclides, /"\?+"/);
+  assert.match(radionuclides, /unit: "秒" \| "分" \| "時間" \| "日" \| "年"/);
   assert.match(dataLicense, /Copyright \(c\) 2008 A\. Endo and K\.F\. Eckerman/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.doesNotMatch(page, /_sites-preview|SkeletonPreview/);
