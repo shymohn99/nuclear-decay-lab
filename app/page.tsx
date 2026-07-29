@@ -78,6 +78,7 @@ type ChainStage = {
   name: string;
   nuclide: Nuclide;
   halfLifeLabel: string;
+  halfLifeSeconds?: number;
   mode?: DecayMode;
   stable?: boolean;
 };
@@ -753,6 +754,14 @@ for (const item of PRESETS) {
   PRESETS_BY_DAUGHTER.set(key, parents);
 }
 
+const SECONDS_PER_UNIT: Record<string, number> = {
+  秒: 1,
+  分: 60,
+  時間: 60 * 60,
+  日: 24 * 60 * 60,
+  年: 365.25 * 24 * 60 * 60,
+};
+
 function getChainStages(series: DecaySeries): ChainStage[] {
   if (series === "independent") return [];
 
@@ -762,6 +771,8 @@ function getChainStages(series: DecaySeries): ChainStage[] {
     name: item.parent,
     nuclide: item.parentNuclide,
     halfLifeLabel: `${formatNumber(item.halfLife)} ${item.unit}`,
+    halfLifeSeconds:
+      item.halfLife * (SECONDS_PER_UNIT[item.unit] ?? 1),
     mode: item.mode,
   }));
   const terminal = presets.at(-1);
@@ -831,29 +842,22 @@ function formatElapsed(halfLives: number, preset: IsotopePreset) {
 }
 
 function formatSimulationRate(preset: IsotopePreset, speed: number) {
-  const secondsPerUnit: Record<string, number> = {
-    秒: 1,
-    分: 60,
-    時間: 60 * 60,
-    日: 24 * 60 * 60,
-    年: 365.25 * 24 * 60 * 60,
-  };
   const simulatedSeconds =
     preset.halfLife *
-    (secondsPerUnit[preset.unit] ?? 1) *
+    (SECONDS_PER_UNIT[preset.unit] ?? 1) *
     SIMULATED_HALF_LIVES_PER_SECOND *
     speed;
-  const simulatedYears = simulatedSeconds / secondsPerUnit.年;
+  const simulatedYears = simulatedSeconds / SECONDS_PER_UNIT.年;
 
   if (simulatedSeconds < 60) return `${formatNumber(simulatedSeconds)}秒`;
-  if (simulatedSeconds < secondsPerUnit.時間) {
-    return `${formatNumber(simulatedSeconds / secondsPerUnit.分)}分`;
+  if (simulatedSeconds < SECONDS_PER_UNIT.時間) {
+    return `${formatNumber(simulatedSeconds / SECONDS_PER_UNIT.分)}分`;
   }
-  if (simulatedSeconds < secondsPerUnit.日) {
-    return `${formatNumber(simulatedSeconds / secondsPerUnit.時間)}時間`;
+  if (simulatedSeconds < SECONDS_PER_UNIT.日) {
+    return `${formatNumber(simulatedSeconds / SECONDS_PER_UNIT.時間)}時間`;
   }
-  if (simulatedSeconds < secondsPerUnit.年) {
-    return `${formatNumber(simulatedSeconds / secondsPerUnit.日)}日`;
+  if (simulatedSeconds < SECONDS_PER_UNIT.年) {
+    return `${formatNumber(simulatedSeconds / SECONDS_PER_UNIT.日)}日`;
   }
   if (simulatedYears < 10000) return `${formatNumber(simulatedYears)}年`;
   if (simulatedYears < 1e8) {
@@ -1712,6 +1716,10 @@ export default function Home() {
         ? 0
         : dt * speed * SIMULATED_HALF_LIVES_PER_SECOND;
       const decayProbability = 1 - Math.pow(0.5, deltaHalfLives);
+      const simulatedSeconds =
+        deltaHalfLives *
+        preset.halfLife *
+        (SECONDS_PER_UNIT[preset.unit] ?? 1);
       const motionScale = reduceMotion ? 0 : paused ? 0.15 : 1;
 
       if (!paused) elapsedRef.current += deltaHalfLives;
@@ -1729,30 +1737,49 @@ export default function Home() {
           `translate(${particle.x * 1000} ${particle.y * 520})`,
         );
 
-        const canDecay =
-          simulationMode === "chain"
-            ? particle.chainStage < chainStages.length - 1
-            : particle.phase === "parent";
+        if (simulationMode === "chain") {
+          let availableSeconds = simulatedSeconds;
+          let transitions = 0;
 
-        if (canDecay && decayProbability > 0 && Math.random() < decayProbability) {
-          const burstMode =
-            simulationMode === "chain"
-              ? chainStages[particle.chainStage]?.mode ?? "alpha"
-              : preset.mode;
+          while (
+            particle.chainStage < chainStages.length - 1 &&
+            availableSeconds > 0 &&
+            transitions < chainStages.length
+          ) {
+            const stage = chainStages[particle.chainStage];
+            if (!stage?.halfLifeSeconds) break;
 
-          if (simulationMode === "chain") {
+            const randomValue = Math.max(Number.EPSILON, 1 - Math.random());
+            const waitSeconds =
+              (-Math.log(randomValue) * stage.halfLifeSeconds) / Math.LN2;
+            if (waitSeconds > availableSeconds) break;
+
+            availableSeconds -= waitSeconds;
             particle.chainStage += 1;
             particle.phase = "daughter";
-          } else {
-            particle.phase = "daughter";
+            transitions += 1;
+            burstsRef.current.push({
+              id: burstIdRef.current++,
+              x: particle.x,
+              y: particle.y,
+              life: 1,
+              angle: Math.random() * Math.PI * 2,
+              kind: stage.mode ?? "alpha",
+            });
           }
+        } else if (
+          particle.phase === "parent" &&
+          decayProbability > 0 &&
+          Math.random() < decayProbability
+        ) {
+          particle.phase = "daughter";
           burstsRef.current.push({
             id: burstIdRef.current++,
             x: particle.x,
             y: particle.y,
             life: 1,
             angle: Math.random() * Math.PI * 2,
-            kind: burstMode,
+            kind: preset.mode,
           });
         }
       }
@@ -1799,7 +1826,15 @@ export default function Home() {
 
     frameId = requestAnimationFrame(simulate);
     return () => cancelAnimationFrame(frameId);
-  }, [chainStages, paused, preset.mode, simulationMode, speed]);
+  }, [
+    chainStages,
+    paused,
+    preset.halfLife,
+    preset.mode,
+    preset.unit,
+    simulationMode,
+    speed,
+  ]);
 
   const handleDetectorPulse = (
     event: ReactPointerEvent<SVGSVGElement>,
@@ -2262,7 +2297,7 @@ export default function Home() {
                 <p>
                   <span>観察メモ</span>
                   主要核種のみを表示しています。横にスクロールして連鎖を追えます。
-                  半減期の差が大きいため、連鎖の進行速度は観察用に調整しています。
+                  進行速度は調整せず、各核種の実際の半減期比を使用しています。
                 </p>
               </div>
             )}
@@ -2446,7 +2481,7 @@ export default function Home() {
               {simulationMode === "chain" ? (
                 <p>
                   {preset.parent}の半減期を基準に、現実の1秒ごとに実時間が約
-                  {simulationRate}進みます。連鎖内の進行速度は観察用に調整しています。
+                  {simulationRate}進みます。連鎖内の各核種も同じ実時間で計算します。
                 </p>
               ) : (
                 <p>
