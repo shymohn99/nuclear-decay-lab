@@ -1261,6 +1261,53 @@ footer a:focus-visible {
   font-size: 15px;
 }
 
+.control-field-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 12px;
+}
+
+.number-input {
+  display: grid;
+  grid-template-columns: minmax(62px, 78px) auto;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid var(--ink);
+  background: rgba(255, 255, 255, 0.46);
+}
+
+.number-input input {
+  width: 100%;
+  height: 38px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  outline: 0;
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 15px;
+  text-align: right;
+}
+
+.number-input input:focus-visible {
+  box-shadow: inset 0 0 0 2px rgb(var(--parent-rgb));
+}
+
+.number-input span {
+  padding: 0 9px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.particle-count-field > small {
+  margin-top: -5px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
 input[type="range"] {
   width: 100%;
   height: 4px;

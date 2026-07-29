@@ -68,6 +68,12 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /stroke=\{daughterColor\}/);
   assert.match(page, /fill=\{particleColor\}/);
   assert.match(page, /appendHistoryPoint/);
+  assert.match(page, /points\.at\(-1\)\?\.remaining === point\.remaining/);
+  assert.doesNotMatch(page, /MAX_HISTORY_POINTS|index % 2 === 0/);
+  assert.match(page, /const toStepPath/);
+  assert.match(page, /observedPath: toStepPath\(observed\)/);
+  assert.match(page, /id="atom-count-input"/);
+  assert.match(page, /MAX_ATOM_COUNT = 500/);
   assert.match(page, /VISUAL_UPDATE_INTERVAL_MS/);
   assert.match(page, /particleNodeRefs/);
   assert.doesNotMatch(page, /SIMULATION_FRAME_INTERVAL_MS/);
@@ -119,6 +125,7 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(css, /\.chain-track/);
   assert.match(css, /scroll-snap-type:\s*x proximity/);
   assert.match(css, /\.chain-stage-copy/);
+  assert.match(css, /\.number-input/);
   assert.match(css, /@media \(max-width: 720px\)/);
   assert.match(layout, /lang="ja"/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
