@@ -30,8 +30,17 @@ test("server-renders the nuclear decay lab", async () => {
 
   const html = await response.text();
   assert.match(html, /<html lang="ja">/i);
-  assert.match(html, /<title>Decay Lab \| 原子核崩壊シミュレーター<\/title>/i);
-  assert.match(html, /核崩壊シミュレーター/);
+  assert.match(
+    html,
+    /<title>nuclear-decay-lab \| Monte Carlo Nuclear Decay Simulator<\/title>/i,
+  );
+  assert.match(html, /<span>原子核崩壊<\/span>/);
+  assert.match(html, /<span>シミュレーター<\/span>/);
+  assert.match(html, />nuclear-decay-lab</);
+  assert.match(
+    html,
+    /https:\/\/github\.com\/shymohn99\/nuclear-decay-lab/,
+  );
   assert.match(html, /ヨウ素131/);
   assert.match(html, /核種と放射系列/);
   assert.match(html, /U-238系列/);
@@ -55,7 +64,7 @@ test("server-renders the nuclear decay lab", async () => {
 });
 
 test("ships the simulation source without starter dependencies", async () => {
-  const [page, css, layout, packageJson, radionuclides, dataLicense] =
+  const [page, css, layout, packageJson, radionuclides, dataLicense, readme] =
     await Promise.all([
       readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
       readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
@@ -66,6 +75,7 @@ test("ships the simulation source without starter dependencies", async () => {
         new URL("../public/data/LICENSE.ICRP-07.txt", import.meta.url),
         "utf8",
       ),
+      readFile(new URL("../README.md", import.meta.url), "utf8"),
     ]);
 
   assert.match(page, /requestAnimationFrame/);
@@ -107,6 +117,11 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /seriesPresets/);
   assert.match(page, /className="nuclide-table"/);
   assert.match(page, /type SimulationMode = "single" \| "chain"/);
+  assert.match(page, /type ChainRateMode = "physical" \| "observation"/);
+  assert.match(page, /className="chain-rate-selector"/);
+  assert.match(page, /aria-pressed=\{chainRateMode === "physical"\}/);
+  assert.match(page, /aria-pressed=\{chainRateMode === "observation"\}/);
+  assert.match(page, /非物理モード/);
   assert.match(page, /function getChainStages/);
   assert.match(page, /chainStage/);
   assert.match(page, /className="nuclide-map"/);
@@ -165,12 +180,28 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(css, /scroll-snap-type:\s*x proximity/);
   assert.match(css, /\.log-scale-marks/);
   assert.match(css, /\.chain-stage-copy/);
+  assert.match(css, /\.chain-rate-selector/);
+  assert.match(css, /\.header-links/);
+  assert.match(css, /\.footer-brand/);
+  assert.match(
+    css,
+    /\.hero-copy\s*\{[\s\S]*grid-template-columns:\s*130px minmax\(0, 1fr\)/,
+  );
+  assert.match(
+    css,
+    /\.hero-description\s*\{[\s\S]*grid-column:\s*2/,
+  );
   assert.match(css, /\.number-input/);
   assert.match(css, /\.genealogy-panel/);
   assert.match(css, /\.detector-lab-grid/);
   assert.match(css, /\.scope-bars/);
   assert.match(css, /@media \(max-width: 720px\)/);
   assert.match(layout, /lang="ja"/);
+  assert.match(
+    layout,
+    /nuclear-decay-lab \| Monte Carlo Nuclear Decay Simulator/,
+  );
+  assert.match(layout, /summary_large_image/);
   assert.match(radionuclides, /ICRP-107 \/ AME2020 \/ Nubase2020/);
   assert.ok(
     (radionuclides.match(/^\s+\["/gm) ?? []).length > 900,
@@ -181,6 +212,14 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(dataLicense, /Copyright \(c\) 2008 A\. Endo and K\.F\. Eckerman/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.doesNotMatch(page, /_sites-preview|SkeletonPreview/);
+  assert.ok(
+    readme.indexOf("## English") < readme.indexOf("## 日本語"),
+    "READMEは英語の説明を日本語より先に掲載する",
+  );
+  assert.match(readme, /### How to use/);
+  assert.match(readme, /### 使い方/);
+  assert.match(readme, /Physical ratio — default/);
+  assert.match(readme, /観察用/);
 
   await assert.rejects(
     access(new URL("../app/_sites-preview", import.meta.url)),

@@ -17,6 +17,7 @@ import {
 type DecayMode = "alpha" | "beta" | "gamma";
 type DecaySeries = "independent" | "uranium-238" | "thorium-232" | "uranium-235";
 type SimulationMode = "single" | "chain";
+type ChainRateMode = "physical" | "observation";
 type CatalogView = "table" | "map";
 type DetectorKey = "gm" | "scintillator" | "semiconductor";
 type ShieldKey = "none" | "paper" | "aluminum" | "lead";
@@ -1602,6 +1603,8 @@ export default function Home() {
   const [seriesKey, setSeriesKey] = useState<DecaySeries>("independent");
   const [simulationMode, setSimulationMode] =
     useState<SimulationMode>("single");
+  const [chainRateMode, setChainRateMode] =
+    useState<ChainRateMode>("physical");
   const [catalogView, setCatalogView] = useState<CatalogView>("table");
   const [atomCount, setAtomCount] = useState(160);
   const [atomCountInput, setAtomCountInput] = useState("160");
@@ -1708,7 +1711,7 @@ export default function Home() {
 
   useEffect(() => {
     resetSimulation();
-  }, [presetKey, resetSimulation, simulationMode]);
+  }, [chainRateMode, presetKey, resetSimulation, simulationMode]);
 
   useEffect(() => {
     let frameId = 0;
@@ -1750,34 +1753,55 @@ export default function Home() {
         );
 
         if (simulationMode === "chain") {
-          let availableSeconds = simulatedSeconds;
-          let transitions = 0;
-
-          while (
-            particle.chainStage < chainStages.length - 1 &&
-            availableSeconds > 0 &&
-            transitions < chainStages.length
-          ) {
+          if (chainRateMode === "observation") {
             const stage = chainStages[particle.chainStage];
-            if (!stage?.halfLifeSeconds) break;
+            if (
+              stage &&
+              particle.chainStage < chainStages.length - 1 &&
+              decayProbability > 0 &&
+              Math.random() < decayProbability
+            ) {
+              particle.chainStage += 1;
+              particle.phase = "daughter";
+              burstsRef.current.push({
+                id: burstIdRef.current++,
+                x: particle.x,
+                y: particle.y,
+                life: 1,
+                angle: Math.random() * Math.PI * 2,
+                kind: stage.mode ?? "alpha",
+              });
+            }
+          } else {
+            let availableSeconds = simulatedSeconds;
+            let transitions = 0;
 
-            const randomValue = Math.max(Number.EPSILON, 1 - Math.random());
-            const waitSeconds =
-              (-Math.log(randomValue) * stage.halfLifeSeconds) / Math.LN2;
-            if (waitSeconds > availableSeconds) break;
+            while (
+              particle.chainStage < chainStages.length - 1 &&
+              availableSeconds > 0 &&
+              transitions < chainStages.length
+            ) {
+              const stage = chainStages[particle.chainStage];
+              if (!stage?.halfLifeSeconds) break;
 
-            availableSeconds -= waitSeconds;
-            particle.chainStage += 1;
-            particle.phase = "daughter";
-            transitions += 1;
-            burstsRef.current.push({
-              id: burstIdRef.current++,
-              x: particle.x,
-              y: particle.y,
-              life: 1,
-              angle: Math.random() * Math.PI * 2,
-              kind: stage.mode ?? "alpha",
-            });
+              const randomValue = Math.max(Number.EPSILON, 1 - Math.random());
+              const waitSeconds =
+                (-Math.log(randomValue) * stage.halfLifeSeconds) / Math.LN2;
+              if (waitSeconds > availableSeconds) break;
+
+              availableSeconds -= waitSeconds;
+              particle.chainStage += 1;
+              particle.phase = "daughter";
+              transitions += 1;
+              burstsRef.current.push({
+                id: burstIdRef.current++,
+                x: particle.x,
+                y: particle.y,
+                life: 1,
+                angle: Math.random() * Math.PI * 2,
+                kind: stage.mode ?? "alpha",
+              });
+            }
           }
         } else if (
           particle.phase === "parent" &&
@@ -1839,6 +1863,7 @@ export default function Home() {
     frameId = requestAnimationFrame(simulate);
     return () => cancelAnimationFrame(frameId);
   }, [
+    chainRateMode,
     chainStages,
     paused,
     preset.halfLife,
@@ -2008,16 +2033,33 @@ export default function Home() {
       }
     >
       <header className="lab-header">
-        <a className="brand" href="#simulator" aria-label="原子核崩壊実験室 トップ">
-          <span className="brand-index">NDL—01</span>
-          <span>原子核崩壊実験室</span>
+        <a className="brand" href="#simulator" aria-label="nuclear-decay-lab トップ">
+          <span>nuclear-decay-lab</span>
         </a>
-        <p>教育用モンテカルロ・シミュレーション</p>
+        <nav className="header-links" aria-label="Shymohnとプロジェクトへのリンク">
+          <a href="https://x.com/Shymohn" target="_blank" rel="noopener noreferrer">
+            @Shymohn / X
+          </a>
+          <a href="https://github.com/shymohn99" target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
+          <a
+            className="repository-link"
+            href="https://github.com/shymohn99/nuclear-decay-lab"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Source ↗
+          </a>
+        </nav>
       </header>
 
       <section className="hero-copy" aria-labelledby="page-title">
         <p className="section-number">01 / SIMULATOR</p>
-        <h1 id="page-title">原子核崩壊<br />シミュレーター</h1>
+        <h1 id="page-title">
+          <span>原子核崩壊</span>
+          <span>シミュレーター</span>
+        </h1>
         <p className="hero-description">
           個々の原子核がいつ壊変するかは予測できません。
           ここでは多数の原子核を動かし、確率的な現象から半減期の曲線が現れる様子を観察できます。
@@ -2309,7 +2351,9 @@ export default function Home() {
                 <p>
                   <span>観察メモ</span>
                   主要核種のみを表示しています。横にスクロールして連鎖を追えます。
-                  進行速度は調整せず、各核種の実際の半減期比を使用しています。
+                  {chainRateMode === "physical"
+                    ? "各核種の実際の半減期比で進行しています。"
+                    : "各段階へ共通の観察用壊変定数を適用しています。"}
                 </p>
               </div>
             )}
@@ -2424,6 +2468,35 @@ export default function Home() {
               </small>
             </div>
 
+            {simulationMode === "chain" && (
+              <fieldset className="chain-rate-selector">
+                <legend>連鎖の壊変定数</legend>
+                <div>
+                  <button
+                    type="button"
+                    aria-pressed={chainRateMode === "physical"}
+                    onClick={() => setChainRateMode("physical")}
+                  >
+                    <strong>実時間比</strong>
+                    <small>核種固有の半減期</small>
+                  </button>
+                  <button
+                    type="button"
+                    aria-pressed={chainRateMode === "observation"}
+                    onClick={() => setChainRateMode("observation")}
+                  >
+                    <strong>観察用</strong>
+                    <small>全段階を共通尺度化</small>
+                  </button>
+                </div>
+                <p>
+                  {chainRateMode === "physical"
+                    ? "実在の半減期比を保ちます。短寿命核種は一瞬で通過する場合があります。"
+                    : "アニメーション観察用の非物理モードです。実在の半減期比は使用しません。"}
+                </p>
+              </fieldset>
+            )}
+
             <div className="control-field particle-count-field">
               <div className="control-field-heading">
                 <label htmlFor="atom-count-input">原子核の数</label>
@@ -2510,8 +2583,11 @@ export default function Home() {
               </div>
               {simulationMode === "chain" ? (
                 <p>
-                  {preset.parent}の半減期を基準に、現実の1秒ごとに実時間が約
-                  {simulationRate}進みます。連鎖内の各核種も同じ実時間で計算します。
+                  {chainRateMode === "physical"
+                    ? `${preset.parent}の半減期を基準に、現実の1秒ごとに実時間が約${simulationRate}進みます。連鎖内の各核種も同じ実時間で計算します。`
+                    : `現実の1秒ごとに約${formatNumber(
+                        SIMULATED_HALF_LIVES_PER_SECOND * speed,
+                      )} T½進みます。各段階へ同じ観察用壊変定数を適用します。`}
                 </p>
               ) : (
                 <p>
@@ -2706,10 +2782,25 @@ export default function Home() {
       </section>
 
       <footer>
-        <span>NUCLEAR DECAY LAB / 2026</span>
-        <nav aria-label="ShymohnのSNS">
-          <a href="https://x.com/Shymohn" target="_blank" rel="noopener noreferrer">X</a>
-          <a href="https://github.com/shymohn99" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <div className="footer-brand">
+          <strong>nuclear-decay-lab</strong>
+          <span>MONTE CARLO DECAY SIMULATOR / 2026</span>
+        </div>
+        <nav aria-label="Shymohnとプロジェクトへのリンク">
+          <a href="https://x.com/Shymohn" target="_blank" rel="noopener noreferrer">
+            @Shymohn on X ↗
+          </a>
+          <a href="https://github.com/shymohn99" target="_blank" rel="noopener noreferrer">
+            GitHub Profile ↗
+          </a>
+          <a
+            className="repository-link"
+            href="https://github.com/shymohn99/nuclear-decay-lab"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View Source ↗
+          </a>
         </nav>
         <p>2026 @Shymohn all rights reserved.</p>
       </footer>
