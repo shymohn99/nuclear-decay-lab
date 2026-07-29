@@ -128,6 +128,9 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /function formatSimulationRate/);
   assert.match(page, /SIMULATED_HALF_LIVES_PER_SECOND \*[\s\S]*speed/);
   assert.match(page, /TIME SCALE \/ 現実時間との対応/);
+  assert.match(page, /経過時間（\$\{preset\.unit\} \/ \$\{preset\.parent\}基準）/);
+  assert.match(page, /実時間が約/);
+  assert.doesNotMatch(page, /段階T½|規格化時間|段階ごとに時間尺度/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /\.nuclide-map/);
   assert.match(css, /\.nuclide-map-known-field/);
