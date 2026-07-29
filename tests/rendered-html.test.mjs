@@ -37,6 +37,8 @@ test("server-renders the nuclear decay lab", async () => {
   assert.match(html, /U-238系列/);
   assert.match(html, /Th-232系列/);
   assert.match(html, /U-235系列/);
+  assert.match(html, /核種マップ/);
+  assert.match(html, /放射系列の連鎖/);
   assert.match(html, /<th scope="col">娘核種<\/th>/);
   assert.match(html, /<th scope="col">半減期<\/th>/);
   assert.match(html, /現実の1秒/);
@@ -92,10 +94,18 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /actinium-227/);
   assert.match(page, /seriesPresets/);
   assert.match(page, /className="nuclide-table"/);
+  assert.match(page, /type SimulationMode = "single" \| "chain"/);
+  assert.match(page, /function getChainStages/);
+  assert.match(page, /chainStage/);
+  assert.match(page, /className="nuclide-map"/);
+  assert.match(page, /startChainMode/);
+  assert.match(page, /主要核種を表示・中間核種は省略/);
   assert.match(page, /function formatSimulationRate/);
   assert.match(page, /SIMULATED_HALF_LIVES_PER_SECOND \*[\s\S]*speed/);
   assert.match(page, /TIME SCALE \/ 現実時間との対応/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.match(css, /\.nuclide-map/);
+  assert.match(css, /\.chain-track/);
   assert.match(css, /@media \(max-width: 720px\)/);
   assert.match(layout, /lang="ja"/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
