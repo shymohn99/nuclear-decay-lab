@@ -15,6 +15,27 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),
   title,
   description,
+  alternates: {
+    canonical: `${siteBasePath}/`,
+  },
+  authors: [
+    {
+      name: "Shymohn",
+      url: "https://shymohn99.github.io/portfolio/",
+    },
+  ],
+  creator: "Shymohn",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   icons: {
     icon: `${siteBasePath}/favicon.svg`,
     shortcut: `${siteBasePath}/favicon.svg`,
@@ -23,6 +44,9 @@ export const metadata: Metadata = {
     title,
     description,
     type: "website",
+    url: `${siteBasePath}/`,
+    siteName: "nuclear-decay-lab",
+    locale: "ja_JP",
     images: [
       {
         url: `${siteBasePath}/og.png`,
@@ -40,6 +64,28 @@ export const metadata: Metadata = {
   },
 };
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "nuclear-decay-lab",
+  url: `${siteOrigin}${siteBasePath}/`,
+  description,
+  applicationCategory: "EducationalApplication",
+  operatingSystem: "Any",
+  isAccessibleForFree: true,
+  image: `${siteOrigin}${siteBasePath}/og.png`,
+  inLanguage: ["ja", "en"],
+  creator: {
+    "@type": "Person",
+    name: "Shymohn",
+    url: "https://shymohn99.github.io/portfolio/",
+    sameAs: [
+      "https://github.com/shymohn99",
+      "https://x.com/Shymohn",
+    ],
+  },
+};
+
 export const viewport: Viewport = {
   themeColor: "#f1efe8",
   colorScheme: "light",
@@ -52,7 +98,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
