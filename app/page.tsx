@@ -9,6 +9,10 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import {
+  MAP_RADIONUCLIDES,
+  type MapDecayCode,
+} from "./radionuclides";
 
 type DecayMode = "alpha" | "beta" | "gamma";
 type DecaySeries = "independent" | "uranium-238" | "thorium-232" | "uranium-235";
@@ -253,7 +257,7 @@ const KNOWN_NUCLIDE_PATH = KNOWN_NUCLIDES.map(({ protons, neutrons }) => {
   return `M${x} ${y}h7.25v7.25h-7.25Z`;
 }).join("");
 
-const PRESETS: IsotopePreset[] = [
+const CORE_PRESETS: IsotopePreset[] = [
   createPreset({
     key: "iodine-131",
     series: "independent",
@@ -544,6 +548,128 @@ const PRESETS: IsotopePreset[] = [
     parentRgb: "117, 82, 135",
     daughterRgb: "184, 112, 49",
   }),
+];
+
+const FEATURED_INDEPENDENT_KEYS = new Set([
+  "iodine-131",
+  "carbon-14",
+  "cobalt-60",
+]);
+
+const MAP_DECAY_CONFIG: Record<
+  MapDecayCode,
+  {
+    mode: DecayMode;
+    label: string;
+    emission: string;
+    emissionSymbol: string;
+    parentRgb: string;
+    daughterRgb: string;
+  }
+> = {
+  alpha: {
+    mode: "alpha",
+    label: "α壊変",
+    emission: "ヘリウム原子核",
+    emissionSymbol: "⁴₂He",
+    parentRgb: "194, 66, 60",
+    daughterRgb: "38, 119, 173",
+  },
+  "beta-minus": {
+    mode: "beta",
+    label: "β⁻壊変",
+    emission: "電子・反電子ニュートリノ",
+    emissionSymbol: "e⁻ + ν̄ₑ",
+    parentRgb: "49, 151, 170",
+    daughterRgb: "56, 137, 92",
+  },
+  "beta-plus-ec": {
+    mode: "beta",
+    label: "β⁺壊変 / 電子捕獲",
+    emission: "陽電子・ニュートリノ、または特性X線",
+    emissionSymbol: "e⁺ + νₑ / EC",
+    parentRgb: "196, 111, 47",
+    daughterRgb: "74, 133, 157",
+  },
+  "electron-capture": {
+    mode: "beta",
+    label: "電子捕獲",
+    emission: "ニュートリノ・特性X線",
+    emissionSymbol: "νₑ + X",
+    parentRgb: "177, 126, 48",
+    daughterRgb: "72, 135, 143",
+  },
+  "isomeric-transition": {
+    mode: "gamma",
+    label: "核異性体転移",
+    emission: "γ線",
+    emissionSymbol: "γ",
+    parentRgb: "132, 85, 183",
+    daughterRgb: "67, 125, 174",
+  },
+};
+
+const CORE_MAP_POSITIONS = new Set(
+  CORE_PRESETS.map(
+    (item) =>
+      `${item.parentNuclide.protonNumber}:${item.parentNuclide.massNumber}`,
+  ),
+);
+
+const MAP_ONLY_PRESETS: IsotopePreset[] = MAP_RADIONUCLIDES.filter(
+  ([, massNumber, protonNumber]) =>
+    !CORE_MAP_POSITIONS.has(`${protonNumber}:${massNumber}`),
+).map(
+  ([
+    parentSymbol,
+    parentMass,
+    parentProtons,
+    daughterSymbol,
+    daughterMass,
+    daughterProtons,
+    daughterMetastable,
+    halfLife,
+    unit,
+    decayCode,
+    branchingFraction,
+  ]) => {
+    const config = MAP_DECAY_CONFIG[decayCode];
+    const branchLabel =
+      branchingFraction < 0.9995
+        ? `（${formatNumber(branchingFraction * 100)}%）`
+        : "";
+    const daughterSuffix = daughterMetastable ? "m" : "";
+
+    return createPreset({
+      key: `map-${parentSymbol.toLowerCase()}-${parentMass}`,
+      series: "independent",
+      parent: `${parentSymbol}-${parentMass}`,
+      daughter: `${daughterSymbol}-${daughterMass}${daughterSuffix}`,
+      parentNuclide: {
+        massNumber: parentMass,
+        protonNumber: parentProtons,
+        element: parentSymbol,
+      },
+      daughterNuclide: {
+        massNumber: daughterMass,
+        protonNumber: daughterProtons,
+        element: `${daughterSymbol}${daughterMetastable ? "ᵐ" : ""}`,
+      },
+      halfLife,
+      unit,
+      mode: config.mode,
+      modeLabel: `${config.label}${branchLabel}`,
+      emission: config.emission,
+      emissionSymbol: config.emissionSymbol,
+      parentRgb: config.parentRgb,
+      daughterRgb: config.daughterRgb,
+    });
+  },
+);
+
+const PRESETS: IsotopePreset[] = [
+  ...CORE_PRESETS,
+  ...MAP_ONLY_PRESETS,
 ];
 
 function getChainStages(series: DecaySeries): ChainStage[] {
@@ -852,7 +978,10 @@ function NuclideMapExplorer({
         <div className="nuclide-map-toolbar">
           <div className="nuclide-map-legend" aria-label="核種マップの凡例">
             <span><i className="known-swatch" />既知核種 {KNOWN_NUCLIDES.length.toLocaleString("ja-JP")}</span>
-            <span><i className="implemented-swatch" />実装済み {PRESETS.length}</span>
+            <span>
+              <i className="implemented-swatch" />
+              選択可能 {PRESETS.length.toLocaleString("ja-JP")}
+            </span>
           </div>
           <div className="nuclide-map-controls" aria-label="核種マップの表示操作">
             <button type="button" onClick={() => zoomMap(1 / 1.35)} aria-label="拡大">＋</button>
@@ -928,7 +1057,7 @@ function NuclideMapExplorer({
                   presetKey === item.key ? "is-active" : ""
                 }`}
                 role="button"
-                tabIndex={0}
+                tabIndex={presetKey === item.key ? 0 : -1}
                 aria-label={`${item.parent}、中性子数${neutronNumber}、${item.modeLabel}、半減期${item.halfLife}${item.unit}`}
                 onClick={() => onSelectPreset(item)}
                 onKeyDown={(event) => {
@@ -971,7 +1100,7 @@ function NuclideMapExplorer({
         </p>
       </div>
       <div className="nuclide-map-selection" aria-live="polite">
-        <span className="selection-label">SELECTED / 実装済み</span>
+        <span className="selection-label">SELECTED / シミュレーション可能</span>
         <NuclideSymbol
           nuclide={preset.parentNuclide}
           className="nuclide-symbol-table"
@@ -986,7 +1115,14 @@ function NuclideMapExplorer({
           target="_blank"
           rel="noreferrer"
         >
-          既知核種データ: NNDC NuDat ↗
+          既知核種マップ: NNDC NuDat ↗
+        </a>
+        <a
+          href="https://radioactivedecay.github.io/overview.html"
+          target="_blank"
+          rel="noreferrer"
+        >
+          壊変データ: ICRP-107 / AME2020 ↗
         </a>
       </div>
     </div>
@@ -1028,7 +1164,13 @@ export default function Home() {
     [presetKey],
   );
   const seriesPresets = useMemo(
-    () => PRESETS.filter((item) => item.series === seriesKey),
+    () =>
+      CORE_PRESETS.filter(
+        (item) =>
+          item.series === seriesKey &&
+          (seriesKey !== "independent" ||
+            FEATURED_INDEPENDENT_KEYS.has(item.key)),
+      ),
     [seriesKey],
   );
   const chainStages = useMemo(() => getChainStages(seriesKey), [seriesKey]);
@@ -1431,7 +1573,7 @@ export default function Home() {
             <strong>
               {catalogView === "table"
                 ? `${seriesPresets.length} 核種`
-                : `${KNOWN_NUCLIDES.length.toLocaleString("ja-JP")} 核種 / 実装 ${PRESETS.length}`}
+                : `${KNOWN_NUCLIDES.length.toLocaleString("ja-JP")} 核種 / 選択可能 ${PRESETS.length.toLocaleString("ja-JP")}`}
             </strong>
           </div>
           {catalogView === "table" ? (
