@@ -1,1 +1,219 @@
-�jh�֬���~�&��^j���춸��)���ZqǬ���tX�y��zy�?��&�Ǭ�jh��^���i�u�^�֬�w�w-���zw^��'��(�G�R�
+import assert from "node:assert/strict";
+import { access, readFile } from "node:fs/promises";
+import test from "node:test";
+
+async function render() {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  return worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+}
+
+test("server-renders the nuclear decay lab", async () => {
+  const response = await render();
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
+
+  const html = await response.text();
+  assert.match(html, /<html lang="ja">/i);
+  assert.match(
+    html,
+    /<title>nuclear-decay-lab \| Monte Carlo Nuclear Decay Simulator<\/title>/i,
+  );
+  assert.match(html, /<span>原子核崩壊<\/span>/);
+  assert.match(html, /<span>シミュレーター<\/span>/);
+  assert.match(html, />nuclear-decay-lab</);
+  assert.match(
+    html,
+    /https:\/\/github\.com\/shymohn99\/nuclear-decay-lab/,
+  );
+  assert.match(html, /ヨウ素131/);
+  assert.match(html, /核種と放射系列/);
+  assert.match(html, /U-238系列/);
+  assert.match(html, /Th-232系列/);
+  assert.match(html, /U-235系列/);
+  assert.match(html, /核種マップ/);
+  assert.match(html, /放射系列の連鎖/);
+  assert.match(html, /<th scope="col">娘核種<\/th>/);
+  assert.match(html, /<th scope="col">半減期<\/th>/);
+  assert.match(html, /現実の1秒/);
+  assert.match(html, /約(?:<!-- -->)?1\.44日/);
+  assert.match(html, /class="particle-svg"/i);
+  assert.match(html, /aria-label="シミュレーション設定"/);
+  assert.match(html, /N\(t\) = N₀/);
+  assert.match(html, /<sup>131<\/sup><sub>53<\/sub>/);
+  assert.match(html, /<sup>131<\/sup><sub>54<\/sub>/);
+  assert.match(html, /@Shymohn all rights reserved/);
+  assert.match(html, /fill="rgb\(221, 80, 78\)"/);
+  assert.match(html, /stroke="rgb\(49, 163, 177\)"/);
+  assert.doesNotMatch(html, /codex-preview|Your site is taking shape/i);
+});
+
+test("ships the simulation source without starter dependencies", async () => {
+  const [page, css, layout, packageJson, radionuclides, dataLicense, readme] =
+    await Promise.all([
+      readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+      readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+      readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+      readFile(new URL("../package.json", import.meta.url), "utf8"),
+      readFile(new URL("../app/radionuclides.ts", import.meta.url), "utf8"),
+      readFile(
+        new URL("../public/data/LICENSE.ICRP-07.txt", import.meta.url),
+        "utf8",
+      ),
+      readFile(new URL("../README.md", import.meta.url), "utf8"),
+    ]);
+
+  assert.match(page, /requestAnimationFrame/);
+  assert.match(page, /Math\.pow\(0\.5/);
+  assert.match(page, /observedPoints/);
+  assert.match(page, /stroke=\{daughterColor\}/);
+  assert.match(page, /fill=\{particleColor\}/);
+  assert.match(page, /appendHistoryPoint/);
+  assert.match(page, /points\.at\(-1\)\?\.remaining === point\.remaining/);
+  assert.doesNotMatch(page, /MAX_HISTORY_POINTS|index % 2 === 0/);
+  assert.match(page, /const toStepPath/);
+  assert.match(page, /observedPath: toStepPath\(observed\)/);
+  assert.match(page, /id="atom-count-input"/);
+  assert.match(page, /MAX_ATOM_COUNT = 500/);
+  assert.match(page, /VISUAL_UPDATE_INTERVAL_MS/);
+  assert.match(page, /particleNodeRefs/);
+  assert.doesNotMatch(page, /SIMULATION_FRAME_INTERVAL_MS/);
+  assert.match(page, /copyEquation/);
+  assert.match(page, /exportHistoryCsv/);
+  assert.match(page, /function NuclideSymbol/);
+  assert.match(page, /massNumber: 131, protonNumber: 53/);
+  assert.match(page, /chartScale === "log"/);
+  assert.match(page, /Math\.log10/);
+  assert.match(page, /setChartScale\("log"\)/);
+  assert.match(page, /className="decay-flow"/);
+  assert.match(page, /https:\/\/x\.com\/Shymohn/);
+  assert.match(page, /https:\/\/github\.com\/shymohn99/);
+  assert.doesNotMatch(page, /feGaussianBlur/);
+  assert.match(page, /iodine-131/);
+  assert.match(page, /carbon-14/);
+  assert.match(page, /cobalt-60/);
+  assert.match(page, /polonium-210/);
+  assert.match(page, /uranium-238/);
+  assert.match(page, /thorium-232/);
+  assert.match(page, /uranium-235/);
+  assert.match(page, /radium-226/);
+  assert.match(page, /radon-220/);
+  assert.match(page, /actinium-227/);
+  assert.match(page, /seriesPresets/);
+  assert.match(page, /className="nuclide-table"/);
+  assert.match(page, /type SimulationMode = "single" \| "chain"/);
+  assert.match(page, /type ChainRateMode = "physical" \| "observation"/);
+  assert.match(page, /className="chain-rate-selector"/);
+  assert.match(page, /aria-pressed=\{chainRateMode === "physical"\}/);
+  assert.match(page, /aria-pressed=\{chainRateMode === "observation"\}/);
+  assert.match(page, /非物理モード/);
+  assert.match(page, /function getChainStages/);
+  assert.match(page, /chainStage/);
+  assert.match(page, /className="nuclide-map"/);
+  assert.match(page, /startChainMode/);
+  assert.match(page, /主要核種のみを表示しています/);
+  assert.match(page, /className="chain-stage-copy"/);
+  assert.match(page, /STEP \{String\(index \+ 1\)/);
+  assert.match(page, /KNOWN_NUCLIDE_RANGES/);
+  assert.match(page, /KNOWN_NUCLIDE_PATH/);
+  assert.match(page, /MAP_RADIONUCLIDES/);
+  assert.match(page, /MAP_ONLY_PRESETS/);
+  assert.match(page, /FEATURED_INDEPENDENT_KEYS/);
+  assert.match(page, /CORE_PRESETS\.filter/);
+  assert.match(page, /選択可能/);
+  assert.match(page, /function NuclideGenealogy/);
+  assert.match(page, /NUCLIDE GENEALOGY/);
+  assert.match(page, /PRESETS_BY_DAUGHTER/);
+  assert.match(page, /DESCENDANTS \/ 娘核種への流れ/);
+  assert.match(page, /function DetectorLab/);
+  assert.match(page, /02 \/ DETECTOR LAB/);
+  assert.match(page, /GM計数管/);
+  assert.match(page, /シンチレーション検出器/);
+  assert.match(page, /半導体検出器/);
+  assert.match(page, /Math\.exp\(-shield\.coefficient/);
+  assert.match(page, /信号 \/ 背景/);
+  assert.match(page, /handleMapPointerMove/);
+  assert.match(page, /addEventListener\("wheel", handleWheel, \{ passive: false \}\)/);
+  assert.match(page, /event\.stopPropagation\(\)/);
+  assert.match(page, /既知核種マップ: NNDC NuDat/);
+  assert.match(page, /function formatSimulationRate/);
+  assert.match(page, /SIMULATED_HALF_LIVES_PER_SECOND \*[\s\S]*speed/);
+  assert.match(page, /TIME SCALE \/ 現実時間との対応/);
+  assert.match(page, /経過時間（\$\{preset\.unit\} \/ \$\{preset\.parent\}基準）/);
+  assert.match(page, /実時間が約/);
+  assert.doesNotMatch(page, /段階T½|規格化時間|段階ごとに時間尺度/);
+  assert.doesNotMatch(page, /連鎖の進行速度は観察用に調整/);
+  assert.match(page, /halfLifeSeconds/);
+  assert.match(page, /waitSeconds[\s\S]*availableSeconds/);
+  assert.match(page, /各核種の実際の半減期比/);
+  assert.match(page, /Math\.log10\(speed\)/);
+  assert.match(page, /setSpeed\(10 \*\* Number\(event\.target\.value\)\)/);
+  assert.match(page, /時間倍率（対数）/);
+  assert.match(page, /min="-15"/);
+  assert.match(page, /max="6"/);
+  assert.match(page, /10⁻¹⁵×〜10⁶×の21桁/);
+  assert.match(page, /x: 0\.045 \+ random\(\) \* 0\.91/);
+  assert.match(page, /y: 0\.07 \+ random\(\) \* 0\.86/);
+  assert.match(page, /preserveAspectRatio="xMidYMid meet"/);
+  assert.doesNotMatch(page, /Math\.cos\(angle\)|Math\.sin\(angle\)/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.match(css, /\.nuclide-map/);
+  assert.match(css, /\.nuclide-map-known-field/);
+  assert.match(css, /cursor:\s*grabbing/);
+  assert.match(css, /touch-action:\s*none/);
+  assert.match(css, /\.chain-track/);
+  assert.match(css, /scroll-snap-type:\s*x proximity/);
+  assert.match(css, /\.log-scale-marks/);
+  assert.match(css, /\.chain-stage-copy/);
+  assert.match(css, /\.chain-rate-selector/);
+  assert.match(css, /\.header-links/);
+  assert.match(css, /\.footer-brand/);
+  assert.match(css, /\.number-input/);
+  assert.match(css, /\.genealogy-panel/);
+  assert.match(css, /\.detector-lab-grid/);
+  assert.match(css, /\.scope-bars/);
+  assert.match(css, /@media \(max-width: 720px\)/);
+  assert.match(layout, /lang="ja"/);
+  assert.match(
+    layout,
+    /nuclear-decay-lab \| Monte Carlo Nuclear Decay Simulator/,
+  );
+  assert.match(layout, /summary_large_image/);
+  assert.match(radionuclides, /ICRP-107 \/ AME2020 \/ Nubase2020/);
+  assert.ok(
+    (radionuclides.match(/^\s+\["/gm) ?? []).length > 900,
+    "核種マップ用データが900核種を超えている",
+  );
+  assert.doesNotMatch(radionuclides, /"\?+"/);
+  assert.match(radionuclides, /unit: "秒" \| "分" \| "時間" \| "日" \| "年"/);
+  assert.match(dataLicense, /Copyright \(c\) 2008 A\. Endo and K\.F\. Eckerman/);
+  assert.doesNotMatch(packageJson, /react-loading-skeleton/);
+  assert.doesNotMatch(page, /_sites-preview|SkeletonPreview/);
+  assert.ok(
+    readme.indexOf("## English") < readme.indexOf("## 日本語"),
+    "READMEは英語の説明を日本語より先に掲載する",
+  );
+  assert.match(readme, /### How to use/);
+  assert.match(readme, /### 使い方/);
+  assert.match(readme, /Physical ratio — default/);
+  assert.match(readme, /観察用/);
+
+  await assert.rejects(
+    access(new URL("../app/_sites-preview", import.meta.url)),
+  );
+});

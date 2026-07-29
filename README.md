@@ -1,5 +1,196 @@
-ç%yªİyÆ²•¦À)íz¶œ¶+Ş2‰íx&«–‰ZnŠÚ¶Šò~ŠŞÆ™h®)àç%yªİyÆ²uçÉÈZŠ{'¹ÉbuêŞ•«b¢{!Š›ÚÚv&­Š‰İz×œ¶*'Š{ayºèÂÇ«.+Ş²+^†Ûi³ÿç¹É^j·^q¬¥i»!Êj!Èršˆgr­‚›lŠ×†ŠÑîlö zÈm¶›?şÈršˆg÷Ø"¶›Šç¹É^j·^q¬¥i¿Ñzš,ŠÚ+Êm¦Ïÿ‚+a¹·(›û!Êj!Ÿßç%yªİyÆ²•¦Ò‡)¨†z'^m¦ÏÿÅÊ&ı(ršˆgx%ŠÈ@n‹­ç%yªİyÆ²•¦íº¹ì¶¬µ«b²ØœjYÚ¶êŞ¡úÚv*rØ¯y×œk(§¶†§Š{^­§-Š÷¯ŠËš•ìiz¸¦z{HØ¯‰Ûš–{œ•èyÆ²ºzkyØœµ¦åËb•æ¥j¸¦Šn•«b¢x+iÛš–\š¦šèiÈ^²Ø^}©¢–&«{héí‰©]yÆ²rêïy8^²+^r‰›Šw¬¶¬¥ªí‰É^•ëŞ–øÃ­…×œk'!j)İ‰¨+jkç%‰×¦j—!j»ljwZ²)©–'ây×^µç-¢¹ZnŠÚ¶ŠòN©®ˆŞrØ¬uë"‚w~ŠåyªçŠxÛâ²æ¥{e¢¶­Š‰È¶+'¢Ö«iØš¶*'±§Ş·)v'•Ú,Šg­¯*+­ëj·!‚¶yÆ¥réZ¶*'¶Š%æ­º·¬2‰íx&«–‡^q¬¬Šk¥jØ¨Ÿ­r§v+âvæ¥ç%z'^q¬©®†Ún)b²ØœjYrjw\¢jZ­ëaz†ìz»Şvš)ºV­Š‰ğŠØm…ëazŠŞ¶'•Ë«½â'uê^×§¶{œ–'^²«¢rIr²Ö«·­†·©­ëÖ­Š÷§¹Ébuë,¹ÈZ²*ŠwµßW­º'×‡(m©mëF§vš%¢x®›mt1¨è­×œk'!j)ì~‰e£azêÚ+¦Û-†Šâºm·Ù©İº¶§Šé¶ß›®'¬¶èºm…è«¦¸§r*Z–ËZëÂ‡!j)íŠh§‚jzÊkzÇ«½êŞjXZ•ùb}êÚ¶*,¢»¬y§%yªåÊf«‘çhnÇ«½«b¢wë‰éİ—+bš)àš‡^”Ûœ–'^™ªij|è¢h§²—œ¶IèÂyîrXzÆ§vÇ¥yËbš™^™éíyÙîrXzÇb­ç-—'ë¢kazw®¶º'é›z¿é®‹h{¦mêæj“nrXz§y©hƒ+kiÇšÇ¬¶Šìu« †×«±©İuëzwZÛ®‹§vØ^±é^r×ç%‰×ƒz×œ¶Šåi·(š–«xc,r)íŠYZ¶*'jwlzhœ¢wnrÚ+uë^rÚ+³b•ç!jx"(º·v+-jw²•Ø§‚f­z¸š–ÈbzWba‰É'zËÙjË«zg§¶Ø¦x¸§yªÚÙhªâ¶¢qÈZ®Û¢jZ­ê±êïyÖ§vØ^¢·­‰Æ¥uçÊ)Ü–çb	h
-îx§‚È¦ºV­Š‰ìZ'^–ˆ®+aš',¥çr‰í®‰f¢÷Ÿ®‰µÒÚ5Ó­†‹­–‹"âç(Úè–wš­æœ†Šİzº™¨'ŠÛxcºËZnW©¢›¥jØ¨Èh¢Ç­…éî™·«¡û"šéZµçg¹É^‰©İ­ë-j»m…ç±¥êâ™éíjÖ§ÊØ¦x6­jÚ(–Ç(§+ayË«­éíuçÉê®jØ¨©İ{h®Ûaz†ìz»Ú¶*'†+-¢¼š°$•Eë)¢{"½æœqë,‰¹^Š{^­öœzG²n†«vø¬‰¹^~‡.²ËZµë+yÛœyÙ¨¶*'²êi¢»ZÙZÊ‹­±ú+uë$¶ŠZÙ¨n)^Œ-¢ëÔ(h¢ÇšuçÊÇ«‰ëzWœ´‰İz—§uéíç%‰×¬~ŠÚ²)à•è¬¢Ú)zŠÜ†Š,z‰Ş¡ûazØkyéšŠçjÛ«jW^q¬¬z¸³`¡¢‹j{œ–'^RÇ­…ç(š–œ¶X¬µú+­êkzÇ§µ«b½éîrXzÊ+¢—§¶§¹Ébuéš¦Ú®Œ,zØ^Â'^­Æ­jZ İ'¥yËZ²)®•«b¢y¨uå,zÈ§‚W§¹Ébué¨uçè®‰ŞuçÊË^¦ŠÜ…¨§š‡^¶‡è–Z0²çzË"½çZºmz¹îrXzÎ†Š,zØ^r¢Ø¦Šx&¡×¥>¬‰Æ¥­«b¢+-…ç^}«¥µ©İ¦·¬z»Ş²{œ–'^²—œ‰øœ…©_–'Ş­«b¢Ã›±êïjØ¨ªi–'¬¢w¬…ªŞvø¬¹©mŠg¬q©^²‡¯z¼¬µ¨q©ÛzÇŸ”¶Ø^{^®)Ğë-¶§¹É^ºÇ(º{ZÛazZ j¸­†hœ¶)šémŠ™bz»azzZºÇ¨®·¬zÜ!zw¯z¹Şy×éšvØ^­ë.–Û¢jZ­ëazX¯z–«¶'%yø•×^q¬ªæ­Š‰ëzf¢)à¦Šn•«b¢w¬¶)šµçZrØ¯ŠÜšÙbæ«¢¹hªâ¶¢r
-Ú¦Ó¯+ay×­yËh®V›
-§ç^µç-¢»r¥çb²Ö§që!‰é]™«^®&¥²•Ûa‰É'zËÙjË«zg§µÛ«jØ¨Ú¢jZ­ç(º{kj×«zÊhÇ¬ğLi¢»r¢êëºp¨§+ayØ¬¦V²y×ª¹«b¢z+vŒ'–†¶¨nÇ«½çaŠËh¯&¬h$•~)^
-¢Ø¦Šx&¡×¬>¬‰Æ¥­«b¡×Ÿjém§!²Ö zë²+lç%‰×¬¥ç"~'!jWå‰÷“…ë"šéZ¶*'iÛÚÇ¬jYlµ¨²‰í…ë™êaÊÈœjW%¡É,¢÷«ÊÈh®Ùb½ç]jè!µêìq©éjË–j,¶)ìµ©í—,!z{a{'è–Z0j–«z{pŠØZê%¢œjXZ•ùb}äáŠÈ¬¶¦¡×­¢ëÂ§­éZ¶+Ş¶)±Æ¥zÉš¶×«9»®ö­Š‰ÄiÈ\…¨§²Ö zë±«!j·š‡b~'uçÉÊ'²Ö§µ8b²f¤zËayÊ&¦W­zÇª¹éÜyæ¬‰êí£­rî¶+b×§¶*'jYrv‡¬‹i­ë®÷«y©ajWå‰÷«jØ¨±8^Š{^­öœzV›z[-†+±©è˜r²'–†ìz»Ú¶*'š‡^¶†¯¢'\¢wî²)àŠÜ"¶jË«yÙîrWš­Ö­hør²',š‡^”Z+jÈ§‚WyÆ²²×©¶©®†Ún)b·+ajÖ§ºw^q¬v{œ•ë¬r§ëº¸§«b™ë-z›b²×±´÷^q¬
+# nuclear-decay-lab
+
+An interactive Monte Carlo laboratory for exploring nuclear decay, decay chains, nuclide relationships, and radiation detection in the browser.
+
+[Live site](https://nuclear-decay-lab-shymohn.shymohn.chatgpt.site) Â· [GitHub Pages](https://shymohn99.github.io/nuclear-decay-lab/) Â· [Repository](https://github.com/shymohn99/nuclear-decay-lab) Â· [@Shymohn on X](https://x.com/Shymohn)
+
+## English
+
+### About
+
+`nuclear-decay-lab` turns the statistical nature of radioactive decay into an interactive visual experiment. Individual nuclei decay unpredictably, while a large population gradually approaches the familiar exponential decay curve. The site combines this particle-level view with decay-chain diagrams, a nuclide map, charts, and a simplified detector laboratory.
+
+The project is designed for learning and visual exploration. It is not a radiation-safety, medical, dosimetry, or research-grade calculation tool.
+
+### Features
+
+- **Monte Carlo decay simulation** â€” watch individual nuclei decay probabilistically and compare the observed population with the theoretical curve.
+- **Independent nuclides** â€” quickly start with representative nuclides such as iodine-131, carbon-14, cobalt-60, and polonium-210.
+- **Major decay chains** â€” follow the uranium-238, thorium-232, and uranium-235 series through their principal stages.
+- **Two chain timing modes** â€” preserve real half-life ratios or use a clearly marked observation-friendly timing model.
+- **Nuclide map** â€” pan, zoom, inspect known nuclides, and select implemented nuclides directly from the neutron-number/proton-number map.
+- **Nuclide genealogy** â€” trace ancestors, daughters, and descendants around the selected nuclide.
+- **Detector lab** â€” compare GM, scintillation, and semiconductor detectors while changing source distance, shielding material, shielding thickness, and measurement time.
+- **Linear and logarithmic charts** â€” compare observed and theoretical decay, including long-running simulations.
+- **Wide logarithmic speed control** â€” move from `10â»Â¹âµÃ—` to `10â¶Ã—` without losing fine control near each order of magnitude.
+- **Adjustable population** â€” choose the number of simulated nuclei and restart the experiment at any time.
+- **Data tools** â€” copy the current decay equation and export the observation history as CSV.
+- **Responsive, accessible interface** â€” keyboard-visible focus states, reduced-motion support, and layouts for desktop and mobile.
+
+### How to use
+
+1. **Choose a decay series.** Select â€œIndependent nuclidesâ€ for a single isotope, or choose one of the three major natural decay series.
+2. **Choose a nuclide.** Use the compact list for representative nuclides, or open the nuclide map to browse the wider catalog.
+3. **Select a simulation mode.** Use single-nuclide mode for one decay step, or chain mode to follow successive daughter nuclides.
+4. **Choose the chain timing model.** â€œPhysical ratioâ€ is the default and preserves nuclide-specific half-life ratios. â€œObservationâ€ applies one shared visual timescale so every stage can be seen.
+5. **Set the experiment.** Adjust the nucleus count and the logarithmic time multiplier, then pause or reset whenever needed.
+6. **Read the results.** Compare the live particle field, decay equation, remaining population, estimated activity, and linear or logarithmic graph.
+7. **Try the detector lab.** Change detector type, distance, shield material, shield thickness, and measurement duration to compare count-rate responses.
+8. **Export your run.** Copy the displayed equation or download the observed history as a CSV file.
+
+### Chain timing modes
+
+#### Physical ratio â€” default
+
+Each stage uses its nuclide-specific half-life. The simulation advances all stages on the same physical clock, so very short-lived daughters can pass almost instantly when they follow a parent with a geological half-life. This is the mode to use when relative timescales matter.
+
+#### Observation
+
+Each chain stage uses a shared, modified decay constant. This makes the complete sequence easier to watch, but it intentionally does **not** preserve real half-life ratios. The interface labels this as a non-physical observation mode to avoid confusing it with measured nuclear data.
+
+### Physics model
+
+For a single decay step, the probability that an undecayed nucleus changes during a timestep `Î”t` is:
+
+```text
+P(decay) = 1 - 2^(-Î”t / TÂ½)
+```
+
+The theoretical population is:
+
+```text
+N(t) = Nâ‚€ Ã— 2^(-t / TÂ½)
+```
+
+Physical chain mode samples the waiting time for each stage from the exponential distribution associated with that stageâ€™s half-life. Observation mode retains the probabilistic animation while replacing the different stage constants with one shared visual constant.
+
+Nuclide data in the project is based on the bundled ICRP-107 / AME2020 / Nubase2020-derived catalog. The interface focuses on educational readability and may simplify branching paths, emissions, detector response, and shielding.
+
+### Local development
+
+Requirements: Node.js 22.13 or later.
+
+```bash
+npm install
+npm run dev
+```
+
+Open the local address printed in the terminal. Before submitting a change, run:
+
+```bash
+npm run lint
+npm test
+npm run build:pages
+```
+
+### Technology
+
+- React 19 and TypeScript
+- vinext and Vite
+- SVG-based particle, map, and chart rendering
+- Cloudflare Workers deployment
+- GitHub Pages static build
+
+### Feedback and contributions
+
+Bug reports, scientific corrections, design feedback, translations, and feature proposals are welcome through [GitHub Issues](https://github.com/shymohn99/nuclear-decay-lab/issues). If you submit a pull request, please describe the user-facing change and include the validation commands you ran.
+
+---
+
+## æ—¥æœ¬èª
+
+### ã“ã®ã‚µã‚¤ãƒˆã«ã¤ã„ã¦
+
+`nuclear-decay-lab` ã¯ã€æ”¾å°„æ€§å£Šå¤‰ã®ç¢ºç‡çš„ãªæ€§è³ªã‚’ãƒ–ãƒ©ã‚¦ã‚¶ä¸Šã§è¦³å¯Ÿã§ãã‚‹ã€ã‚¤ãƒ³ã‚¿ãƒ©ã‚¯ãƒ†ã‚£ãƒ–ãªãƒ¢ãƒ³ãƒ†ã‚«ãƒ«ãƒ­å®Ÿé¨“å®¤ã§ã™ã€‚å€‹ã€…ã®åŸå­æ ¸ãŒå£Šå¤‰ã™ã‚‹ç¬é–“ã¯äºˆæ¸¬ã§ãã¾ã›ã‚“ãŒã€å¤šæ•°ã®åŸå­æ ¸ã‚’è¦³å¯Ÿã™ã‚‹ã¨ã€æ®‹å­˜æ•°ã¯æŒ‡æ•°é–¢æ•°çš„ãªå£Šå¤‰æ›²ç·šã¸è¿‘ã¥ãã¾ã™ã€‚ã“ã®ã‚µã‚¤ãƒˆã§ã¯ã€ãã®ç²’å­ãƒ¬ãƒ™ãƒ«ã®å‹•ãã«åŠ ãˆã¦ã€æ”¾å°„ç³»åˆ—ã€æ ¸ç¨®ãƒãƒƒãƒ—ã€ç³»è­œå›³ã€ã‚°ãƒ©ãƒ•ã€ç°¡æ˜“çš„ãªæ¤œå‡ºå™¨ãƒ©ãƒœã‚’ã¾ã¨ã‚ã¦æ¢ç´¢ã§ãã¾ã™ã€‚
+
+æœ¬ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã¯å­¦ç¿’ã¨å¯è¦–åŒ–ã‚’ç›®çš„ã¨ã—ã¦ã„ã¾ã™ã€‚æ”¾å°„ç·šå®‰å…¨ã€åŒ»ç™‚ã€ç·šé‡è©•ä¾¡ã€ç ”ç©¶ç”¨é€”ã®è¨ˆç®—ã«ã¯ä½¿ç”¨ã—ãªã„ã§ãã ã•ã„ã€‚
+
+### ä½¿ãˆã‚‹æ©Ÿèƒ½
+
+- **ãƒ¢ãƒ³ãƒ†ã‚«ãƒ«ãƒ­å£Šå¤‰ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³** â€” å€‹ã€…ã®åŸå­æ ¸ãŒç¢ºç‡çš„ã«å£Šå¤‰ã™ã‚‹æ§˜å­ã¨ã€è¦³æ¸¬å€¤ãŒç†è«–æ›²ç·šã¸è¿‘ã¥ãéç¨‹ã‚’æ¯”è¼ƒã§ãã¾ã™ã€‚
+- **å˜ç‹¬æ ¸ç¨®** â€” ãƒ¨ã‚¦ç´ 131ã€ç‚­ç´ 14ã€ã‚³ãƒãƒ«ãƒˆ60ã€ãƒãƒ­ãƒ‹ã‚¦ãƒ 210ãªã©ã€ä»£è¡¨çš„ãªæ ¸ç¨®ã‹ã‚‰ã™ãã«å®Ÿé¨“ã‚’å§‹ã‚ã‚‰ã‚Œã¾ã™ã€‚
+- **ä¸»è¦ãªæ”¾å°„ç³»åˆ—** â€” ã‚¦ãƒ©ãƒ³238ç³»åˆ—ã€ãƒˆãƒªã‚¦ãƒ 232ç³»åˆ—ã€ã‚¦ãƒ©ãƒ³235ç³»åˆ—ã®ä¸»è¦æ®µéšã‚’è¿½è·¡ã§ãã¾ã™ã€‚
+- **2ç¨®é¡ã®é€£é–æ™‚é–“ãƒ¢ãƒ‡ãƒ«** â€” å®Ÿåœ¨ã®åŠæ¸›æœŸæ¯”ã‚’ä¿ã¤ãƒ¢ãƒ¼ãƒ‰ã¨ã€ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’è¦³å¯Ÿã—ã‚„ã™ãã™ã‚‹ãƒ¢ãƒ¼ãƒ‰ã‚’é¸ã¹ã¾ã™ã€‚
+- **æ ¸ç¨®ãƒãƒƒãƒ—** â€” ä¸­æ€§å­æ•°ã¨é™½å­æ•°ã®ãƒãƒƒãƒ—ã‚’ãƒ‰ãƒ©ãƒƒã‚°ãƒ»æ‹¡å¤§ç¸®å°ã—ã€æ—¢çŸ¥ã®æ ¸ç¨®ã‚’èª¿ã¹ãŸã‚Šã€å®Ÿè£…æ¸ˆã¿æ ¸ç¨®ã‚’ç›´æ¥é¸æŠã—ãŸã‚Šã§ãã¾ã™ã€‚
+- **æ ¸ç¨®ã®ç³»è­œå›³** â€” é¸æŠä¸­ã®æ ¸ç¨®ã«ã¤ã„ã¦ã€è¦ªæ ¸ç¨®ã€å¨˜æ ¸ç¨®ã€ãã®å…ˆã®å­å­«ã‚’ç¢ºèªã§ãã¾ã™ã€‚
+- **æ¤œå‡ºå™¨ãƒ©ãƒœ** â€” GMè¨ˆæ•°ç®¡ã€ã‚·ãƒ³ãƒãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³æ¤œå‡ºå™¨ã€åŠå°ä½“æ¤œå‡ºå™¨ã‚’åˆ‡ã‚Šæ›¿ãˆã€è·é›¢ã€é®è”½ç‰©ã€åšã•ã€æ¸¬å®šæ™‚é–“ã«ã‚ˆã‚‹è¨ˆæ•°ç‡ã®é•ã„ã‚’æ¯”ã¹ã‚‰ã‚Œã¾ã™ã€‚
+- **ç·šå½¢ãƒ»å¯¾æ•°ã‚°ãƒ©ãƒ•** â€” è¦³æ¸¬å€¤ã¨ç†è«–å€¤ã‚’æ¯”è¼ƒã—ã€é•·æ™‚é–“é€²ã‚ãŸã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ã‚‚è¿½è·¡ã§ãã¾ã™ã€‚
+- **å¹…åºƒã„å¯¾æ•°æ™‚é–“å€ç‡** â€” `10â»Â¹âµÃ—` ã‹ã‚‰ `10â¶Ã—` ã¾ã§ã€æ¡ã‚’ã¾ãŸã„ã§æ“ä½œã§ãã¾ã™ã€‚
+- **ç²’å­æ•°ã®å¤‰æ›´** â€” å®Ÿé¨“ã«ä½¿ã†åŸå­æ ¸ã®æ•°ã‚’å¤‰æ›´ã—ã€ã„ã¤ã§ã‚‚ä¸€æ™‚åœæ­¢ãƒ»ãƒªã‚»ãƒƒãƒˆã§ãã¾ã™ã€‚
+- **ãƒ‡ãƒ¼ã‚¿å‡ºåŠ›** â€” è¡¨ç¤ºä¸­ã®å£Šå¤‰å¼ã‚’ã‚³ãƒ”ãƒ¼ã—ã€è¦³æ¸¬å±¥æ­´ã‚’CSVã¨ã—ã¦ä¿å­˜ã§ãã¾ã™ã€‚
+- **ãƒ¬ã‚¹ãƒãƒ³ã‚·ãƒ–ãƒ»ã‚¢ã‚¯ã‚»ã‚·ãƒ–ãƒ«è¨­è¨ˆ** â€” ã‚¹ãƒãƒ¼ãƒˆãƒ•ã‚©ãƒ³è¡¨ç¤ºã€ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰æ“ä½œæ™‚ã®ãƒ•ã‚©ãƒ¼ã‚«ã‚¹è¡¨ç¤ºã€è¦–å·®åŠ¹æœã‚’æ¸›ã‚‰ã™è¨­å®šã«å¯¾å¿œã—ã¦ã„ã¾ã™ã€‚
+
+### ä½¿ã„æ–¹
+
+1. **æ”¾å°„ç³»åˆ—ã‚’é¸ã¶ã€‚** 1ç¨®é¡ã®æ ¸ç¨®ã‚’è©¦ã™å ´åˆã¯ã€Œå˜ç‹¬æ ¸ç¨®ã€ã€é€£ç¶šã—ãŸå£Šå¤‰ã‚’è¿½ã†å ´åˆã¯3ã¤ã®ä¸»è¦æ”¾å°„ç³»åˆ—ã‹ã‚‰é¸æŠã—ã¾ã™ã€‚
+2. **æ ¸ç¨®ã‚’é¸ã¶ã€‚** ä»£è¡¨çš„ãªæ ¸ç¨®ã¯ä¸€è¦§ã‹ã‚‰é¸ã¹ã¾ã™ã€‚ã‚ˆã‚Šå¤šãã®æ ¸ç¨®ã‚’æ¢ã™å ´åˆã¯æ ¸ç¨®ãƒãƒƒãƒ—ã‚’é–‹ã„ã¦ãã ã•ã„ã€‚
+3. **ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³æ–¹å¼ã‚’é¸ã¶ã€‚** 1æ®µéšã®å£Šå¤‰ã‚’è¦‹ã‚‹å ´åˆã¯å˜ç‹¬ãƒ¢ãƒ¼ãƒ‰ã€å¨˜æ ¸ç¨®ã¸é€£ç¶šã—ã¦ç§»ã‚‹æ§˜å­ã‚’è¦‹ã‚‹å ´åˆã¯é€£é–ãƒ¢ãƒ¼ãƒ‰ã‚’ä½¿ã„ã¾ã™ã€‚
+4. **é€£é–ã®å£Šå¤‰å®šæ•°ã‚’é¸ã¶ã€‚** æ—¢å®šã®ã€Œå®Ÿæ™‚é–“æ¯”ã€ã¯æ ¸ç¨®å›ºæœ‰ã®åŠæ¸›æœŸæ¯”ã‚’ä¿ã¡ã¾ã™ã€‚ã€Œè¦³å¯Ÿç”¨ã€ã¯å…¨æ®µéšã¸å…±é€šã®æ™‚é–“å°ºåº¦ã‚’é©ç”¨ã—ã¾ã™ã€‚
+5. **å®Ÿé¨“æ¡ä»¶ã‚’èª¿æ•´ã™ã‚‹ã€‚** åŸå­æ ¸æ•°ã¨å¯¾æ•°æ™‚é–“å€ç‡ã‚’å¤‰æ›´ã—ã€å¿…è¦ã«å¿œã˜ã¦ä¸€æ™‚åœæ­¢ã¾ãŸã¯ãƒªã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
+6. **çµæœã‚’èª­ã‚€ã€‚** ç²’å­è¡¨ç¤ºã€å£Šå¤‰å¼ã€æœªå£Šå¤‰æ•°ã€æ¨å®šæ´»é‡ã€ç·šå½¢ãƒ»å¯¾æ•°ã‚°ãƒ©ãƒ•ã‚’æ¯”è¼ƒã—ã¾ã™ã€‚
+7. **æ¤œå‡ºå™¨ãƒ©ãƒœã‚’è©¦ã™ã€‚** æ¤œå‡ºå™¨ã€ç·šæºã¨ã®è·é›¢ã€é®è”½ç‰©ã€åšã•ã€æ¸¬å®šæ™‚é–“ã‚’å¤‰æ›´ã—ã€è¨ˆæ•°ç‡ã®å¤‰åŒ–ã‚’èª¿ã¹ã¾ã™ã€‚
+8. **ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã™ã‚‹ã€‚** å£Šå¤‰å¼ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹ã‹ã€è¦³æ¸¬å±¥æ­´ã‚’CSVã§æ›¸ãå‡ºã—ã¾ã™ã€‚
+
+### é€£é–ã®æ™‚é–“ãƒ¢ãƒ‡ãƒ«
+
+#### å®Ÿæ™‚é–“æ¯”ï¼ˆæ—¢å®šï¼‰
+
+å„æ®µéšã§ã€ãã®æ ¸ç¨®å›ºæœ‰ã®åŠæ¸›æœŸã‚’ä½¿ç”¨ã—ã¾ã™ã€‚ã™ã¹ã¦ã®æ®µéšã‚’åŒã˜ç‰©ç†æ™‚é–“ã§é€²ã‚ã‚‹ãŸã‚ã€åœ°è³ªå­¦çš„ã«é•·ã„åŠæ¸›æœŸã‚’æŒã¤è¦ªæ ¸ç¨®ã®ç›´å¾Œã§ã¯ã€çŸ­å¯¿å‘½ã®å¨˜æ ¸ç¨®ãŒä¸€ç¬ã§é€šéã™ã‚‹å ´åˆãŒã‚ã‚Šã¾ã™ã€‚ç³»åˆ—å†…ã®ç›¸å¯¾çš„ãªæ™‚é–“å·®ã‚’é‡è¦–ã™ã‚‹å ´åˆã¯ã“ã¡ã‚‰ã‚’ä½¿ç”¨ã—ã¦ãã ã•ã„ã€‚
+
+#### è¦³å¯Ÿç”¨
+
+ç³»åˆ—å†…ã®ã™ã¹ã¦ã®æ®µéšã¸ã€å…±é€šã®æ”¹å¤‰ã—ãŸå£Šå¤‰å®šæ•°ã‚’é©ç”¨ã—ã¾ã™ã€‚é€£é–å…¨ä½“ã‚’ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã¨ã—ã¦è¿½ã„ã‚„ã™ããªã‚Šã¾ã™ãŒã€ç¾å®Ÿã®åŠæ¸›æœŸæ¯”ã¯ä¿ãŸã‚Œã¾ã›ã‚“ã€‚å®Ÿæ¸¬ãƒ‡ãƒ¼ã‚¿ã¨æ··åŒã—ãªã„ã‚ˆã†ã€ç”»é¢ä¸Šã§ã‚‚éç‰©ç†çš„ãªè¦³å¯Ÿãƒ¢ãƒ¼ãƒ‰ã§ã‚ã‚‹ã“ã¨ã‚’æ˜ç¤ºã—ã¦ã„ã¾ã™ã€‚
+
+### ç‰©ç†ãƒ¢ãƒ‡ãƒ«
+
+å˜ç‹¬æ ¸ç¨®ã§ã¯ã€æ™‚é–“åˆ»ã¿ `Î”t` ã®é–“ã«æœªå£Šå¤‰ã®åŸå­æ ¸ãŒå£Šå¤‰ã™ã‚‹ç¢ºç‡ã‚’æ¬¡ã®å¼ã§è¨ˆç®—ã—ã¾ã™ã€‚
+
+```text
+P(decay) = 1 - 2^(-Î”t / TÂ½)
+```
+
+ç†è«–ä¸Šã®æ®‹å­˜æ•°ã¯æ¬¡ã®å¼ã§ã™ã€‚
+
+```text
+N(t) = Nâ‚€ Ã— 2^(-t / TÂ½)
+```
+
+é€£é–ã®å®Ÿæ™‚é–“æ¯”ãƒ¢ãƒ¼ãƒ‰ã§ã¯ã€å„æ®µéšã®åŠæ¸›æœŸã«å¯¾å¿œã™ã‚‹æŒ‡æ•°åˆ†å¸ƒã‹ã‚‰å¾…ã¡æ™‚é–“ã‚’æ±‚ã‚ã¾ã™ã€‚è¦³å¯Ÿç”¨ãƒ¢ãƒ¼ãƒ‰ã§ã¯ã€ç¢ºç‡çš„ãªæŒ™å‹•ã‚’æ®‹ã—ãŸã¾ã¾ã€æ®µéšã”ã¨ã«ç•°ãªã‚‹å£Šå¤‰å®šæ•°ã‚’å…±é€šã®è¦–è¦šç”¨å®šæ•°ã¸ç½®ãæ›ãˆã¾ã™ã€‚
+
+æ ¸ç¨®ãƒ‡ãƒ¼ã‚¿ã«ã¯ã€åŒæ¢±ã—ã¦ã„ã‚‹ ICRP-107 / AME2020 / Nubase2020 ç”±æ¥ã®ã‚«ã‚¿ãƒ­ã‚°ã‚’åˆ©ç”¨ã—ã¦ã„ã¾ã™ã€‚æ•™è‚²ä¸Šã®è¦‹ã‚„ã™ã•ã‚’å„ªå…ˆã—ã¦ã„ã‚‹ãŸã‚ã€åˆ†å²ã€æ”¾å‡ºç²’å­ã€æ¤œå‡ºå™¨å¿œç­”ã€é®è”½è¨ˆç®—ã¯ç°¡ç•¥åŒ–ã•ã‚Œã¦ã„ã‚‹å ´åˆãŒã‚ã‚Šã¾ã™ã€‚
+
+### ãƒ­ãƒ¼ã‚«ãƒ«ã§ã®èµ·å‹•
+
+Node.js 22.13 ä»¥é™ãŒå¿…è¦ã§ã™ã€‚
+
+```bash
+npm install
+npm run dev
+```
+
+å¤‰æ›´å†…å®¹ã‚’æå‡ºã™ã‚‹å‰ã«ã€æ¬¡ã®ç¢ºèªã‚’å®Ÿè¡Œã—ã¦ãã ã•ã„ã€‚
+
+```bash
+npm run lint
+npm test
+npm run build:pages
+```
+
+### ä½¿ç”¨æŠ€è¡“
+
+- React 19 / TypeScript
+- vinext / Vite
+- SVGã«ã‚ˆã‚‹ç²’å­ãƒ»æ ¸ç¨®ãƒãƒƒãƒ—ãƒ»ã‚°ãƒ©ãƒ•æç”»
+- Cloudflare Workers
+- GitHub Pageså‘ã‘é™çš„ãƒ“ãƒ«ãƒ‰
+
+### ãƒ•ã‚£ãƒ¼ãƒ‰ãƒãƒƒã‚¯ã¨ã‚³ãƒ³ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³
+
+ä¸å…·åˆã€ç§‘å­¦çš„ãªèª¤ã‚Šã€ãƒ‡ã‚¶ã‚¤ãƒ³æ”¹å–„ã€ç¿»è¨³ã€æ©Ÿèƒ½ææ¡ˆã¯ [GitHub Issues](https://github.com/shymohn99/nuclear-decay-lab/issues) ã§å—ã‘ä»˜ã‘ã¦ã„ã¾ã™ã€‚ãƒ—ãƒ«ãƒªã‚¯ã‚¨ã‚¹ãƒˆã«ã¯ã€ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‹ã‚‰è¦‹ãŸå¤‰æ›´å†…å®¹ã¨ã€å®Ÿè¡Œã—ãŸç¢ºèªã‚³ãƒãƒ³ãƒ‰ã‚’è¨˜è¼‰ã—ã¦ãã ã•ã„ã€‚
+
+### ãƒªãƒ³ã‚¯
+
+- [å…¬é–‹ã‚µã‚¤ãƒˆ](https://nuclear-decay-lab-shymohn.shymohn.chatgpt.site)
+- [GitHub Pages](https://shymohn99.github.io/nuclear-decay-lab/)
+- [GitHubãƒªãƒã‚¸ãƒˆãƒª](https://github.com/shymohn99/nuclear-decay-lab)
+- [@Shymohn on X](https://x.com/Shymohn)
