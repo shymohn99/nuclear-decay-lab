@@ -142,6 +142,10 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /経過時間（\$\{preset\.unit\} \/ \$\{preset\.parent\}基準）/);
   assert.match(page, /実時間が約/);
   assert.doesNotMatch(page, /段階T½|規格化時間|段階ごとに時間尺度/);
+  assert.doesNotMatch(page, /連鎖の進行速度は観察用に調整/);
+  assert.match(page, /halfLifeSeconds/);
+  assert.match(page, /waitSeconds[\s\S]*availableSeconds/);
+  assert.match(page, /各核種の実際の半減期比/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /\.nuclide-map/);
   assert.match(css, /\.nuclide-map-known-field/);
