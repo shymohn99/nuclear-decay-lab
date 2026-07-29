@@ -8,7 +8,6 @@ import {
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
-  type WheelEvent as ReactWheelEvent,
 } from "react";
 
 type DecayMode = "alpha" | "beta" | "gamma";
@@ -755,6 +754,25 @@ function NuclideMapExplorer({
     applyViewport({ ...NUCLIDE_MAP_DEFAULT_VIEW });
   }, [applyViewport]);
 
+  useEffect(() => {
+    const map = svgRef.current;
+    if (!map) return;
+
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const rect = map.getBoundingClientRect();
+      zoomMap(
+        event.deltaY > 0 ? 1.16 : 1 / 1.16,
+        (event.clientX - rect.left) / rect.width,
+        (event.clientY - rect.top) / rect.height,
+      );
+    };
+
+    map.addEventListener("wheel", handleWheel, { passive: false });
+    return () => map.removeEventListener("wheel", handleWheel);
+  }, [zoomMap]);
+
   const handleMapPointerDown = (
     event: ReactPointerEvent<SVGSVGElement>,
   ) => {
@@ -798,16 +816,6 @@ function NuclideMapExplorer({
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
-  };
-
-  const handleMapWheel = (event: ReactWheelEvent<SVGSVGElement>) => {
-    event.preventDefault();
-    const rect = event.currentTarget.getBoundingClientRect();
-    zoomMap(
-      event.deltaY > 0 ? 1.16 : 1 / 1.16,
-      (event.clientX - rect.left) / rect.width,
-      (event.clientY - rect.top) / rect.height,
-    );
   };
 
   const handleMapKeyDown = (
@@ -868,7 +876,6 @@ function NuclideMapExplorer({
           onPointerMove={handleMapPointerMove}
           onPointerUp={finishMapDrag}
           onPointerCancel={finishMapDrag}
-          onWheel={handleMapWheel}
           onKeyDown={handleMapKeyDown}
         >
           <title id="nuclide-map-title">既知核種と実装済み核種のマップ</title>
