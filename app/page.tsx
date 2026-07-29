@@ -2044,6 +2044,13 @@ export default function Home() {
             GitHub
           </a>
           <a
+            href="https://shymohn99.github.io/portfolio/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Shymohn Portfolio ↗
+          </a>
+          <a
             className="repository-link"
             href="https://github.com/shymohn99/nuclear-decay-lab"
             target="_blank"
@@ -2792,6 +2799,13 @@ export default function Home() {
           </a>
           <a href="https://github.com/shymohn99" target="_blank" rel="noopener noreferrer">
             GitHub Profile ↗
+          </a>
+          <a
+            href="https://shymohn99.github.io/portfolio/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Shymohn Portfolio ↗
           </a>
           <a
             className="repository-link"
