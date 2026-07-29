@@ -190,7 +190,6 @@ npm run build:pages
 
 ### リンク
 
-- [公開サイト](https://nuclear-decay-lab-shymohn.shymohn.chatgpt.site)
 - [GitHub Pages](https://shymohn99.github.io/nuclear-decay-lab/)
 - [GitHubリポジトリ](https://github.com/shymohn99/nuclear-decay-lab)
 - [@Shymohn on X](https://x.com/Shymohn)
