@@ -6,7 +6,9 @@ import {
   useMemo,
   useRef,
   useState,
+  type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
+  type WheelEvent as ReactWheelEvent,
 } from "react";
 
 type DecayMode = "alpha" | "beta" | "gamma";
@@ -73,6 +75,13 @@ type ChainStage = {
   halfLifeLabel: string;
   mode?: DecayMode;
   stable?: boolean;
+};
+
+type MapViewport = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 };
 
 const SUPERSCRIPT_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
@@ -151,6 +160,99 @@ const CHAIN_STAGE_COLORS = [
   "#526ea2",
   "#8563a0",
 ];
+
+// NNDC NuDat ground-state export (3,149 known nuclides), compressed as
+// contiguous neutron-number ranges for each proton number.
+const KNOWN_NUCLIDE_RANGES: Array<[number, number, number]> = [
+  [1, 0, 6], [2, 1, 8], [3, 1, 8], [3, 10, 10], [4, 2, 12],
+  [5, 2, 12], [5, 14, 16], [6, 2, 14], [6, 16, 16], [7, 3, 17],
+  [8, 3, 18], [8, 20, 20], [9, 5, 21], [10, 5, 23], [11, 7, 24],
+  [12, 6, 26], [13, 8, 28], [14, 8, 29], [15, 10, 30],
+  [16, 10, 30], [17, 12, 30], [18, 12, 32], [19, 12, 12],
+  [19, 16, 35], [20, 15, 36], [21, 19, 37], [22, 17, 39],
+  [23, 20, 41], [24, 18, 42], [25, 19, 19], [25, 21, 45],
+  [26, 19, 48], [27, 23, 50], [28, 20, 52], [29, 24, 53],
+  [30, 24, 54], [31, 28, 56], [32, 27, 56], [33, 30, 55],
+  [34, 29, 57], [35, 33, 59], [36, 31, 64], [37, 35, 66],
+  [38, 35, 68], [39, 37, 70], [40, 39, 72], [41, 40, 74],
+  [42, 41, 76], [43, 42, 78], [44, 44, 80], [45, 44, 82],
+  [46, 45, 83], [47, 46, 85], [48, 47, 86], [49, 48, 88],
+  [50, 49, 89], [51, 53, 91], [52, 52, 92], [53, 55, 93],
+  [54, 54, 94], [55, 57, 96], [56, 58, 98], [57, 60, 60],
+  [57, 63, 99], [58, 63, 63], [58, 65, 100], [59, 62, 62],
+  [59, 65, 101], [60, 65, 65], [60, 67, 67], [60, 69, 102],
+  [61, 67, 104], [62, 67, 67], [62, 69, 106], [63, 67, 68],
+  [63, 71, 107], [64, 71, 71], [64, 73, 108], [65, 70, 70],
+  [65, 74, 107], [66, 73, 73], [66, 75, 107], [67, 73, 75],
+  [67, 77, 108], [68, 77, 107], [69, 75, 108], [70, 79, 79],
+  [70, 81, 110], [71, 79, 113], [72, 81, 114], [73, 82, 115],
+  [73, 117, 117], [73, 119, 119], [74, 83, 116], [75, 84, 117],
+  [75, 119, 121], [76, 85, 124], [77, 88, 125], [78, 87, 126],
+  [79, 91, 127], [80, 90, 131], [81, 95, 135], [82, 96, 136],
+  [83, 101, 137], [84, 102, 135], [84, 137, 138], [85, 106, 139],
+  [86, 107, 143], [87, 110, 146], [88, 113, 146], [89, 116, 147],
+  [90, 118, 148], [91, 120, 148], [92, 123, 127], [92, 129, 148],
+  [92, 150, 150], [93, 126, 127], [93, 129, 151], [94, 134, 153],
+  [95, 128, 128], [95, 134, 135], [95, 137, 152], [96, 137, 140],
+  [96, 142, 155], [97, 136, 137], [97, 139, 139], [97, 141, 141],
+  [97, 143, 156], [98, 139, 158], [99, 141, 158], [100, 141, 159],
+  [101, 143, 159], [102, 147, 158], [102, 160, 160],
+  [103, 148, 159], [103, 161, 161], [103, 163, 163],
+  [104, 149, 159], [104, 161, 161], [104, 163, 163],
+  [105, 150, 158], [105, 161, 163], [105, 165, 165],
+  [106, 152, 161], [106, 163, 163], [106, 165, 165],
+  [107, 153, 155], [107, 157, 160], [107, 163, 165],
+  [107, 167, 167], [107, 171, 171], [108, 155, 162],
+  [108, 165, 165], [108, 167, 167], [108, 169, 169],
+  [109, 157, 157], [109, 159, 159], [109, 161, 161],
+  [109, 165, 169], [110, 157, 157], [110, 159, 161],
+  [110, 163, 163], [110, 167, 167], [110, 169, 172],
+  [111, 161, 161], [111, 163, 163], [111, 167, 171],
+  [112, 165, 165], [112, 169, 174], [113, 165, 165],
+  [113, 169, 173], [113, 177, 177], [114, 170, 176],
+  [115, 172, 175], [116, 174, 177], [117, 176, 177], [118, 176, 176],
+];
+
+const KNOWN_NUCLIDES = KNOWN_NUCLIDE_RANGES.flatMap(
+  ([protons, neutronStart, neutronEnd]) =>
+    Array.from({ length: neutronEnd - neutronStart + 1 }, (_, offset) => ({
+      protons,
+      neutrons: neutronStart + offset,
+    })),
+);
+const NUCLIDE_MAP_CELL = 8;
+const NUCLIDE_MAP_PADDING = 24;
+const NUCLIDE_MAP_MAX_PROTONS = 118;
+const NUCLIDE_MAP_MAX_NEUTRONS = 177;
+const NUCLIDE_MAP_WORLD = {
+  width:
+    NUCLIDE_MAP_PADDING * 2 +
+    (NUCLIDE_MAP_MAX_NEUTRONS + 1) * NUCLIDE_MAP_CELL,
+  height:
+    NUCLIDE_MAP_PADDING * 2 +
+    (NUCLIDE_MAP_MAX_PROTONS + 1) * NUCLIDE_MAP_CELL,
+};
+const NUCLIDE_MAP_DEFAULT_VIEW: MapViewport = {
+  x: 0,
+  y: 0,
+  width: NUCLIDE_MAP_WORLD.width,
+  height: NUCLIDE_MAP_WORLD.height,
+};
+const MAGIC_NUMBERS = [2, 8, 20, 28, 50, 82, 126];
+
+function getNuclideMapPosition(neutrons: number, protons: number) {
+  return {
+    x: NUCLIDE_MAP_PADDING + neutrons * NUCLIDE_MAP_CELL,
+    y:
+      NUCLIDE_MAP_PADDING +
+      (NUCLIDE_MAP_MAX_PROTONS - protons) * NUCLIDE_MAP_CELL,
+  };
+}
+
+const KNOWN_NUCLIDE_PATH = KNOWN_NUCLIDES.map(({ protons, neutrons }) => {
+  const { x, y } = getNuclideMapPosition(neutrons, protons);
+  return `M${x} ${y}h7.25v7.25h-7.25Z`;
+}).join("");
 
 const PRESETS: IsotopePreset[] = [
   createPreset({
@@ -587,6 +689,307 @@ function NuclideSymbol({
   );
 }
 
+function NuclideMapExplorer({
+  preset,
+  presetKey,
+  onSelectPreset,
+}: {
+  preset: IsotopePreset;
+  presetKey: string;
+  onSelectPreset: (preset: IsotopePreset) => void;
+}) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const zoomOutputRef = useRef<HTMLOutputElement | null>(null);
+  const viewportRef = useRef<MapViewport>({ ...NUCLIDE_MAP_DEFAULT_VIEW });
+  const dragRef = useRef<{
+    pointerId: number;
+    clientX: number;
+    clientY: number;
+    viewport: MapViewport;
+  } | null>(null);
+
+  const applyViewport = useCallback((next: MapViewport) => {
+    const width = Math.max(260, Math.min(NUCLIDE_MAP_WORLD.width, next.width));
+    const height =
+      width * (NUCLIDE_MAP_WORLD.height / NUCLIDE_MAP_WORLD.width);
+    const x = Math.max(
+      0,
+      Math.min(NUCLIDE_MAP_WORLD.width - width, next.x),
+    );
+    const y = Math.max(
+      0,
+      Math.min(NUCLIDE_MAP_WORLD.height - height, next.y),
+    );
+    const viewport = { x, y, width, height };
+    viewportRef.current = viewport;
+    svgRef.current?.setAttribute(
+      "viewBox",
+      `${viewport.x} ${viewport.y} ${viewport.width} ${viewport.height}`,
+    );
+    if (zoomOutputRef.current) {
+      zoomOutputRef.current.textContent = `${Math.round(
+        (NUCLIDE_MAP_WORLD.width / viewport.width) * 100,
+      )}%`;
+    }
+  }, []);
+
+  const zoomMap = useCallback(
+    (factor: number, focusX = 0.5, focusY = 0.5) => {
+      const viewport = viewportRef.current;
+      const nextWidth = viewport.width * factor;
+      const nextHeight =
+        nextWidth * (NUCLIDE_MAP_WORLD.height / NUCLIDE_MAP_WORLD.width);
+      const worldFocusX = viewport.x + viewport.width * focusX;
+      const worldFocusY = viewport.y + viewport.height * focusY;
+      applyViewport({
+        x: worldFocusX - nextWidth * focusX,
+        y: worldFocusY - nextHeight * focusY,
+        width: nextWidth,
+        height: nextHeight,
+      });
+    },
+    [applyViewport],
+  );
+
+  const resetMap = useCallback(() => {
+    applyViewport({ ...NUCLIDE_MAP_DEFAULT_VIEW });
+  }, [applyViewport]);
+
+  const handleMapPointerDown = (
+    event: ReactPointerEvent<SVGSVGElement>,
+  ) => {
+    if (
+      event.target instanceof Element &&
+      event.target.closest(".nuclide-map-node")
+    ) {
+      return;
+    }
+    event.currentTarget.setPointerCapture(event.pointerId);
+    event.currentTarget.classList.add("is-dragging");
+    dragRef.current = {
+      pointerId: event.pointerId,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      viewport: { ...viewportRef.current },
+    };
+  };
+
+  const handleMapPointerMove = (
+    event: ReactPointerEvent<SVGSVGElement>,
+  ) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    applyViewport({
+      ...drag.viewport,
+      x:
+        drag.viewport.x -
+        ((event.clientX - drag.clientX) / rect.width) * drag.viewport.width,
+      y:
+        drag.viewport.y -
+        ((event.clientY - drag.clientY) / rect.height) * drag.viewport.height,
+    });
+  };
+
+  const finishMapDrag = (event: ReactPointerEvent<SVGSVGElement>) => {
+    if (dragRef.current?.pointerId !== event.pointerId) return;
+    dragRef.current = null;
+    event.currentTarget.classList.remove("is-dragging");
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  const handleMapWheel = (event: ReactWheelEvent<SVGSVGElement>) => {
+    event.preventDefault();
+    const rect = event.currentTarget.getBoundingClientRect();
+    zoomMap(
+      event.deltaY > 0 ? 1.16 : 1 / 1.16,
+      (event.clientX - rect.left) / rect.width,
+      (event.clientY - rect.top) / rect.height,
+    );
+  };
+
+  const handleMapKeyDown = (
+    event: ReactKeyboardEvent<SVGSVGElement>,
+  ) => {
+    const viewport = viewportRef.current;
+    const horizontalStep = viewport.width * 0.09;
+    const verticalStep = viewport.height * 0.09;
+    const next = { ...viewport };
+
+    if (event.key === "ArrowLeft") next.x -= horizontalStep;
+    else if (event.key === "ArrowRight") next.x += horizontalStep;
+    else if (event.key === "ArrowUp") next.y -= verticalStep;
+    else if (event.key === "ArrowDown") next.y += verticalStep;
+    else if (event.key === "+" || event.key === "=") {
+      event.preventDefault();
+      zoomMap(1 / 1.28);
+      return;
+    } else if (event.key === "-") {
+      event.preventDefault();
+      zoomMap(1.28);
+      return;
+    } else if (event.key === "0") {
+      event.preventDefault();
+      resetMap();
+      return;
+    } else {
+      return;
+    }
+
+    event.preventDefault();
+    applyViewport(next);
+  };
+
+  return (
+    <div className="nuclide-map-wrap">
+      <div className="nuclide-map-stage">
+        <div className="nuclide-map-toolbar">
+          <div className="nuclide-map-legend" aria-label="核種マップの凡例">
+            <span><i className="known-swatch" />既知核種 {KNOWN_NUCLIDES.length.toLocaleString("ja-JP")}</span>
+            <span><i className="implemented-swatch" />実装済み {PRESETS.length}</span>
+          </div>
+          <div className="nuclide-map-controls" aria-label="核種マップの表示操作">
+            <button type="button" onClick={() => zoomMap(1 / 1.35)} aria-label="拡大">＋</button>
+            <output ref={zoomOutputRef} aria-live="polite">100%</output>
+            <button type="button" onClick={() => zoomMap(1.35)} aria-label="縮小">−</button>
+            <button type="button" onClick={resetMap}>全体</button>
+          </div>
+        </div>
+        <svg
+          ref={svgRef}
+          className="nuclide-map"
+          viewBox={`0 0 ${NUCLIDE_MAP_WORLD.width} ${NUCLIDE_MAP_WORLD.height}`}
+          tabIndex={0}
+          role="img"
+          aria-labelledby="nuclide-map-title nuclide-map-description"
+          onPointerDown={handleMapPointerDown}
+          onPointerMove={handleMapPointerMove}
+          onPointerUp={finishMapDrag}
+          onPointerCancel={finishMapDrag}
+          onWheel={handleMapWheel}
+          onKeyDown={handleMapKeyDown}
+        >
+          <title id="nuclide-map-title">既知核種と実装済み核種のマップ</title>
+          <desc id="nuclide-map-description">
+            横軸が中性子数、縦軸が陽子数です。ドラッグで移動、ホイールで拡大縮小できます。色付きの核種はシミュレーター実装済みです。
+          </desc>
+          <rect
+            className="nuclide-map-background"
+            width={NUCLIDE_MAP_WORLD.width}
+            height={NUCLIDE_MAP_WORLD.height}
+          />
+          <g className="nuclide-map-magic-lines" aria-hidden="true">
+            {MAGIC_NUMBERS.map((value) => {
+              const x = getNuclideMapPosition(value, 0).x;
+              return value <= NUCLIDE_MAP_MAX_NEUTRONS ? (
+                <line
+                  key={`magic-n-${value}`}
+                  x1={x}
+                  x2={x}
+                  y1={0}
+                  y2={NUCLIDE_MAP_WORLD.height}
+                />
+              ) : null;
+            })}
+            {MAGIC_NUMBERS.map((value) => {
+              const y = getNuclideMapPosition(0, value).y;
+              return value <= NUCLIDE_MAP_MAX_PROTONS ? (
+                <line
+                  key={`magic-z-${value}`}
+                  x1={0}
+                  x2={NUCLIDE_MAP_WORLD.width}
+                  y1={y}
+                  y2={y}
+                />
+              ) : null;
+            })}
+          </g>
+          <path
+            className="nuclide-map-known-field"
+            d={KNOWN_NUCLIDE_PATH}
+            aria-hidden="true"
+          />
+          {PRESETS.map((item) => {
+            const neutronNumber =
+              item.parentNuclide.massNumber -
+              item.parentNuclide.protonNumber;
+            const { x, y } = getNuclideMapPosition(
+              neutronNumber,
+              item.parentNuclide.protonNumber,
+            );
+            return (
+              <g
+                className={`nuclide-map-node ${
+                  presetKey === item.key ? "is-active" : ""
+                }`}
+                role="button"
+                tabIndex={0}
+                aria-label={`${item.parent}、中性子数${neutronNumber}、${item.modeLabel}、半減期${item.halfLife}${item.unit}`}
+                onClick={() => onSelectPreset(item)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    onSelectPreset(item);
+                  }
+                }}
+                key={item.key}
+              >
+                <rect
+                  x={x}
+                  y={y}
+                  width="7.25"
+                  height="7.25"
+                  fill={`rgb(${item.parentRgb})`}
+                />
+                <text className="nuclide-map-mass" x={x + 0.55} y={y + 2.5}>
+                  {item.parentNuclide.massNumber}
+                </text>
+                <text
+                  className="nuclide-map-element"
+                  x={x + 3.65}
+                  y={y + 5.7}
+                >
+                  {item.parentNuclide.element}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+        <span className="nuclide-map-axis nuclide-map-axis-n" aria-hidden="true">
+          中性子数 N →
+        </span>
+        <span className="nuclide-map-axis nuclide-map-axis-z" aria-hidden="true">
+          陽子数 Z ↑
+        </span>
+        <p className="nuclide-map-help">
+          ドラッグで移動 ・ ホイールで拡大縮小 ・ 矢印キーでも移動
+        </p>
+      </div>
+      <div className="nuclide-map-selection" aria-live="polite">
+        <span className="selection-label">SELECTED / 実装済み</span>
+        <NuclideSymbol
+          nuclide={preset.parentNuclide}
+          className="nuclide-symbol-table"
+        />
+        <strong>{preset.parent}</strong>
+        <span>→ {preset.daughter}</span>
+        <small>
+          {preset.modeLabel} / 半減期 {formatNumber(preset.halfLife)} {preset.unit}
+        </small>
+        <a
+          href="https://www.nndc.bnl.gov/nudat3/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          既知核種データ: NNDC NuDat ↗
+        </a>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const particlesRef = useRef<Particle[]>(makeParticles(160, 131));
   const particleNodeRefs = useRef<Array<SVGGElement | null>>([]);
@@ -846,50 +1249,6 @@ export default function Home() {
   const decayed = atomCount - remaining;
   const activity = remaining * Math.LN2;
   const remainingPercent = (remaining / atomCount) * 100;
-  const nuclideMap = useMemo(() => {
-    const width = 960;
-    const height = 430;
-    const left = 56;
-    const right = 24;
-    const top = 24;
-    const bottom = 46;
-    const maxNeutrons = 150;
-    const maxProtons = 100;
-    const plotWidth = width - left - right;
-    const plotHeight = height - top - bottom;
-    const position = (neutrons: number, protons: number) => ({
-      x: left + (neutrons / maxNeutrons) * plotWidth,
-      y: top + (1 - protons / maxProtons) * plotHeight,
-    });
-
-    return {
-      width,
-      height,
-      left,
-      right,
-      top,
-      bottom,
-      plotWidth,
-      plotHeight,
-      xTicks: [0, 25, 50, 75, 100, 125, 150].map((value) => ({
-        value,
-        x: position(value, 0).x,
-      })),
-      yTicks: [0, 20, 40, 60, 80, 100].map((value) => ({
-        value,
-        y: position(0, value).y,
-      })),
-      points: PRESETS.map((item) => {
-        const neutronNumber =
-          item.parentNuclide.massNumber - item.parentNuclide.protonNumber;
-        return {
-          item,
-          neutronNumber,
-          ...position(neutronNumber, item.parentNuclide.protonNumber),
-        };
-      }),
-    };
-  }, []);
 
   const chart = useMemo(() => {
     const width = 760;
@@ -1045,7 +1404,9 @@ export default function Home() {
               </button>
             </div>
             <strong>
-              {catalogView === "table" ? seriesPresets.length : PRESETS.length} 核種
+              {catalogView === "table"
+                ? `${seriesPresets.length} 核種`
+                : `${KNOWN_NUCLIDES.length.toLocaleString("ja-JP")} 核種 / 実装 ${PRESETS.length}`}
             </strong>
           </div>
           {catalogView === "table" ? (
@@ -1105,108 +1466,11 @@ export default function Home() {
               </table>
             </div>
           ) : (
-            <div className="nuclide-map-wrap">
-              <svg
-                className="nuclide-map"
-                viewBox={`0 0 ${nuclideMap.width} ${nuclideMap.height}`}
-                role="img"
-                aria-labelledby="nuclide-map-title nuclide-map-description"
-              >
-                <title id="nuclide-map-title">収録核種マップ</title>
-                <desc id="nuclide-map-description">
-                  横軸が中性子数、縦軸が陽子数です。核種を選ぶと単独壊変モードへ切り替わります。
-                </desc>
-                {nuclideMap.xTicks.map((tick) => (
-                  <g key={`n-${tick.value}`}>
-                    <line
-                      className="nuclide-map-grid"
-                      x1={tick.x}
-                      x2={tick.x}
-                      y1={nuclideMap.top}
-                      y2={nuclideMap.height - nuclideMap.bottom}
-                    />
-                    <text
-                      className="nuclide-map-axis-label"
-                      x={tick.x}
-                      y={nuclideMap.height - 17}
-                    >
-                      {tick.value}
-                    </text>
-                  </g>
-                ))}
-                {nuclideMap.yTicks.map((tick) => (
-                  <g key={`z-${tick.value}`}>
-                    <line
-                      className="nuclide-map-grid"
-                      x1={nuclideMap.left}
-                      x2={nuclideMap.width - nuclideMap.right}
-                      y1={tick.y}
-                      y2={tick.y}
-                    />
-                    <text className="nuclide-map-y-label" x="28" y={tick.y + 4}>
-                      {tick.value}
-                    </text>
-                  </g>
-                ))}
-                <text
-                  className="nuclide-map-caption"
-                  x={nuclideMap.width - nuclideMap.right}
-                  y={nuclideMap.height - 2}
-                >
-                  中性子数 N
-                </text>
-                <text
-                  className="nuclide-map-caption nuclide-map-caption-y"
-                  x="10"
-                  y={nuclideMap.top}
-                >
-                  陽子数 Z
-                </text>
-                {nuclideMap.points.map(({ item, neutronNumber, x, y }) => (
-                  <g
-                    className={`nuclide-map-node ${
-                      presetKey === item.key ? "is-active" : ""
-                    }`}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`${item.parent}、中性子数${neutronNumber}、${item.modeLabel}、半減期${item.halfLife}${item.unit}`}
-                    onClick={() => selectPreset(item)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        selectPreset(item);
-                      }
-                    }}
-                    key={item.key}
-                  >
-                    <rect
-                      x={x - 15}
-                      y={y - 15}
-                      width="30"
-                      height="30"
-                      fill={`rgb(${item.parentRgb})`}
-                    />
-                    <text className="nuclide-map-mass" x={x - 12} y={y - 4}>
-                      {item.parentNuclide.massNumber}
-                    </text>
-                    <text className="nuclide-map-element" x={x} y={y + 9}>
-                      {item.parentNuclide.element}
-                    </text>
-                  </g>
-                ))}
-              </svg>
-              <div className="nuclide-map-selection" aria-live="polite">
-                <NuclideSymbol
-                  nuclide={preset.parentNuclide}
-                  className="nuclide-symbol-table"
-                />
-                <strong>{preset.parent}</strong>
-                <span>→ {preset.daughter}</span>
-                <small>
-                  {preset.modeLabel} / 半減期 {formatNumber(preset.halfLife)} {preset.unit}
-                </small>
-              </div>
-            </div>
+            <NuclideMapExplorer
+              preset={preset}
+              presetKey={presetKey}
+              onSelectPreset={selectPreset}
+            />
           )}
         </div>
 
