@@ -578,7 +578,1029 @@ function getChainStageColor(index: number, total: number) {
 }
 
 const SIMULATED_HALF_LIVES_PER_SECOND = 0.18;
-const HIS…10611 tokens truncated….map((stage, index) => (
+const HISTORY_INTERVAL = 0.025;
+const MAX_HISTORY_POINTS = 320;
+const VISUAL_UPDATE_INTERVAL_MS = 140;
+
+function seededRandom(seed: number) {
+  let value = seed >>> 0;
+  return () => {
+    value = (value * 1664525 + 1013904223) >>> 0;
+    return value / 4294967296;
+  };
+}
+
+function makeParticles(count: number, seed: number): Particle[] {
+  const random = seededRandom(seed);
+  return Array.from({ length: count }, (_, index) => {
+    const angle = index * 2.399963 + random() * 0.16;
+    const radius = Math.sqrt((index + 0.5) / count) * 0.44;
+    return {
+      id: index,
+      x: 0.5 + Math.cos(angle) * radius,
+      y: 0.5 + Math.sin(angle) * radius * 0.78,
+      vx: (random() - 0.5) * 0.025,
+      vy: (random() - 0.5) * 0.025,
+      phase: "parent",
+      chainStage: 0,
+      pulse: random() * Math.PI * 2,
+      radius: 4.2 + random() * 2.8,
+    };
+  });
+}
+
+function formatNumber(value: number) {
+  return new Intl.NumberFormat("ja-JP", {
+    maximumFractionDigits: value < 10 ? 2 : 1,
+  }).format(value);
+}
+
+function formatElapsed(halfLives: number, preset: IsotopePreset) {
+  const value = halfLives * preset.halfLife;
+  if (value === 0) return `0 ${preset.unit}`;
+  if (value < 0.01) return `${value.toExponential(2)} ${preset.unit}`;
+  return `${formatNumber(value)} ${preset.unit}`;
+}
+
+function formatSimulationRate(preset: IsotopePreset, speed: number) {
+  const secondsPerUnit: Record<string, number> = {
+    秒: 1,
+    分: 60,
+    時間: 60 * 60,
+    日: 24 * 60 * 60,
+    年: 365.25 * 24 * 60 * 60,
+  };
+  const simulatedSeconds =
+    preset.halfLife *
+    (secondsPerUnit[preset.unit] ?? 1) *
+    SIMULATED_HALF_LIVES_PER_SECOND *
+    speed;
+  const simulatedYears = simulatedSeconds / secondsPerUnit.年;
+
+  if (simulatedSeconds < 60) return `${formatNumber(simulatedSeconds)}秒`;
+  if (simulatedSeconds < secondsPerUnit.時間) {
+    return `${formatNumber(simulatedSeconds / secondsPerUnit.分)}分`;
+  }
+  if (simulatedSeconds < secondsPerUnit.日) {
+    return `${formatNumber(simulatedSeconds / secondsPerUnit.時間)}時間`;
+  }
+  if (simulatedSeconds < secondsPerUnit.年) {
+    return `${formatNumber(simulatedSeconds / secondsPerUnit.日)}日`;
+  }
+  if (simulatedYears < 10000) return `${formatNumber(simulatedYears)}年`;
+  if (simulatedYears < 1e8) {
+    return `${formatNumber(simulatedYears / 10000)}万年`;
+  }
+  return `${formatNumber(simulatedYears / 1e8)}億年`;
+}
+
+function appendHistoryPoint(
+  points: HistoryPoint[],
+  point: HistoryPoint,
+): HistoryPoint[] {
+  const appended = [...points, point];
+  if (appended.length <= MAX_HISTORY_POINTS) return appended;
+
+  const lastIndex = appended.length - 1;
+  return appended.filter(
+    (_, index) => index === 0 || index === lastIndex || index % 2 === 0,
+  );
+}
+
+function NuclideSymbol({
+  nuclide,
+  className = "",
+}: {
+  nuclide: Nuclide;
+  className?: string;
+}) {
+  return (
+    <span
+      className={`nuclide-symbol ${className}`.trim()}
+      aria-label={`${nuclide.element}、質量数${nuclide.massNumber}、陽子数${nuclide.protonNumber}`}
+    >
+      <span className="nuclide-indexes" aria-hidden="true">
+        <sup>{nuclide.massNumber}</sup>
+        <sub>{nuclide.protonNumber}</sub>
+      </span>
+      <span className="nuclide-element" aria-hidden="true">{nuclide.element}</span>
+    </span>
+  );
+}
+
+function NuclideMapExplorer({
+  preset,
+  presetKey,
+  onSelectPreset,
+}: {
+  preset: IsotopePreset;
+  presetKey: string;
+  onSelectPreset: (preset: IsotopePreset) => void;
+}) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const zoomOutputRef = useRef<HTMLOutputElement | null>(null);
+  const viewportRef = useRef<MapViewport>({ ...NUCLIDE_MAP_DEFAULT_VIEW });
+  const dragRef = useRef<{
+    pointerId: number;
+    clientX: number;
+    clientY: number;
+    viewport: MapViewport;
+  } | null>(null);
+
+  const applyViewport = useCallback((next: MapViewport) => {
+    const width = Math.max(260, Math.min(NUCLIDE_MAP_WORLD.width, next.width));
+    const height =
+      width * (NUCLIDE_MAP_WORLD.height / NUCLIDE_MAP_WORLD.width);
+    const x = Math.max(
+      0,
+      Math.min(NUCLIDE_MAP_WORLD.width - width, next.x),
+    );
+    const y = Math.max(
+      0,
+      Math.min(NUCLIDE_MAP_WORLD.height - height, next.y),
+    );
+    const viewport = { x, y, width, height };
+    viewportRef.current = viewport;
+    svgRef.current?.setAttribute(
+      "viewBox",
+      `${viewport.x} ${viewport.y} ${viewport.width} ${viewport.height}`,
+    );
+    if (zoomOutputRef.current) {
+      zoomOutputRef.current.textContent = `${Math.round(
+        (NUCLIDE_MAP_WORLD.width / viewport.width) * 100,
+      )}%`;
+    }
+  }, []);
+
+  const zoomMap = useCallback(
+    (factor: number, focusX = 0.5, focusY = 0.5) => {
+      const viewport = viewportRef.current;
+      const nextWidth = viewport.width * factor;
+      const nextHeight =
+        nextWidth * (NUCLIDE_MAP_WORLD.height / NUCLIDE_MAP_WORLD.width);
+      const worldFocusX = viewport.x + viewport.width * focusX;
+      const worldFocusY = viewport.y + viewport.height * focusY;
+      applyViewport({
+        x: worldFocusX - nextWidth * focusX,
+        y: worldFocusY - nextHeight * focusY,
+        width: nextWidth,
+        height: nextHeight,
+      });
+    },
+    [applyViewport],
+  );
+
+  const resetMap = useCallback(() => {
+    applyViewport({ ...NUCLIDE_MAP_DEFAULT_VIEW });
+  }, [applyViewport]);
+
+  useEffect(() => {
+    const map = svgRef.current;
+    if (!map) return;
+
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const rect = map.getBoundingClientRect();
+      zoomMap(
+        event.deltaY > 0 ? 1.16 : 1 / 1.16,
+        (event.clientX - rect.left) / rect.width,
+        (event.clientY - rect.top) / rect.height,
+      );
+    };
+
+    map.addEventListener("wheel", handleWheel, { passive: false });
+    return () => map.removeEventListener("wheel", handleWheel);
+  }, [zoomMap]);
+
+  const handleMapPointerDown = (
+    event: ReactPointerEvent<SVGSVGElement>,
+  ) => {
+    if (
+      event.target instanceof Element &&
+      event.target.closest(".nuclide-map-node")
+    ) {
+      return;
+    }
+    event.currentTarget.setPointerCapture(event.pointerId);
+    event.currentTarget.classList.add("is-dragging");
+    dragRef.current = {
+      pointerId: event.pointerId,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      viewport: { ...viewportRef.current },
+    };
+  };
+
+  const handleMapPointerMove = (
+    event: ReactPointerEvent<SVGSVGElement>,
+  ) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    applyViewport({
+      ...drag.viewport,
+      x:
+        drag.viewport.x -
+        ((event.clientX - drag.clientX) / rect.width) * drag.viewport.width,
+      y:
+        drag.viewport.y -
+        ((event.clientY - drag.clientY) / rect.height) * drag.viewport.height,
+    });
+  };
+
+  const finishMapDrag = (event: ReactPointerEvent<SVGSVGElement>) => {
+    if (dragRef.current?.pointerId !== event.pointerId) return;
+    dragRef.current = null;
+    event.currentTarget.classList.remove("is-dragging");
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  const handleMapKeyDown = (
+    event: ReactKeyboardEvent<SVGSVGElement>,
+  ) => {
+    const viewport = viewportRef.current;
+    const horizontalStep = viewport.width * 0.09;
+    const verticalStep = viewport.height * 0.09;
+    const next = { ...viewport };
+
+    if (event.key === "ArrowLeft") next.x -= horizontalStep;
+    else if (event.key === "ArrowRight") next.x += horizontalStep;
+    else if (event.key === "ArrowUp") next.y -= verticalStep;
+    else if (event.key === "ArrowDown") next.y += verticalStep;
+    else if (event.key === "+" || event.key === "=") {
+      event.preventDefault();
+      zoomMap(1 / 1.28);
+      return;
+    } else if (event.key === "-") {
+      event.preventDefault();
+      zoomMap(1.28);
+      return;
+    } else if (event.key === "0") {
+      event.preventDefault();
+      resetMap();
+      return;
+    } else {
+      return;
+    }
+
+    event.preventDefault();
+    applyViewport(next);
+  };
+
+  return (
+    <div className="nuclide-map-wrap">
+      <div className="nuclide-map-stage">
+        <div className="nuclide-map-toolbar">
+          <div className="nuclide-map-legend" aria-label="核種マップの凡例">
+            <span><i className="known-swatch" />既知核種 {KNOWN_NUCLIDES.length.toLocaleString("ja-JP")}</span>
+            <span><i className="implemented-swatch" />実装済み {PRESETS.length}</span>
+          </div>
+          <div className="nuclide-map-controls" aria-label="核種マップの表示操作">
+            <button type="button" onClick={() => zoomMap(1 / 1.35)} aria-label="拡大">＋</button>
+            <output ref={zoomOutputRef} aria-live="polite">100%</output>
+            <button type="button" onClick={() => zoomMap(1.35)} aria-label="縮小">−</button>
+            <button type="button" onClick={resetMap}>全体</button>
+          </div>
+        </div>
+        <svg
+          ref={svgRef}
+          className="nuclide-map"
+          viewBox={`0 0 ${NUCLIDE_MAP_WORLD.width} ${NUCLIDE_MAP_WORLD.height}`}
+          tabIndex={0}
+          role="img"
+          aria-labelledby="nuclide-map-title nuclide-map-description"
+          onPointerDown={handleMapPointerDown}
+          onPointerMove={handleMapPointerMove}
+          onPointerUp={finishMapDrag}
+          onPointerCancel={finishMapDrag}
+          onKeyDown={handleMapKeyDown}
+        >
+          <title id="nuclide-map-title">既知核種と実装済み核種のマップ</title>
+          <desc id="nuclide-map-description">
+            横軸が中性子数、縦軸が陽子数です。ドラッグで移動、ホイールで拡大縮小できます。色付きの核種はシミュレーター実装済みです。
+          </desc>
+          <rect
+            className="nuclide-map-background"
+            width={NUCLIDE_MAP_WORLD.width}
+            height={NUCLIDE_MAP_WORLD.height}
+          />
+          <g className="nuclide-map-magic-lines" aria-hidden="true">
+            {MAGIC_NUMBERS.map((value) => {
+              const x = getNuclideMapPosition(value, 0).x;
+              return value <= NUCLIDE_MAP_MAX_NEUTRONS ? (
+                <line
+                  key={`magic-n-${value}`}
+                  x1={x}
+                  x2={x}
+                  y1={0}
+                  y2={NUCLIDE_MAP_WORLD.height}
+                />
+              ) : null;
+            })}
+            {MAGIC_NUMBERS.map((value) => {
+              const y = getNuclideMapPosition(0, value).y;
+              return value <= NUCLIDE_MAP_MAX_PROTONS ? (
+                <line
+                  key={`magic-z-${value}`}
+                  x1={0}
+                  x2={NUCLIDE_MAP_WORLD.width}
+                  y1={y}
+                  y2={y}
+                />
+              ) : null;
+            })}
+          </g>
+          <path
+            className="nuclide-map-known-field"
+            d={KNOWN_NUCLIDE_PATH}
+            aria-hidden="true"
+          />
+          {PRESETS.map((item) => {
+            const neutronNumber =
+              item.parentNuclide.massNumber -
+              item.parentNuclide.protonNumber;
+            const { x, y } = getNuclideMapPosition(
+              neutronNumber,
+              item.parentNuclide.protonNumber,
+            );
+            return (
+              <g
+                className={`nuclide-map-node ${
+                  presetKey === item.key ? "is-active" : ""
+                }`}
+                role="button"
+                tabIndex={0}
+                aria-label={`${item.parent}、中性子数${neutronNumber}、${item.modeLabel}、半減期${item.halfLife}${item.unit}`}
+                onClick={() => onSelectPreset(item)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    onSelectPreset(item);
+                  }
+                }}
+                key={item.key}
+              >
+                <rect
+                  x={x}
+                  y={y}
+                  width="7.25"
+                  height="7.25"
+                  fill={`rgb(${item.parentRgb})`}
+                />
+                <text className="nuclide-map-mass" x={x + 0.55} y={y + 2.5}>
+                  {item.parentNuclide.massNumber}
+                </text>
+                <text
+                  className="nuclide-map-element"
+                  x={x + 3.65}
+                  y={y + 5.7}
+                >
+                  {item.parentNuclide.element}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+        <span className="nuclide-map-axis nuclide-map-axis-n" aria-hidden="true">
+          中性子数 N →
+        </span>
+        <span className="nuclide-map-axis nuclide-map-axis-z" aria-hidden="true">
+          陽子数 Z ↑
+        </span>
+        <p className="nuclide-map-help">
+          ドラッグで移動 ・ ホイールで拡大縮小 ・ 矢印キーでも移動
+        </p>
+      </div>
+      <div className="nuclide-map-selection" aria-live="polite">
+        <span className="selection-label">SELECTED / 実装済み</span>
+        <NuclideSymbol
+          nuclide={preset.parentNuclide}
+          className="nuclide-symbol-table"
+        />
+        <strong>{preset.parent}</strong>
+        <span>→ {preset.daughter}</span>
+        <small>
+          {preset.modeLabel} / 半減期 {formatNumber(preset.halfLife)} {preset.unit}
+        </small>
+        <a
+          href="https://www.nndc.bnl.gov/nudat3/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          既知核種データ: NNDC NuDat ↗
+        </a>
+      </div>
+    </div>
+  );
+}
+
+export default function Home() {
+  const particlesRef = useRef<Particle[]>(makeParticles(160, 131));
+  const particleNodeRefs = useRef<Array<SVGGElement | null>>([]);
+  const burstsRef = useRef<Burst[]>([]);
+  const elapsedRef = useRef(0);
+  const historyRef = useRef<HistoryPoint[]>([{ t: 0, remaining: 160 }]);
+  const lastHistoryAtRef = useRef(0);
+  const resetSeedRef = useRef(131);
+  const burstIdRef = useRef(0);
+
+  const [presetKey, setPresetKey] = useState(PRESETS[0].key);
+  const [seriesKey, setSeriesKey] = useState<DecaySeries>("independent");
+  const [simulationMode, setSimulationMode] =
+    useState<SimulationMode>("single");
+  const [catalogView, setCatalogView] = useState<CatalogView>("table");
+  const [atomCount, setAtomCount] = useState(160);
+  const [speed, setSpeed] = useState(1);
+  const [paused, setPaused] = useState(false);
+  const [remaining, setRemaining] = useState(160);
+  const [elapsed, setElapsed] = useState(0);
+  const [particles, setParticles] = useState<Particle[]>(() =>
+    makeParticles(160, 131),
+  );
+  const [bursts, setBursts] = useState<Burst[]>([]);
+  const [history, setHistory] = useState<HistoryPoint[]>([
+    { t: 0, remaining: 160 },
+  ]);
+  const [equationCopied, setEquationCopied] = useState(false);
+  const [chartScale, setChartScale] = useState<ChartScale>("linear");
+
+  const preset = useMemo(
+    () => PRESETS.find((item) => item.key === presetKey) ?? PRESETS[0],
+    [presetKey],
+  );
+  const seriesPresets = useMemo(
+    () => PRESETS.filter((item) => item.series === seriesKey),
+    [seriesKey],
+  );
+  const chainStages = useMemo(() => getChainStages(seriesKey), [seriesKey]);
+  const chainStageCounts = useMemo(() => {
+    const counts = Array.from({ length: chainStages.length }, () => 0);
+    for (const particle of particles) {
+      if (counts[particle.chainStage] !== undefined) {
+        counts[particle.chainStage] += 1;
+      }
+    }
+    return counts;
+  }, [chainStages.length, particles]);
+  const seriesLabel =
+    SERIES_OPTIONS.find((series) => series.key === seriesKey)?.label ??
+    "単独核種";
+  const parentColor = `rgb(${preset.parentRgb})`;
+  const daughterColor = `rgb(${preset.daughterRgb})`;
+  const simulationRate = formatSimulationRate(preset, speed);
+
+  const selectSeries = useCallback((nextSeries: DecaySeries) => {
+    const firstPreset = PRESETS.find((item) => item.series === nextSeries);
+    setSeriesKey(nextSeries);
+    if (nextSeries === "independent") setSimulationMode("single");
+    if (firstPreset) setPresetKey(firstPreset.key);
+  }, []);
+
+  const selectPreset = useCallback((item: IsotopePreset) => {
+    setSeriesKey(item.series);
+    setPresetKey(item.key);
+    setSimulationMode("single");
+  }, []);
+
+  const startChainMode = useCallback(() => {
+    if (seriesKey === "independent") return;
+    const firstPreset = PRESETS.find((item) => item.series === seriesKey);
+    if (firstPreset) setPresetKey(firstPreset.key);
+    setSimulationMode("chain");
+  }, [seriesKey]);
+
+  const resetSimulation = useCallback(() => {
+    resetSeedRef.current += 97;
+    const nextParticles = makeParticles(atomCount, resetSeedRef.current);
+    const initialHistory = [{ t: 0, remaining: atomCount }];
+    particlesRef.current = nextParticles;
+    burstsRef.current = [];
+    elapsedRef.current = 0;
+    historyRef.current = initialHistory;
+    lastHistoryAtRef.current = 0;
+    setParticles(nextParticles.map((particle) => ({ ...particle })));
+    setBursts([]);
+    setHistory(initialHistory);
+    setElapsed(0);
+    setRemaining(atomCount);
+    setPaused(false);
+  }, [atomCount]);
+
+  useEffect(() => {
+    resetSimulation();
+  }, [presetKey, resetSimulation, simulationMode]);
+
+  useEffect(() => {
+    let frameId = 0;
+    let lastFrame = performance.now();
+    let lastSnapshot = 0;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const simulate = (timestamp: number) => {
+      frameId = requestAnimationFrame(simulate);
+      const frameElapsed = timestamp - lastFrame;
+
+      const dt = Math.min(frameElapsed / 1000, 0.08);
+      lastFrame = timestamp;
+      const deltaHalfLives = paused
+        ? 0
+        : dt * speed * SIMULATED_HALF_LIVES_PER_SECOND;
+      const decayProbability = 1 - Math.pow(0.5, deltaHalfLives);
+      const motionScale = reduceMotion ? 0 : paused ? 0.15 : 1;
+
+      if (!paused) elapsedRef.current += deltaHalfLives;
+
+      for (const particle of particlesRef.current) {
+        particle.x += particle.vx * dt * motionScale;
+        particle.y += particle.vy * dt * motionScale;
+        if (particle.x < 0.035 || particle.x > 0.965) particle.vx *= -1;
+        if (particle.y < 0.055 || particle.y > 0.945) particle.vy *= -1;
+        particle.x = Math.max(0.035, Math.min(0.965, particle.x));
+        particle.y = Math.max(0.055, Math.min(0.945, particle.y));
+        particle.pulse += dt * 2;
+        particleNodeRefs.current[particle.id]?.setAttribute(
+          "transform",
+          `translate(${particle.x * 1000} ${particle.y * 520})`,
+        );
+
+        const canDecay =
+          simulationMode === "chain"
+            ? particle.chainStage < chainStages.length - 1
+            : particle.phase === "parent";
+
+        if (canDecay && decayProbability > 0 && Math.random() < decayProbability) {
+          const burstMode =
+            simulationMode === "chain"
+              ? chainStages[particle.chainStage]?.mode ?? "alpha"
+              : preset.mode;
+
+          if (simulationMode === "chain") {
+            particle.chainStage += 1;
+            particle.phase = "daughter";
+          } else {
+            particle.phase = "daughter";
+          }
+          burstsRef.current.push({
+            id: burstIdRef.current++,
+            x: particle.x,
+            y: particle.y,
+            life: 1,
+            angle: Math.random() * Math.PI * 2,
+            kind: burstMode,
+          });
+        }
+      }
+
+      burstsRef.current = burstsRef.current
+        .map((burst) => ({ ...burst, life: burst.life - dt * 1.25 }))
+        .filter((burst) => burst.life > 0)
+        .slice(-20);
+
+      if (timestamp - lastSnapshot >= VISUAL_UPDATE_INTERVAL_MS) {
+        const currentRemaining = particlesRef.current.reduce(
+          (total, particle) =>
+            total +
+            (simulationMode === "chain"
+              ? particle.chainStage === 0
+                ? 1
+                : 0
+              : particle.phase === "parent"
+                ? 1
+                : 0),
+          0,
+        );
+        const shouldRecordHistory =
+          !paused &&
+          (elapsedRef.current - lastHistoryAtRef.current >= HISTORY_INTERVAL ||
+            (currentRemaining === 0 &&
+              historyRef.current.at(-1)?.remaining !== 0));
+
+        if (shouldRecordHistory) {
+          const nextHistory = appendHistoryPoint(historyRef.current, {
+            t: elapsedRef.current,
+            remaining: currentRemaining,
+          });
+          historyRef.current = nextHistory;
+          lastHistoryAtRef.current = elapsedRef.current;
+          setHistory(nextHistory);
+        }
+        setParticles(
+          particlesRef.current.map((particle) => ({ ...particle })),
+        );
+        setBursts(burstsRef.current.map((burst) => ({ ...burst })));
+        setRemaining(currentRemaining);
+        setElapsed(elapsedRef.current);
+        lastSnapshot = timestamp;
+      }
+    };
+
+    frameId = requestAnimationFrame(simulate);
+    return () => cancelAnimationFrame(frameId);
+  }, [chainStages, paused, preset.mode, simulationMode, speed]);
+
+  const handleDetectorPulse = (
+    event: ReactPointerEvent<SVGSVGElement>,
+  ) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    burstsRef.current.push({
+      id: burstIdRef.current++,
+      x: (event.clientX - rect.left) / rect.width,
+      y: (event.clientY - rect.top) / rect.height,
+      life: 1,
+      angle: Math.random() * Math.PI * 2,
+      kind: "gamma",
+    });
+  };
+
+  const copyEquation = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(preset.equation);
+      setEquationCopied(true);
+      window.setTimeout(() => setEquationCopied(false), 1800);
+    } catch {
+      setEquationCopied(false);
+    }
+  }, [preset.equation]);
+
+  const exportHistoryCsv = useCallback(() => {
+    const rows = historyRef.current.map((point) => [
+      point.t.toFixed(4),
+      (point.t * preset.halfLife).toFixed(4),
+      preset.unit,
+      point.remaining,
+      atomCount,
+      ((point.remaining / atomCount) * 100).toFixed(2),
+    ]);
+    const csv = [
+      ["経過半減期", "経過時間", "時間単位", "未壊変数", "初期原子核数", "残存率"],
+      ...rows,
+    ]
+      .map((row) => row.join(","))
+      .join("\n");
+    const url = URL.createObjectURL(
+      new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" }),
+    );
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `${preset.key}-decay-observation.csv`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }, [atomCount, preset]);
+
+  const expected = atomCount * Math.pow(0.5, elapsed);
+  const decayed = atomCount - remaining;
+  const activity = remaining * Math.LN2;
+  const remainingPercent = (remaining / atomCount) * 100;
+
+  const chart = useMemo(() => {
+    const width = 760;
+    const height = 280;
+    const left = 58;
+    const right = 24;
+    const top = 20;
+    const bottom = 44;
+    const maxT = Math.max(1, Math.ceil(elapsed * 2) / 2);
+    const plotWidth = width - left - right;
+    const plotHeight = height - top - bottom;
+    const logMinimum = 0.001;
+
+    const position = (t: number, value: number) => {
+      const fraction = value / atomCount;
+      const y =
+        chartScale === "log"
+          ? top +
+            (-Math.log10(Math.max(logMinimum, Math.min(1, fraction))) /
+              -Math.log10(logMinimum)) *
+              plotHeight
+          : top + (1 - fraction) * plotHeight;
+      return {
+        x: left + (t / maxT) * plotWidth,
+        y,
+      };
+    };
+    const toPath = (points: Array<{ t: number; value: number }>) =>
+      points
+        .map((point, index) => {
+          const { x, y } = position(point.t, point.value);
+          return `${index === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
+        })
+        .join(" ");
+
+    const theoretical = Array.from({ length: 100 }, (_, index) => {
+      const t = (index / 99) * maxT;
+      return { t, value: atomCount * Math.pow(0.5, t) };
+    });
+    const visibleTheoretical =
+      chartScale === "log"
+        ? theoretical.filter((point) => point.value / atomCount >= logMinimum)
+        : theoretical;
+    const observed = history
+      .filter(
+        (point) =>
+          point.t <= maxT &&
+          (chartScale === "linear" || point.remaining > 0),
+      )
+      .map((point) => ({ t: point.t, value: point.remaining }));
+    const observedPointStep = Math.max(1, Math.ceil(observed.length / 55));
+    const yTickFractions =
+      chartScale === "log"
+        ? [1, 0.1, 0.01, 0.001]
+        : [1, 0.75, 0.5, 0.25, 0];
+
+    return {
+      theoreticalPath: toPath(visibleTheoretical),
+      observedPath: toPath(observed),
+      observedPoints: observed
+        .filter(
+          (_, index) =>
+            index % observedPointStep === 0 || index === observed.length - 1,
+        )
+        .map((point) => position(point.t, point.value)),
+      yTicks: yTickFractions.map((fraction) => ({
+        y: position(0, fraction * atomCount).y,
+        label:
+          fraction >= 0.01
+            ? `${Math.round(fraction * 100)}%`
+            : `${(fraction * 100).toFixed(1)}%`,
+      })),
+      maxT,
+      left,
+      right,
+      top,
+      bottom,
+      width,
+      height,
+      plotWidth,
+      plotHeight,
+    };
+  }, [atomCount, chartScale, elapsed, history]);
+
+  return (
+    <main
+      className="lab-shell"
+      style={
+        {
+          "--parent-rgb": preset.parentRgb,
+          "--daughter-rgb": preset.daughterRgb,
+        } as React.CSSProperties
+      }
+    >
+      <header className="lab-header">
+        <a className="brand" href="#simulator" aria-label="原子核崩壊実験室 トップ">
+          <span className="brand-index">NDL—01</span>
+          <span>原子核崩壊実験室</span>
+        </a>
+        <p>教育用モンテカルロ・シミュレーション</p>
+      </header>
+
+      <section className="hero-copy" aria-labelledby="page-title">
+        <p className="section-number">01 / SIMULATOR</p>
+        <h1 id="page-title">原子核崩壊<br />シミュレーター</h1>
+        <p className="hero-description">
+          個々の原子核がいつ壊変するかは予測できません。
+          ここでは多数の原子核を動かし、確率的な現象から半減期の曲線が現れる様子を観察できます。
+        </p>
+      </section>
+
+      <section className="simulator" id="simulator" aria-label="核崩壊シミュレーター">
+        <div className="nuclide-catalog">
+          <div className="catalog-heading">
+            <div>
+              <span>NUCLIDE CATALOG</span>
+              <strong>核種と放射系列</strong>
+            </div>
+            <p>系列を切り替え、表の核種を選ぶと実験条件へ反映されます。</p>
+          </div>
+
+          <div className="series-tabs" aria-label="放射系列を選択">
+            {SERIES_OPTIONS.map((series) => (
+              <button
+                type="button"
+                aria-pressed={seriesKey === series.key}
+                className={seriesKey === series.key ? "is-active" : ""}
+                onClick={() => selectSeries(series.key)}
+                key={series.key}
+              >
+                <strong>{series.label}</strong>
+                <small>{series.caption}</small>
+              </button>
+            ))}
+          </div>
+
+          <div className="nuclide-table-meta">
+            <span>{catalogView === "table" ? seriesLabel : "収録核種マップ"}</span>
+            <div className="catalog-view-toggle" role="group" aria-label="核種の表示形式">
+              <button
+                type="button"
+                aria-pressed={catalogView === "table"}
+                onClick={() => setCatalogView("table")}
+              >
+                リスト
+              </button>
+              <button
+                type="button"
+                aria-pressed={catalogView === "map"}
+                onClick={() => setCatalogView("map")}
+              >
+                核種マップ
+              </button>
+            </div>
+            <strong>
+              {catalogView === "table"
+                ? `${seriesPresets.length} 核種`
+                : `${KNOWN_NUCLIDES.length.toLocaleString("ja-JP")} 核種 / 実装 ${PRESETS.length}`}
+            </strong>
+          </div>
+          {catalogView === "table" ? (
+            <div className="nuclide-table-wrap">
+              <table className="nuclide-table">
+                <thead>
+                  <tr>
+                    <th scope="col">親核種</th>
+                    <th scope="col">壊変</th>
+                    <th scope="col">娘核種</th>
+                    <th scope="col">半減期</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {seriesPresets.map((item) => (
+                    <tr
+                      className={presetKey === item.key ? "is-active" : ""}
+                      key={item.key}
+                    >
+                      <td>
+                        <button
+                          type="button"
+                          className="nuclide-select"
+                          aria-pressed={presetKey === item.key}
+                          onClick={() => selectPreset(item)}
+                        >
+                          <NuclideSymbol
+                            nuclide={item.parentNuclide}
+                            className="nuclide-symbol-table"
+                          />
+                          <span>{item.parent}</span>
+                        </button>
+                      </td>
+                      <td>
+                        <span className={`decay-mode mode-${item.mode}`}>
+                          {item.modeLabel}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="daughter-cell">
+                          <NuclideSymbol
+                            nuclide={item.daughterNuclide}
+                            className="nuclide-symbol-table"
+                          />
+                          <span>{item.daughter}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <strong className="half-life-value">
+                          {formatNumber(item.halfLife)}
+                        </strong>
+                        <span className="half-life-unit">{item.unit}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <NuclideMapExplorer
+              preset={preset}
+              presetKey={presetKey}
+              onSelectPreset={selectPreset}
+            />
+          )}
+        </div>
+
+        <div className="simulation-mode-bar">
+          <div className="simulation-mode-toggle" role="group" aria-label="シミュレーション形式">
+            <button
+              type="button"
+              aria-pressed={simulationMode === "single"}
+              onClick={() => setSimulationMode("single")}
+            >
+              単独壊変
+            </button>
+            <button
+              type="button"
+              aria-pressed={simulationMode === "chain"}
+              disabled={seriesKey === "independent"}
+              onClick={startChainMode}
+            >
+              放射系列の連鎖
+            </button>
+          </div>
+          <p>
+            {seriesKey === "independent"
+              ? "U-238・Th-232・U-235系列を選ぶと、連鎖モードを開始できます。"
+              : simulationMode === "chain"
+                ? `${seriesLabel}の主要核種を順に追跡中です。`
+                : "単独核種の壊変を観察しています。"}
+          </p>
+        </div>
+
+        <div className="equation-panel" aria-label={`${preset.parent}の壊変式`}>
+          <div className="equation-heading">
+            <div>
+              <span>DECAY REACTION</span>
+              <strong>{simulationMode === "chain" ? "最初の壊変" : "壊変式"}</strong>
+            </div>
+            <div className="equation-heading-actions">
+              <small>{preset.modeLabel}</small>
+              <button type="button" onClick={copyEquation}>
+                {equationCopied ? "コピーしました" : "式をコピー"}
+              </button>
+            </div>
+          </div>
+          <div className="decay-flow">
+            <div className="reaction-species reaction-parent">
+              <span>親核種</span>
+              <NuclideSymbol nuclide={preset.parentNuclide} className="reaction-symbol" />
+              <small>{preset.parent}</small>
+            </div>
+            <div className="reaction-arrow" aria-hidden="true">
+              <span>{preset.modeLabel}</span>
+              <b>→</b>
+            </div>
+            <div className="reaction-species reaction-daughter">
+              <span>娘核種</span>
+              <NuclideSymbol nuclide={preset.daughterNuclide} className="reaction-symbol" />
+              <small>{preset.daughter}</small>
+            </div>
+            <b className="reaction-plus" aria-hidden="true">＋</b>
+            <div className="reaction-species reaction-emission">
+              <span>放出粒子</span>
+              <code>{preset.emissionSymbol}</code>
+              <small>{preset.emission}</small>
+            </div>
+          </div>
+        </div>
+
+        <div className="simulator-grid">
+          <div className="visual-panel">
+            <div className="visual-toolbar">
+              <div className="visual-status">
+                <span>{simulationMode === "chain" ? "連鎖の進行状況" : "粒子表示"}</span>
+                <strong>
+                  <b>
+                    {simulationMode === "chain"
+                      ? chainStageCounts.at(-1) ?? 0
+                      : remaining}
+                  </b>
+                  <small>
+                    / {atomCount} 個が
+                    {simulationMode === "chain" ? "安定核種へ到達" : "未壊変"}
+                  </small>
+                </strong>
+              </div>
+              <div className="legend" aria-label="粒子の凡例">
+                <span>
+                  <i className="legend-parent" style={{ backgroundColor: parentColor }} />
+                  {simulationMode === "chain" ? "初期核種" : "親核種"}
+                </span>
+                <span>
+                  <i
+                    className="legend-daughter"
+                    style={{
+                      backgroundColor:
+                        simulationMode === "chain"
+                          ? CHAIN_STAGE_COLORS[3]
+                          : daughterColor,
+                    }}
+                  />
+                  {simulationMode === "chain" ? "連鎖中" : "娘核種"}
+                </span>
+                <span><i className="legend-emission" />放出反応</span>
+              </div>
+            </div>
+
+            {simulationMode === "chain" && (
+              <div className="chain-progress">
+                <div className="chain-progress-heading">
+                  <div>
+                    <span>MAJOR DECAY CHAIN</span>
+                    <strong>{seriesLabel}</strong>
+                  </div>
+                  <p>
+                    <span>表示中</span>
+                    <strong>{chainStages.length}</strong>
+                    <small>段階</small>
+                  </p>
+                </div>
+                <div
+                  className="chain-track"
+                  aria-label={`${seriesLabel}の主要な壊変段階`}
+                >
+                  {chainStages.map((stage, index) => (
                     <div className="chain-stage-group" key={stage.key}>
                       <article
                         className={`chain-stage ${stage.stable ? "is-stable" : ""}`}
