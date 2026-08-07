@@ -49,6 +49,7 @@ input:focus-visible {
 .lab-header,
 .hero-copy,
 .simulator,
+.genealogy-panel,
 .detector-section,
 .data-section,
 footer {
@@ -61,7 +62,7 @@ footer {
   align-items: center;
   justify-content: space-between;
   gap: 28px;
-  min-height: 72px;
+  min-height: 64px;
   border-bottom: 1px solid var(--ink);
 }
 
@@ -84,13 +85,13 @@ footer {
 
 .header-links a {
   display: inline-flex;
-  min-height: 34px;
+  min-height: 36px;
   align-items: center;
   padding: 0 11px;
   color: var(--ink);
   border: 1px solid var(--line);
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   text-decoration: none;
   transition:
     border-color 150ms ease,
@@ -103,17 +104,6 @@ footer {
   background: rgba(255, 255, 255, 0.42);
 }
 
-.header-links .repository-link {
-  color: var(--paper);
-  border-color: var(--ink);
-  background: var(--ink);
-}
-
-.header-links .repository-link:hover {
-  color: #fff;
-  background: rgb(var(--parent-rgb));
-}
-
 .lab-header p {
   margin: 0;
   color: var(--muted);
@@ -122,18 +112,18 @@ footer {
 
 .hero-copy {
   display: grid;
-  grid-template-columns: 130px minmax(0, 1fr);
-  gap: 28px;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 24px;
   align-items: start;
-  padding: 76px 0 64px;
+  padding: 50px 0 44px;
 }
 
 .section-number {
   align-self: start;
-  margin: 8px 0 0;
+  margin: 5px 0 0;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.08em;
 }
 
@@ -141,10 +131,10 @@ footer {
   display: grid;
   gap: 0.03em;
   margin: 0;
-  font-size: clamp(3.25rem, 6.2vw, 6rem);
+  font-size: clamp(2.85rem, 5vw, 4.8rem);
   font-weight: 500;
-  letter-spacing: -0.07em;
-  line-height: 0.93;
+  letter-spacing: -0.055em;
+  line-height: 0.96;
 }
 
 .hero-copy h1 span {
@@ -154,11 +144,11 @@ footer {
 
 .hero-description {
   grid-column: 2;
-  width: min(100%, 720px);
-  margin: 18px 0 0;
+  width: min(100%, 640px);
+  margin: 14px 0 0;
   color: #4f514b;
   font-size: 14px;
-  line-height: 1.9;
+  line-height: 1.75;
 }
 
 .simulator {
@@ -167,7 +157,7 @@ footer {
 }
 
 .nuclide-catalog {
-  padding: 26px 28px 30px;
+  padding: 22px 24px 24px;
   border-bottom: 1px solid var(--ink);
   background: rgba(255, 255, 255, 0.16);
 }
@@ -177,7 +167,7 @@ footer {
   align-items: end;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 .catalog-heading > div {
@@ -189,7 +179,7 @@ footer {
 .nuclide-table-meta span {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.12em;
 }
 
@@ -210,15 +200,15 @@ footer {
 .series-tabs {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin-bottom: 18px;
+  margin-bottom: 14px;
   border: 1px solid var(--ink);
 }
 
 .series-tabs button {
   display: grid;
   gap: 5px;
-  min-height: 68px;
-  padding: 12px 14px;
+  min-height: 56px;
+  padding: 9px 12px;
   border: 0;
   border-right: 1px solid var(--line);
   background: transparent;
@@ -242,7 +232,7 @@ footer {
 .series-tabs small {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .series-tabs button.is-active small { color: #b9bbb4; }
@@ -276,7 +266,7 @@ footer {
   border: 0;
   background: transparent;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   cursor: pointer;
 }
 
@@ -314,15 +304,15 @@ footer {
   color: var(--muted);
   border-bottom: 1px solid var(--line);
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-align: left;
 }
 
 .nuclide-table td {
-  height: 58px;
-  padding: 8px 12px;
+  height: 50px;
+  padding: 7px 12px;
   border-bottom: 1px solid var(--line);
   font-size: 11px;
   transition: background-color 150ms ease;
@@ -373,7 +363,7 @@ footer {
   border: 1px solid currentColor;
   border-radius: 999px;
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
   white-space: nowrap;
 }
 
@@ -390,7 +380,7 @@ footer {
 
 .half-life-unit {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .nuclide-map-wrap {
@@ -515,7 +505,7 @@ footer {
   flex-wrap: wrap;
   gap: 14px;
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .nuclide-map-legend span {
@@ -573,7 +563,7 @@ footer {
   margin: 0;
   color: #a5ada6;
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
   pointer-events: none;
   text-shadow: 0 1px 2px #111512;
 }
@@ -611,7 +601,7 @@ footer {
 .nuclide-map-selection .selection-label {
   color: rgb(var(--parent-rgb));
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
   letter-spacing: 0.08em;
 }
 
@@ -619,7 +609,7 @@ footer {
   margin-top: 12px;
   color: var(--ink);
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
   text-underline-offset: 4px;
 }
 
@@ -675,8 +665,9 @@ footer {
 }
 
 .genealogy-panel {
-  padding: 32px 28px 36px;
+  padding: 24px;
   overflow: hidden;
+  border-top: 1px solid var(--ink);
   border-bottom: 1px solid var(--ink);
   background: #efede6;
 }
@@ -686,7 +677,7 @@ footer {
   align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 
 .genealogy-heading > div {
@@ -698,12 +689,12 @@ footer {
 .genealogy-rail-label {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.08em;
 }
 
 .genealogy-heading strong {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 500;
 }
 
@@ -711,20 +702,20 @@ footer {
   max-width: 470px;
   margin: 0;
   color: var(--muted);
-  font-size: 10px;
-  line-height: 1.75;
+  font-size: 11px;
+  line-height: 1.65;
   text-align: right;
 }
 
 .genealogy-ancestors,
 .genealogy-lineage {
   display: grid;
-  grid-template-columns: 156px minmax(0, 1fr);
+  grid-template-columns: 138px minmax(0, 1fr);
   border-top: 1px solid #aaa79e;
 }
 
 .genealogy-rail-label {
-  padding: 20px 18px 20px 0;
+  padding: 13px 14px 13px 0;
   line-height: 1.6;
 }
 
@@ -732,8 +723,8 @@ footer {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 16px;
-  padding: 16px 0 16px 20px;
+  gap: 12px;
+  padding: 10px 0 10px 16px;
   overflow-x: auto;
 }
 
@@ -747,7 +738,7 @@ footer {
   flex: 0 0 auto;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .genealogy-parent-link {
@@ -760,7 +751,7 @@ footer {
 .genealogy-parent-link > span {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
   line-height: 1.6;
   text-align: center;
 }
@@ -774,7 +765,7 @@ footer {
   min-width: 0;
   align-items: center;
   gap: 0;
-  padding: 20px 0 20px 20px;
+  padding: 12px 0 12px 16px;
   overflow-x: auto;
 }
 
@@ -786,14 +777,14 @@ footer {
 
 .genealogy-node {
   display: grid;
-  width: 148px;
-  min-height: 104px;
+  width: 132px;
+  min-height: 88px;
   flex: 0 0 auto;
-  grid-template-columns: 44px minmax(0, 1fr);
+  grid-template-columns: 39px minmax(0, 1fr);
   grid-template-rows: auto 1fr auto;
   align-items: center;
   gap: 4px 10px;
-  padding: 11px 13px 12px;
+  padding: 8px 10px 9px;
   color: var(--ink);
   border: 0;
   border-left: 2px solid rgb(var(--parent-rgb));
@@ -825,7 +816,7 @@ footer {
 .genealogy-node > small {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
   line-height: 1.45;
 }
 
@@ -847,23 +838,23 @@ footer {
 .nuclide-symbol-genealogy {
   grid-column: 1;
   grid-row: 2 / 4;
-  font-size: 1.65rem;
+  font-size: 1.5rem;
 }
 
 .genealogy-arrow {
   display: grid;
-  width: 86px;
+  width: 64px;
   flex: 0 0 auto;
   justify-items: center;
   gap: 7px;
-  padding: 0 10px;
+  padding: 0 7px;
 }
 
 .genealogy-arrow small {
   max-width: 72px;
   color: currentColor;
   font-family: var(--mono);
-  font-size: 7px;
+  font-size: 9px;
   line-height: 1.35;
   text-align: center;
 }
@@ -886,11 +877,11 @@ footer {
 
 .simulation-mode-bar {
   display: flex;
-  min-height: 58px;
+  min-height: 50px;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 11px 28px;
+  padding: 8px 24px;
   border-bottom: 1px solid var(--ink);
   background: var(--paper-dark);
 }
@@ -905,9 +896,9 @@ footer {
 
 .equation-panel {
   display: grid;
-  gap: 22px;
-  padding: 26px 28px 28px;
-  border-bottom: 1px solid var(--ink);
+  gap: 14px;
+  padding: 20px 24px 22px;
+  border-top: 1px solid var(--ink);
   background:
     linear-gradient(90deg, rgba(var(--parent-rgb), 0.05), transparent 42%),
     #faf8f2;
@@ -929,7 +920,7 @@ footer {
 .reaction-species > span:first-child {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.12em;
 }
 
@@ -962,7 +953,7 @@ footer {
   border-radius: 2px;
   background: transparent;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.04em;
   cursor: pointer;
   transition: background-color 160ms ease, color 160ms ease;
@@ -983,7 +974,7 @@ footer a:focus-visible {
 
 .decay-flow {
   display: grid;
-  grid-template-columns: minmax(150px, 0.9fr) 88px minmax(150px, 0.9fr) auto minmax(210px, 1.2fr);
+  grid-template-columns: minmax(140px, 0.9fr) 72px minmax(140px, 0.9fr) auto minmax(190px, 1.2fr);
   align-items: stretch;
   gap: 12px;
 }
@@ -992,10 +983,10 @@ footer a:focus-visible {
   position: relative;
   display: grid;
   min-width: 0;
-  min-height: 116px;
+  min-height: 88px;
   align-content: center;
   gap: 8px;
-  padding: 18px 20px;
+  padding: 13px 16px;
   overflow: hidden;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.44);
@@ -1015,14 +1006,14 @@ footer a:focus-visible {
 .reaction-species code {
   color: var(--ink);
   font-family: var(--mono);
-  font-size: clamp(1.55rem, 3vw, 2.5rem);
+  font-size: clamp(1.35rem, 2.2vw, 1.9rem);
   font-weight: 600;
   white-space: nowrap;
 }
 
 .reaction-symbol {
   color: var(--ink);
-  font-size: clamp(1.55rem, 3vw, 2.5rem);
+  font-size: clamp(1.35rem, 2.2vw, 1.9rem);
   font-weight: 600;
 }
 
@@ -1044,7 +1035,7 @@ footer a:focus-visible {
 .reaction-arrow span {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .reaction-arrow b {
@@ -1066,7 +1057,7 @@ footer a:focus-visible {
 .simulator-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.75fr) minmax(300px, 0.75fr);
-  min-height: 570px;
+  min-height: 540px;
 }
 
 .visual-panel {
@@ -1078,11 +1069,11 @@ footer a:focus-visible {
 
 .visual-toolbar {
   display: flex;
-  min-height: 82px;
+  min-height: 70px;
   align-items: center;
   justify-content: space-between;
   gap: 28px;
-  padding: 16px 24px;
+  padding: 13px 22px;
   color: #d8ddd7;
   border-bottom: 1px solid #3d443e;
   background: var(--field);
@@ -1174,7 +1165,7 @@ footer a:focus-visible {
 .chain-progress-heading > div > span {
   color: #8f9890;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.1em;
 }
 
@@ -1262,7 +1253,7 @@ footer a:focus-visible {
 .chain-stage-index {
   color: #8f998f;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.08em;
 }
 
@@ -1296,7 +1287,7 @@ footer a:focus-visible {
 
 .chain-stage-copy small span {
   color: #7f8980;
-  font-size: 8px;
+  font-size: 9px;
   letter-spacing: 0.07em;
 }
 
@@ -1325,7 +1316,7 @@ footer a:focus-visible {
 }
 
 .chain-stage output span {
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .chain-stage.is-stable {
@@ -1381,7 +1372,7 @@ footer a:focus-visible {
 
 .particle-field {
   position: relative;
-  min-height: 500px;
+  min-height: 470px;
   overflow: hidden;
   background: var(--field);
 }
@@ -1393,7 +1384,7 @@ footer a:focus-visible {
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 500px;
+  min-height: 470px;
   cursor: crosshair;
   touch-action: manipulation;
 }
@@ -1456,7 +1447,7 @@ footer a:focus-visible {
 .field-readout small {
   margin-top: 5px;
   color: #a6aea6;
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .field-hint {
@@ -1466,22 +1457,22 @@ footer a:focus-visible {
   z-index: 2;
   color: #7f8880;
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
   pointer-events: none;
 }
 
 .control-panel {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  padding: 28px;
+  gap: 19px;
+  padding: 22px;
   background: var(--paper-dark);
 }
 
 .control-heading {
   display: grid;
   gap: 6px;
-  padding-bottom: 24px;
+  padding-bottom: 15px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -1489,11 +1480,11 @@ footer a:focus-visible {
 .control-heading small {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .control-heading strong {
-  font-size: 21px;
+  font-size: 19px;
   font-weight: 600;
 }
 
@@ -1552,20 +1543,20 @@ footer a:focus-visible {
 .chain-rate-selector button small {
   color: inherit;
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
   line-height: 1.45;
 }
 
 .chain-rate-selector > p {
   margin: 0;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 10px;
   line-height: 1.65;
 }
 
 .control-field {
   display: grid;
-  gap: 14px;
+  gap: 10px;
 }
 
 .control-field > span {
@@ -1623,7 +1614,7 @@ footer a:focus-visible {
 .particle-count-field > small {
   margin-top: -5px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 10px;
   line-height: 1.5;
 }
 
@@ -1633,7 +1624,7 @@ footer a:focus-visible {
 
 .speed-control > small {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 10px;
   line-height: 1.5;
 }
 
@@ -1642,21 +1633,21 @@ footer a:focus-visible {
   justify-content: space-between;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 7px;
+  font-size: 8px;
   line-height: 1;
 }
 
 input[type="range"] {
   width: 100%;
-  height: 4px;
+  height: 6px;
   accent-color: var(--parent);
   cursor: pointer;
 }
 
 .time-rate {
   display: grid;
-  gap: 10px;
-  padding: 15px 0;
+  gap: 8px;
+  padding: 12px 0;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
@@ -1664,7 +1655,7 @@ input[type="range"] {
 .time-rate > span {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 0.1em;
 }
 
@@ -1677,7 +1668,7 @@ input[type="range"] {
 
 .time-rate small {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .time-rate strong {
@@ -1700,7 +1691,7 @@ input[type="range"] {
 .time-rate p {
   margin: 0;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 10px;
   line-height: 1.6;
 }
 
@@ -1735,9 +1726,9 @@ input[type="range"] {
 
 .formula {
   display: grid;
-  gap: 10px;
+  gap: 7px;
   margin-top: auto;
-  padding: 18px;
+  padding: 13px 14px;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.32);
 }
@@ -1745,7 +1736,7 @@ input[type="range"] {
 .formula span {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .formula code {
@@ -1760,16 +1751,16 @@ input[type="range"] {
 }
 
 .detector-section {
-  padding: 108px 0 92px;
+  padding: 70px 0 68px;
 }
 
 .detector-section-heading {
-  margin-bottom: 30px;
+  margin-bottom: 24px;
 }
 
 .detector-lab-grid {
   display: grid;
-  grid-template-columns: 360px minmax(0, 1fr);
+  grid-template-columns: 320px minmax(0, 1fr);
   border: 1px solid var(--ink);
   background: #f5f2ea;
 }
@@ -1777,8 +1768,8 @@ input[type="range"] {
 .detector-controls {
   display: grid;
   align-content: start;
-  gap: 28px;
-  padding: 30px 26px;
+  gap: 18px;
+  padding: 22px 20px;
   border-right: 1px solid var(--ink);
   background: #ebe7dc;
 }
@@ -1796,7 +1787,7 @@ input[type="range"] {
   margin-bottom: 10px;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.05em;
 }
 
@@ -1809,9 +1800,9 @@ input[type="range"] {
   display: grid;
   grid-template-columns: 48px minmax(0, 1fr);
   gap: 3px 12px;
-  min-height: 68px;
+  min-height: 58px;
   align-items: center;
-  padding: 11px 7px;
+  padding: 9px 7px;
   border: 0;
   border-bottom: 1px solid #aaa79e;
   background: transparent;
@@ -1836,13 +1827,13 @@ input[type="range"] {
 }
 
 .detector-options button > strong {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
 .detector-options button > small {
   color: var(--muted);
-  font-size: 8px;
+  font-size: 10px;
   line-height: 1.5;
 }
 
@@ -1882,7 +1873,7 @@ input[type="range"] {
 
 .shield-options button {
   display: grid;
-  min-height: 58px;
+  min-height: 54px;
   place-items: center;
   gap: 4px;
   padding: 8px 4px;
@@ -1907,14 +1898,14 @@ input[type="range"] {
 }
 
 .shield-options span {
-  font-size: 7px;
+  font-size: 9px;
 }
 
 .detector-console {
   display: grid;
   min-width: 0;
   align-content: start;
-  padding: 30px;
+  padding: 24px;
   background:
     linear-gradient(90deg, transparent 49.9%, rgba(23, 24, 21, 0.045) 50%, transparent 50.1%),
     #f8f6f0;
@@ -1922,10 +1913,10 @@ input[type="range"] {
 
 .detector-apparatus {
   display: grid;
-  min-height: 210px;
-  grid-template-columns: 130px minmax(70px, 1fr) auto 150px;
+  min-height: 196px;
+  grid-template-columns: 145px minmax(80px, 1fr) auto 165px;
   align-items: center;
-  padding: 22px 12px 28px;
+  padding: 18px 12px 22px;
   color: var(--ink);
   border-top: 1px solid var(--ink);
   border-bottom: 1px solid var(--ink);
@@ -1948,12 +1939,12 @@ input[type="range"] {
 .detector-shield small {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .nuclide-symbol-detector {
   color: rgb(var(--parent-rgb));
-  font-size: 2.2rem;
+  font-size: 2.5rem;
 }
 
 .detector-flight {
@@ -1988,7 +1979,7 @@ input[type="range"] {
   display: grid;
   width: var(--shield-thickness);
   min-width: 12px;
-  height: 126px;
+  height: 136px;
   place-items: center;
   align-content: center;
   gap: 6px;
@@ -2007,7 +1998,7 @@ input[type="range"] {
 
 .detector-shield small {
   color: #30332e;
-  font-size: 6px;
+  font-size: 9px;
   writing-mode: vertical-rl;
 }
 
@@ -2026,8 +2017,8 @@ input[type="range"] {
 
 .detector-device > span {
   display: grid;
-  width: 104px;
-  height: 68px;
+  width: 116px;
+  height: 76px;
   place-items: center;
   color: var(--ink);
   border: 1px solid var(--ink);
@@ -2044,8 +2035,8 @@ input[type="range"] {
 }
 
 .detector-scope {
-  width: min(100%, 620px);
-  margin: 28px auto 0;
+  width: min(100%, 680px);
+  margin: 22px auto 0;
   padding: 16px 18px 14px;
   color: #dbe2d8;
   border: 7px solid #343731;
@@ -2063,7 +2054,7 @@ input[type="range"] {
 
 .scope-heading span {
   color: #92a096;
-  font-size: 8px;
+  font-size: 9px;
   letter-spacing: 0.09em;
 }
 
@@ -2075,7 +2066,7 @@ input[type="range"] {
 
 .scope-bars {
   display: flex;
-  height: 90px;
+  height: 82px;
   align-items: end;
   gap: 4px;
   padding: 10px 8px 0;
@@ -2098,7 +2089,7 @@ input[type="range"] {
 .detector-readouts {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  margin-top: 32px;
+  margin-top: 24px;
   color: var(--ink);
   border-top: 1px solid var(--ink);
 }
@@ -2120,7 +2111,7 @@ input[type="range"] {
 .detector-readouts small {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .detector-readouts strong {
@@ -2133,34 +2124,34 @@ input[type="range"] {
 
 .detector-readouts strong small {
   color: inherit;
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .detector-readouts article > small {
   grid-column: 2;
 }
 
-.data-section { padding: 110px 0 88px; }
+.data-section { padding: 70px 0 64px; }
 
 .section-heading {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 390px);
   gap: 40px;
   align-items: end;
-  margin-bottom: 38px;
+  margin-bottom: 24px;
 }
 
 .section-heading h2 {
-  margin: 14px 0 0;
-  font-size: clamp(2.5rem, 5vw, 4.8rem);
+  margin: 8px 0 0;
+  font-size: clamp(2rem, 3.2vw, 3.25rem);
   font-weight: 500;
-  letter-spacing: -0.065em;
+  letter-spacing: -0.045em;
 }
 
 .section-heading > p {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.8;
 }
 
@@ -2174,7 +2165,7 @@ input[type="range"] {
 .stats-grid article {
   display: grid;
   gap: 8px;
-  padding: 22px 24px;
+  padding: 18px 20px;
   border-right: 1px solid var(--line);
 }
 
@@ -2183,20 +2174,20 @@ input[type="range"] {
 .stats-grid small {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .stats-grid strong {
   font-family: var(--mono);
-  font-size: clamp(1.9rem, 3.3vw, 3rem);
+  font-size: clamp(1.65rem, 2.7vw, 2.5rem);
   font-weight: 400;
 }
 
 .stats-grid strong small { font-size: 12px; }
 
 .chart-panel {
-  margin-top: 28px;
-  padding: 24px 24px 12px;
+  margin-top: 20px;
+  padding: 20px 20px 10px;
   border: 1px solid var(--ink);
   background: #faf8f2;
 }
@@ -2207,7 +2198,7 @@ input[type="range"] {
   align-items: center;
   gap: 18px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .chart-meta span {
@@ -2240,7 +2231,7 @@ input[type="range"] {
   border: 0;
   background: transparent;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   cursor: pointer;
 }
 
@@ -2258,7 +2249,7 @@ input[type="range"] {
   margin-left: auto;
   color: var(--ink);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 400;
 }
 
@@ -2284,7 +2275,7 @@ input[type="range"] {
 .decay-chart text {
   fill: var(--muted);
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .x-tick-label { text-anchor: middle; }
@@ -2307,7 +2298,8 @@ input[type="range"] {
 }
 
 .observed-point {
-  stroke-width: 1.5;
+  opacity: 0.58;
+  stroke-width: 1;
   vector-effect: non-scaling-stroke;
 }
 
@@ -2337,7 +2329,7 @@ footer p { margin: 0; }
 }
 
 .footer-brand span {
-  font-size: 8px;
+  font-size: 9px;
   letter-spacing: 0.07em;
 }
 
@@ -2424,6 +2416,7 @@ footer .repository-link:hover {
   .lab-header,
   .hero-copy,
   .simulator,
+  .genealogy-panel,
   .detector-section,
   .data-section,
   footer {
@@ -2448,7 +2441,7 @@ footer .repository-link:hover {
 
   .hero-copy {
     display: block;
-    padding: 54px 0 44px;
+    padding: 40px 0 34px;
   }
 
   .hero-copy h1 {
@@ -2457,7 +2450,7 @@ footer .repository-link:hover {
   }
 
   .hero-description {
-    margin-top: 24px;
+    margin-top: 18px;
     font-size: 13px;
   }
 
@@ -2583,8 +2576,8 @@ footer .repository-link:hover {
   .chain-arrow { min-width: 46px; }
   .chain-progress > p { font-size: 10px; }
 
-  .control-panel { padding: 24px 18px; }
-  .detector-section { padding: 78px 0 64px; }
+  .control-panel { padding: 20px 18px; }
+  .detector-section { padding: 56px 0 54px; }
   .detector-section-heading { margin-bottom: 24px; }
   .detector-controls { padding: 20px 16px; }
   .detector-options { grid-template-columns: 1fr; }
@@ -2604,7 +2597,7 @@ footer .repository-link:hover {
   .detector-readouts article,
   .detector-readouts article:nth-child(2n) { border-right: 0; }
   .section-heading { grid-template-columns: 1fr; gap: 18px; }
-  .data-section { padding: 78px 0 60px; }
+  .data-section { padding: 56px 0 52px; }
   .stats-grid { grid-template-columns: 1fr; }
   .stats-grid article {
     border-right: 0;
@@ -2630,7 +2623,7 @@ footer .repository-link:hover {
 @media (max-width: 430px) {
   .header-links a {
     padding-inline: 9px;
-    font-size: 8px;
+    font-size: 10px;
   }
   .chain-rate-selector > div { grid-template-columns: 1fr; }
   .chain-rate-selector button {
@@ -2640,7 +2633,7 @@ footer .repository-link:hover {
   }
   .chain-rate-selector button:last-child { border-bottom: 0; }
   .series-tabs strong { font-size: 11px; }
-  .series-tabs small { font-size: 7px; }
+  .series-tabs small { font-size: 9px; }
   .time-rate > div { grid-template-columns: auto auto 1fr; }
   .time-rate > div small:nth-of-type(2) { grid-column: 1; }
   .time-rate > div strong:last-child { grid-column: 2 / -1; }
