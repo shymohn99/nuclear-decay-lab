@@ -40,7 +40,7 @@ test("server-renders the nuclear decay lab", async () => {
   );
   assert.match(html, /application\/ld\+json/i);
   assert.match(html, /"@type":"WebApplication"/);
-  assert.match(html, /<span>原子核崩壊<\/span>/);
+  assert.match(html, /<span>放射性壊変<\/span>/);
   assert.match(html, /<span>シミュレーター<\/span>/);
   assert.match(html, />nuclear-decay-lab</);
   assert.match(
@@ -67,6 +67,18 @@ test("server-renders the nuclear decay lab", async () => {
   assert.match(html, /@Shymohn all rights reserved/);
   assert.match(html, /fill="rgb\(221, 80, 78\)"/);
   assert.match(html, /stroke="rgb\(49, 163, 177\)"/);
+  assert.ok(
+    html.indexOf('class="simulator-grid"') <
+      html.indexOf('class="data-section"'),
+  );
+  assert.ok(
+    html.indexOf('class="data-section"') <
+      html.indexOf('class="genealogy-panel"'),
+  );
+  assert.ok(
+    html.indexOf('class="genealogy-panel"') <
+      html.indexOf('class="detector-section"'),
+  );
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/i);
 });
 
@@ -149,7 +161,7 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /PRESETS_BY_DAUGHTER/);
   assert.match(page, /DESCENDANTS \/ 娘核種への流れ/);
   assert.match(page, /function DetectorLab/);
-  assert.match(page, /02 \/ DETECTOR LAB/);
+  assert.match(page, /04 \/ DETECTOR LAB/);
   assert.match(page, /GM計数管/);
   assert.match(page, /シンチレーション検出器/);
   assert.match(page, /半導体検出器/);
@@ -193,7 +205,7 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(css, /\.footer-brand/);
   assert.match(
     css,
-    /\.hero-copy\s*\{[\s\S]*grid-template-columns:\s*130px minmax\(0, 1fr\)/,
+    /\.hero-copy\s*\{[\s\S]*grid-template-columns:\s*112px minmax\(0, 1fr\)/,
   );
   assert.match(
     css,
