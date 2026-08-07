@@ -1300,7 +1300,7 @@ function NuclideGenealogy({
     <section className="genealogy-panel" aria-labelledby="genealogy-title">
       <div className="genealogy-heading">
         <div>
-          <span>NUCLIDE GENEALOGY</span>
+          <span>03 / NUCLIDE GENEALOGY</span>
           <strong id="genealogy-title">核種の系譜図</strong>
         </div>
         <p>
@@ -1443,7 +1443,7 @@ function DetectorLab({
     <section className="detector-section" id="detector-lab" aria-labelledby="detector-title">
       <div className="section-heading detector-section-heading">
         <div>
-          <p className="section-number">02 / DETECTOR LAB</p>
+          <p className="section-number">04 / DETECTOR LAB</p>
           <h2 id="detector-title">検出器ラボ</h2>
         </div>
         <p>
@@ -2011,7 +2011,7 @@ export default function Home() {
           (chartScale === "linear" || point.remaining > 0),
       )
       .map((point) => ({ t: point.t, value: point.remaining }));
-    const observedPointStep = Math.max(1, Math.ceil(observed.length / 55));
+    const observedPointStep = Math.max(1, Math.ceil(observed.length / 32));
     const yTickFractions =
       chartScale === "log"
         ? [1, 0.1, 0.01, 0.001]
@@ -2068,9 +2068,6 @@ export default function Home() {
           <span>nuclear-decay-lab</span>
         </a>
         <nav className="header-links" aria-label="Shymohnとプロジェクトへのリンク">
-          <a href="https://x.com/Shymohn" target="_blank" rel="noopener noreferrer">
-            @Shymohn / X
-          </a>
           <a href="https://github.com/shymohn99" target="_blank" rel="noopener noreferrer">
             GitHub
           </a>
@@ -2079,15 +2076,7 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Shymohn Portfolio ↗
-          </a>
-          <a
-            className="repository-link"
-            href="https://github.com/shymohn99/nuclear-decay-lab"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Source ↗
+            Portfolio ↗
           </a>
         </nav>
       </header>
@@ -2095,7 +2084,7 @@ export default function Home() {
       <section className="hero-copy" aria-labelledby="page-title">
         <p className="section-number">01 / SIMULATOR</p>
         <h1 id="page-title">
-          <span>原子核崩壊</span>
+          <span>放射性壊変</span>
           <span>シミュレーター</span>
         </h1>
         <p className="hero-description">
@@ -2104,7 +2093,7 @@ export default function Home() {
         </p>
       </section>
 
-      <section className="simulator" id="simulator" aria-label="核崩壊シミュレーター">
+      <section className="simulator" id="simulator" aria-label="放射性壊変シミュレーター">
         <div className="nuclide-catalog">
           <div className="catalog-heading">
             <div>
@@ -2218,11 +2207,6 @@ export default function Home() {
           )}
         </div>
 
-        <NuclideGenealogy
-          preset={preset}
-          onSelectPreset={selectPreset}
-        />
-
         <div className="simulation-mode-bar">
           <div className="simulation-mode-toggle" role="group" aria-label="シミュレーション形式">
             <button
@@ -2248,43 +2232,6 @@ export default function Home() {
                 ? `${seriesLabel}の主要核種を順に追跡中です。`
                 : "単独核種の壊変を観察しています。"}
           </p>
-        </div>
-
-        <div className="equation-panel" aria-label={`${preset.parent}の壊変式`}>
-          <div className="equation-heading">
-            <div>
-              <span>DECAY REACTION</span>
-              <strong>{simulationMode === "chain" ? "最初の壊変" : "壊変式"}</strong>
-            </div>
-            <div className="equation-heading-actions">
-              <small>{preset.modeLabel}</small>
-              <button type="button" onClick={copyEquation}>
-                {equationCopied ? "コピーしました" : "式をコピー"}
-              </button>
-            </div>
-          </div>
-          <div className="decay-flow">
-            <div className="reaction-species reaction-parent">
-              <span>親核種</span>
-              <NuclideSymbol nuclide={preset.parentNuclide} className="reaction-symbol" />
-              <small>{preset.parent}</small>
-            </div>
-            <div className="reaction-arrow" aria-hidden="true">
-              <span>{preset.modeLabel}</span>
-              <b>→</b>
-            </div>
-            <div className="reaction-species reaction-daughter">
-              <span>娘核種</span>
-              <NuclideSymbol nuclide={preset.daughterNuclide} className="reaction-symbol" />
-              <small>{preset.daughter}</small>
-            </div>
-            <b className="reaction-plus" aria-hidden="true">＋</b>
-            <div className="reaction-species reaction-emission">
-              <span>放出粒子</span>
-              <code>{preset.emissionSymbol}</code>
-              <small>{preset.emission}</small>
-            </div>
-          </div>
         </div>
 
         <div className="simulator-grid">
@@ -2652,28 +2599,49 @@ export default function Home() {
             </div>
           </aside>
         </div>
-      </section>
 
-      <DetectorLab
-        preset={preset}
-        remaining={remaining}
-        atomCount={atomCount}
-        detectorKey={detectorKey}
-        onDetectorChange={setDetectorKey}
-        shieldKey={shieldKey}
-        onShieldChange={setShieldKey}
-        distance={detectorDistance}
-        onDistanceChange={setDetectorDistance}
-        thickness={shieldThickness}
-        onThicknessChange={setShieldThickness}
-        measurementSeconds={measurementSeconds}
-        onMeasurementSecondsChange={setMeasurementSeconds}
-      />
+        <div className="equation-panel" aria-label={`${preset.parent}の壊変式`}>
+          <div className="equation-heading">
+            <div>
+              <span>DECAY REACTION / REFERENCE</span>
+              <strong>{simulationMode === "chain" ? "最初の壊変" : "壊変式"}</strong>
+            </div>
+            <div className="equation-heading-actions">
+              <small>{preset.modeLabel}</small>
+              <button type="button" onClick={copyEquation}>
+                {equationCopied ? "コピーしました" : "式をコピー"}
+              </button>
+            </div>
+          </div>
+          <div className="decay-flow">
+            <div className="reaction-species reaction-parent">
+              <span>親核種</span>
+              <NuclideSymbol nuclide={preset.parentNuclide} className="reaction-symbol" />
+              <small>{preset.parent}</small>
+            </div>
+            <div className="reaction-arrow" aria-hidden="true">
+              <span>{preset.modeLabel}</span>
+              <b>→</b>
+            </div>
+            <div className="reaction-species reaction-daughter">
+              <span>娘核種</span>
+              <NuclideSymbol nuclide={preset.daughterNuclide} className="reaction-symbol" />
+              <small>{preset.daughter}</small>
+            </div>
+            <b className="reaction-plus" aria-hidden="true">＋</b>
+            <div className="reaction-species reaction-emission">
+              <span>放出粒子</span>
+              <code>{preset.emissionSymbol}</code>
+              <small>{preset.emission}</small>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="data-section" aria-labelledby="observation-title">
         <div className="section-heading">
           <div>
-            <p className="section-number">03 / OBSERVATION</p>
+            <p className="section-number">02 / OBSERVATION</p>
             <h2 id="observation-title">観測値と理論値</h2>
           </div>
           <p>
@@ -2806,7 +2774,7 @@ export default function Home() {
                 cy={point.y}
                 fill={parentColor}
                 stroke="#faf8f2"
-                r="3.2"
+                r="2.5"
                 key={`${index}-${point.x}`}
               />
             ))}
@@ -2818,6 +2786,27 @@ export default function Home() {
           </svg>
         </div>
       </section>
+
+      <NuclideGenealogy
+        preset={preset}
+        onSelectPreset={selectPreset}
+      />
+
+      <DetectorLab
+        preset={preset}
+        remaining={remaining}
+        atomCount={atomCount}
+        detectorKey={detectorKey}
+        onDetectorChange={setDetectorKey}
+        shieldKey={shieldKey}
+        onShieldChange={setShieldKey}
+        distance={detectorDistance}
+        onDistanceChange={setDetectorDistance}
+        thickness={shieldThickness}
+        onThicknessChange={setShieldThickness}
+        measurementSeconds={measurementSeconds}
+        onMeasurementSecondsChange={setMeasurementSeconds}
+      />
 
       <footer>
         <div className="footer-brand">
