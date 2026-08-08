@@ -2362,7 +2362,7 @@ export default function Home() {
           >
             <button
               type="button"
-              aria-label="日本語"
+              aria-label={t("日本語", "Japanese")}
               aria-pressed={language === "ja"}
               onClick={() => selectLanguage("ja")}
             >
