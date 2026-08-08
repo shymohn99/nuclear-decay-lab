@@ -15,6 +15,7 @@ import {
 } from "./radionuclides";
 
 type DecayMode = "alpha" | "beta" | "gamma";
+type Language = "ja" | "en";
 type DecaySeries = "independent" | "uranium-238" | "thorium-232" | "uranium-235";
 type SimulationMode = "single" | "chain";
 type ChainRateMode = "physical" | "observation";
@@ -172,12 +173,38 @@ function createPreset(
 const SERIES_OPTIONS: Array<{
   key: DecaySeries;
   label: string;
+  labelEn: string;
   caption: string;
+  captionEn: string;
 }> = [
-  { key: "independent", label: "単独核種", caption: "代表的な人工・天然核種" },
-  { key: "uranium-238", label: "U-238系列", caption: "ウラン系列" },
-  { key: "thorium-232", label: "Th-232系列", caption: "トリウム系列" },
-  { key: "uranium-235", label: "U-235系列", caption: "アクチニウム系列" },
+  {
+    key: "independent",
+    label: "単独核種",
+    labelEn: "Independent",
+    caption: "代表的な人工・天然核種",
+    captionEn: "Featured nuclides",
+  },
+  {
+    key: "uranium-238",
+    label: "U-238系列",
+    labelEn: "U-238 series",
+    caption: "ウラン系列",
+    captionEn: "Uranium series",
+  },
+  {
+    key: "thorium-232",
+    label: "Th-232系列",
+    labelEn: "Th-232 series",
+    caption: "トリウム系列",
+    captionEn: "Thorium series",
+  },
+  {
+    key: "uranium-235",
+    label: "U-235系列",
+    labelEn: "U-235 series",
+    caption: "アクチニウム系列",
+    captionEn: "Actinium series",
+  },
 ];
 
 const CHAIN_STAGE_COLORS = [
@@ -195,30 +222,38 @@ const DETECTORS: Record<
   DetectorKey,
   {
     name: string;
+    nameEn: string;
     shortName: string;
     description: string;
+    descriptionEn: string;
     background: number;
     efficiency: Record<DecayMode, number>;
   }
 > = {
   gm: {
     name: "GM計数管",
+    nameEn: "Geiger-Müller counter",
     shortName: "GM",
     description: "壊変の回数を軽快なパルスとして数えます。",
+    descriptionEn: "Counts radiation events as distinct electrical pulses.",
     background: 0.35,
     efficiency: { alpha: 0.32, beta: 0.72, gamma: 0.11 },
   },
   scintillator: {
     name: "シンチレーション検出器",
+    nameEn: "Scintillation detector",
     shortName: "SCINT",
     description: "放射線を微かな光へ変換し、高感度で観測します。",
+    descriptionEn: "Converts radiation into faint light for sensitive detection.",
     background: 0.18,
     efficiency: { alpha: 0.58, beta: 0.84, gamma: 0.76 },
   },
   semiconductor: {
     name: "半導体検出器",
+    nameEn: "Semiconductor detector",
     shortName: "HPGe",
     description: "高い分解能で放射線の信号を読み分けます。",
+    descriptionEn: "Separates radiation signals with high energy resolution.",
     background: 0.08,
     efficiency: { alpha: 0.9, beta: 0.88, gamma: 0.93 },
   },
@@ -228,31 +263,109 @@ const SHIELDS: Record<
   ShieldKey,
   {
     name: string;
+    nameEn: string;
     symbol: string;
     coefficient: Record<DecayMode, number>;
   }
 > = {
   none: {
     name: "遮蔽なし",
+    nameEn: "No shielding",
     symbol: "—",
     coefficient: { alpha: 0, beta: 0, gamma: 0 },
   },
   paper: {
     name: "紙",
+    nameEn: "Paper",
     symbol: "P",
     coefficient: { alpha: 3.2, beta: 0.07, gamma: 0.002 },
   },
   aluminum: {
     name: "アルミニウム",
+    nameEn: "Aluminum",
     symbol: "Al",
     coefficient: { alpha: 5.8, beta: 0.24, gamma: 0.018 },
   },
   lead: {
     name: "鉛",
+    nameEn: "Lead",
     symbol: "Pb",
     coefficient: { alpha: 8.5, beta: 0.48, gamma: 0.18 },
   },
 };
+
+const LANGUAGE_STORAGE_KEY = "nuclear-decay-lab-language";
+
+const ELEMENT_NAMES_EN: Record<string, string> = {
+  Ac: "Actinium",
+  C: "Carbon",
+  Co: "Cobalt",
+  I: "Iodine",
+  N: "Nitrogen",
+  Ni: "Nickel",
+  Pa: "Protactinium",
+  Pb: "Lead",
+  Po: "Polonium",
+  Ra: "Radium",
+  Rn: "Radon",
+  Th: "Thorium",
+  U: "Uranium",
+  Xe: "Xenon",
+};
+
+const UNIT_LABELS_EN: Record<string, string> = {
+  秒: "s",
+  分: "min",
+  時間: "h",
+  日: "d",
+  年: "y",
+};
+
+const EMISSION_LABELS_EN: Record<string, string> = {
+  "ヘリウム原子核": "helium nucleus",
+  "電子・反電子ニュートリノ": "electron + electron antineutrino",
+  "電子・反電子ニュートリノ・γ線": "electron + electron antineutrino + γ ray",
+  "陽電子・ニュートリノ、または特性X線": "positron + neutrino, or characteristic X-ray",
+  "ニュートリノ・特性X線": "neutrino + characteristic X-ray",
+  "γ線": "γ ray",
+};
+
+function localize(language: Language, japanese: string, english: string) {
+  return language === "ja" ? japanese : english;
+}
+
+function localizeUnit(unit: string, language: Language) {
+  return language === "ja" ? unit : (UNIT_LABELS_EN[unit] ?? unit);
+}
+
+function localizeNuclideName(
+  japaneseName: string,
+  nuclide: Nuclide,
+  language: Language,
+) {
+  if (language === "ja") return japaneseName;
+  const symbol = nuclide.element.replace("ᵐ", "");
+  const elementName = ELEMENT_NAMES_EN[symbol] ?? symbol;
+  const metastable = nuclide.element.includes("ᵐ") ? "m" : "";
+  return `${elementName}-${nuclide.massNumber}${metastable}`;
+}
+
+function localizeModeLabel(label: string, language: Language) {
+  if (language === "ja") return label;
+  return label
+    .replace("β⁺壊変 / 電子捕獲", "β⁺ decay / electron capture")
+    .replace("核異性体転移", "isomeric transition")
+    .replace("電子捕獲", "electron capture")
+    .replace("β⁻壊変", "β⁻ decay")
+    .replace("α壊変", "α decay")
+    .replace("γ放出", "γ emission")
+    .replaceAll("（", " (")
+    .replaceAll("）", ")");
+}
+
+function localizeEmission(emission: string, language: Language) {
+  return language === "ja" ? emission : (EMISSION_LABELS_EN[emission] ?? emission);
+}
 
 // NNDC NuDat ground-state export (3,149 known nuclides), compressed as
 // contiguous neutron-number ranges for each proton number.
@@ -786,15 +899,15 @@ const SECONDS_PER_UNIT: Record<string, number> = {
   年: 365.25 * 24 * 60 * 60,
 };
 
-function getChainStages(series: DecaySeries): ChainStage[] {
+function getChainStages(series: DecaySeries, language: Language): ChainStage[] {
   if (series === "independent") return [];
 
   const presets = PRESETS.filter((item) => item.series === series);
   const stages: ChainStage[] = presets.map((item) => ({
     key: item.key,
-    name: item.parent,
+    name: localizeNuclideName(item.parent, item.parentNuclide, language),
     nuclide: item.parentNuclide,
-    halfLifeLabel: `${formatNumber(item.halfLife)} ${item.unit}`,
+    halfLifeLabel: `${formatNumber(item.halfLife, language)} ${localizeUnit(item.unit, language)}`,
     halfLifeSeconds:
       item.halfLife * (SECONDS_PER_UNIT[item.unit] ?? 1),
     mode: item.mode,
@@ -804,9 +917,13 @@ function getChainStages(series: DecaySeries): ChainStage[] {
   if (terminal) {
     stages.push({
       key: `${terminal.key}-stable`,
-      name: terminal.daughter,
+      name: localizeNuclideName(
+        terminal.daughter,
+        terminal.daughterNuclide,
+        language,
+      ),
       nuclide: terminal.daughterNuclide,
-      halfLifeLabel: "安定核種",
+      halfLifeLabel: localize(language, "安定核種", "Stable"),
       stable: true,
     });
   }
@@ -850,8 +967,8 @@ function makeParticles(count: number, seed: number): Particle[] {
   });
 }
 
-function formatNumber(value: number) {
-  return new Intl.NumberFormat("ja-JP", {
+function formatNumber(value: number, language: Language = "ja") {
+  return new Intl.NumberFormat(language === "ja" ? "ja-JP" : "en-US", {
     maximumFractionDigits: value < 10 ? 2 : 1,
   }).format(value);
 }
@@ -870,20 +987,50 @@ function formatSpeedMultiplier(value: number) {
   return `${formatNumber(coefficient)}×10${exponentLabel}`;
 }
 
-function formatElapsed(halfLives: number, preset: IsotopePreset) {
+function formatElapsed(
+  halfLives: number,
+  preset: IsotopePreset,
+  language: Language = "ja",
+) {
   const value = halfLives * preset.halfLife;
-  if (value === 0) return `0 ${preset.unit}`;
-  if (value < 0.01) return `${value.toExponential(2)} ${preset.unit}`;
-  return `${formatNumber(value)} ${preset.unit}`;
+  const unit = localizeUnit(preset.unit, language);
+  if (value === 0) return `0 ${unit}`;
+  if (value < 0.01) return `${value.toExponential(2)} ${unit}`;
+  return `${formatNumber(value, language)} ${unit}`;
 }
 
-function formatSimulationRate(preset: IsotopePreset, speed: number) {
+function formatSimulationRate(
+  preset: IsotopePreset,
+  speed: number,
+  language: Language = "ja",
+) {
   const simulatedSeconds =
     preset.halfLife *
     (SECONDS_PER_UNIT[preset.unit] ?? 1) *
     SIMULATED_HALF_LIVES_PER_SECOND *
     speed;
   const simulatedYears = simulatedSeconds / SECONDS_PER_UNIT.年;
+
+  if (language === "en") {
+    if (simulatedSeconds < 60) return `${formatNumber(simulatedSeconds, language)} s`;
+    if (simulatedSeconds < SECONDS_PER_UNIT.時間) {
+      return `${formatNumber(simulatedSeconds / SECONDS_PER_UNIT.分, language)} min`;
+    }
+    if (simulatedSeconds < SECONDS_PER_UNIT.日) {
+      return `${formatNumber(simulatedSeconds / SECONDS_PER_UNIT.時間, language)} h`;
+    }
+    if (simulatedSeconds < SECONDS_PER_UNIT.年) {
+      return `${formatNumber(simulatedSeconds / SECONDS_PER_UNIT.日, language)} d`;
+    }
+    if (simulatedYears < 1000) return `${formatNumber(simulatedYears, language)} y`;
+    if (simulatedYears < 1e6) {
+      return `${formatNumber(simulatedYears / 1e3, language)} kyr`;
+    }
+    if (simulatedYears < 1e9) {
+      return `${formatNumber(simulatedYears / 1e6, language)} Myr`;
+    }
+    return `${formatNumber(simulatedYears / 1e9, language)} Gyr`;
+  }
 
   if (simulatedSeconds < 60) return `${formatNumber(simulatedSeconds)}秒`;
   if (simulatedSeconds < SECONDS_PER_UNIT.時間) {
@@ -913,14 +1060,20 @@ function appendHistoryPoint(
 function NuclideSymbol({
   nuclide,
   className = "",
+  language = "ja",
 }: {
   nuclide: Nuclide;
   className?: string;
+  language?: Language;
 }) {
   return (
     <span
       className={`nuclide-symbol ${className}`.trim()}
-      aria-label={`${nuclide.element}、質量数${nuclide.massNumber}、陽子数${nuclide.protonNumber}`}
+      aria-label={localize(
+        language,
+        `${nuclide.element}、質量数${nuclide.massNumber}、陽子数${nuclide.protonNumber}`,
+        `${nuclide.element}, mass number ${nuclide.massNumber}, proton number ${nuclide.protonNumber}`,
+      )}
     >
       <span className="nuclide-indexes" aria-hidden="true">
         <sup>{nuclide.massNumber}</sup>
@@ -935,11 +1088,16 @@ function NuclideMapExplorer({
   preset,
   presetKey,
   onSelectPreset,
+  language,
 }: {
   preset: IsotopePreset;
   presetKey: string;
   onSelectPreset: (preset: IsotopePreset) => void;
+  language: Language;
 }) {
+  const t = (japanese: string, english: string) =>
+    localize(language, japanese, english);
+  const locale = language === "ja" ? "ja-JP" : "en-US";
   const svgRef = useRef<SVGSVGElement | null>(null);
   const zoomOutputRef = useRef<HTMLOutputElement | null>(null);
   const viewportRef = useRef<MapViewport>({ ...NUCLIDE_MAP_DEFAULT_VIEW });
@@ -1097,18 +1255,18 @@ function NuclideMapExplorer({
     <div className="nuclide-map-wrap">
       <div className="nuclide-map-stage">
         <div className="nuclide-map-toolbar">
-          <div className="nuclide-map-legend" aria-label="核種マップの凡例">
-            <span><i className="known-swatch" />既知核種 {KNOWN_NUCLIDES.length.toLocaleString("ja-JP")}</span>
+          <div className="nuclide-map-legend" aria-label={t("核種マップの凡例", "Nuclide map legend")}>
+            <span><i className="known-swatch" />{t("既知核種", "Known nuclides")} {KNOWN_NUCLIDES.length.toLocaleString(locale)}</span>
             <span>
               <i className="implemented-swatch" />
-              選択可能 {PRESETS.length.toLocaleString("ja-JP")}
+              {t("選択可能", "Selectable")} {PRESETS.length.toLocaleString(locale)}
             </span>
           </div>
-          <div className="nuclide-map-controls" aria-label="核種マップの表示操作">
-            <button type="button" onClick={() => zoomMap(1 / 1.35)} aria-label="拡大">＋</button>
+          <div className="nuclide-map-controls" aria-label={t("核種マップの表示操作", "Nuclide map controls")}>
+            <button type="button" onClick={() => zoomMap(1 / 1.35)} aria-label={t("拡大", "Zoom in")}>＋</button>
             <output ref={zoomOutputRef} aria-live="polite">100%</output>
-            <button type="button" onClick={() => zoomMap(1.35)} aria-label="縮小">−</button>
-            <button type="button" onClick={resetMap}>全体</button>
+            <button type="button" onClick={() => zoomMap(1.35)} aria-label={t("縮小", "Zoom out")}>−</button>
+            <button type="button" onClick={resetMap}>{t("全体", "Reset")}</button>
           </div>
         </div>
         <svg
@@ -1124,9 +1282,14 @@ function NuclideMapExplorer({
           onPointerCancel={finishMapDrag}
           onKeyDown={handleMapKeyDown}
         >
-          <title id="nuclide-map-title">既知核種と実装済み核種のマップ</title>
+          <title id="nuclide-map-title">
+            {t("既知核種と実装済み核種のマップ", "Map of known and selectable nuclides")}
+          </title>
           <desc id="nuclide-map-description">
-            横軸が中性子数、縦軸が陽子数です。ドラッグで移動、ホイールで拡大縮小できます。色付きの核種はシミュレーター実装済みです。
+            {t(
+              "横軸が中性子数、縦軸が陽子数です。ドラッグで移動、ホイールで拡大縮小できます。色付きの核種はシミュレーター実装済みです。",
+              "Neutron number is on the horizontal axis and proton number on the vertical axis. Drag to pan and use the wheel to zoom. Colored nuclides are available in the simulator.",
+            )}
           </desc>
           <rect
             className="nuclide-map-background"
@@ -1179,7 +1342,10 @@ function NuclideMapExplorer({
                 }`}
                 role="button"
                 tabIndex={presetKey === item.key ? 0 : -1}
-                aria-label={`${item.parent}、中性子数${neutronNumber}、${item.modeLabel}、半減期${item.halfLife}${item.unit}`}
+                aria-label={t(
+                  `${item.parent}、中性子数${neutronNumber}、${item.modeLabel}、半減期${item.halfLife}${item.unit}`,
+                  `${localizeNuclideName(item.parent, item.parentNuclide, language)}, neutron number ${neutronNumber}, ${localizeModeLabel(item.modeLabel, language)}, half-life ${item.halfLife} ${localizeUnit(item.unit, language)}`,
+                )}
                 onClick={() => onSelectPreset(item)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
@@ -1211,39 +1377,45 @@ function NuclideMapExplorer({
           })}
         </svg>
         <span className="nuclide-map-axis nuclide-map-axis-n" aria-hidden="true">
-          中性子数 N →
+          {t("中性子数 N →", "Neutrons N →")}
         </span>
         <span className="nuclide-map-axis nuclide-map-axis-z" aria-hidden="true">
-          陽子数 Z ↑
+          {t("陽子数 Z ↑", "Protons Z ↑")}
         </span>
         <p className="nuclide-map-help">
-          ドラッグで移動 ・ ホイールで拡大縮小 ・ 矢印キーでも移動
+          {t(
+            "ドラッグで移動 ・ ホイールで拡大縮小 ・ 矢印キーでも移動",
+            "Drag to pan · Wheel to zoom · Arrow keys to pan",
+          )}
         </p>
       </div>
       <div className="nuclide-map-selection" aria-live="polite">
-        <span className="selection-label">SELECTED / シミュレーション可能</span>
+        <span className="selection-label">
+          {t("SELECTED / シミュレーション可能", "SELECTED / SIMULATION READY")}
+        </span>
         <NuclideSymbol
           nuclide={preset.parentNuclide}
           className="nuclide-symbol-table"
+          language={language}
         />
-        <strong>{preset.parent}</strong>
-        <span>→ {preset.daughter}</span>
+        <strong>{localizeNuclideName(preset.parent, preset.parentNuclide, language)}</strong>
+        <span>→ {localizeNuclideName(preset.daughter, preset.daughterNuclide, language)}</span>
         <small>
-          {preset.modeLabel} / 半減期 {formatNumber(preset.halfLife)} {preset.unit}
+          {localizeModeLabel(preset.modeLabel, language)} / {t("半減期", "half-life")} {formatNumber(preset.halfLife, language)} {localizeUnit(preset.unit, language)}
         </small>
         <a
           href="https://www.nndc.bnl.gov/nudat3/"
           target="_blank"
           rel="noreferrer"
         >
-          既知核種マップ: NNDC NuDat ↗
+          {t("既知核種マップ: NNDC NuDat ↗", "Known nuclides: NNDC NuDat ↗")}
         </a>
         <a
           href="https://radioactivedecay.github.io/overview.html"
           target="_blank"
           rel="noreferrer"
         >
-          壊変データ: ICRP-107 / AME2020 ↗
+          {t("壊変データ: ICRP-107 / AME2020 ↗", "Decay data: ICRP-107 / AME2020 ↗")}
         </a>
       </div>
     </div>
@@ -1253,10 +1425,14 @@ function NuclideMapExplorer({
 function NuclideGenealogy({
   preset,
   onSelectPreset,
+  language,
 }: {
   preset: IsotopePreset;
   onSelectPreset: (preset: IsotopePreset) => void;
+  language: Language;
 }) {
+  const t = (japanese: string, english: string) =>
+    localize(language, japanese, english);
   const rootKey = nuclideIdentity(preset.parentNuclide);
   const allAncestors = PRESETS_BY_DAUGHTER.get(rootKey) ?? [];
   const ancestors = allAncestors.slice(0, 4);
@@ -1284,15 +1460,19 @@ function NuclideGenealogy({
       type="button"
       className={`genealogy-node ${isRoot ? "is-root" : ""}`}
       onClick={() => onSelectPreset(item)}
-      aria-label={`${relationship}、${item.parent}、半減期${item.halfLife}${item.unit}`}
+      aria-label={t(
+        `${relationship}、${item.parent}、半減期${item.halfLife}${item.unit}`,
+        `${relationship}, ${localizeNuclideName(item.parent, item.parentNuclide, language)}, half-life ${item.halfLife} ${localizeUnit(item.unit, language)}`,
+      )}
     >
       <span>{relationship}</span>
       <NuclideSymbol
         nuclide={item.parentNuclide}
         className="nuclide-symbol-genealogy"
+        language={language}
       />
-      <strong>{item.parent}</strong>
-      <small>{formatNumber(item.halfLife)} {item.unit}</small>
+      <strong>{localizeNuclideName(item.parent, item.parentNuclide, language)}</strong>
+      <small>{formatNumber(item.halfLife, language)} {localizeUnit(item.unit, language)}</small>
     </button>
   );
 
@@ -1301,41 +1481,58 @@ function NuclideGenealogy({
       <div className="genealogy-heading">
         <div>
           <span>03 / NUCLIDE GENEALOGY</span>
-          <strong id="genealogy-title">核種の系譜図</strong>
+          <strong id="genealogy-title">{t("核種の系譜図", "Nuclide genealogy")}</strong>
         </div>
         <p>
-          選択中の核種へ至る親核種と、その先の娘核種をたどれます。
-          色付きの核種を選ぶと実験条件も切り替わります。
+          {t(
+            "選択中の核種へ至る親核種と、その先の娘核種をたどれます。色付きの核種を選ぶと実験条件も切り替わります。",
+            "Trace the parents leading to the selected nuclide and the daughters that follow. Select a colored nuclide to load it into the experiment.",
+          )}
         </p>
       </div>
 
       <div className="genealogy-ancestors">
-        <span className="genealogy-rail-label">PARENTS / この核種へ至る経路</span>
+        <span className="genealogy-rail-label">
+          {t("PARENTS / この核種へ至る経路", "PARENTS / PATH TO THIS NUCLIDE")}
+        </span>
         <div>
           {ancestors.length > 0 ? (
             ancestors.map((item) => (
               <div className="genealogy-parent-link" key={item.key}>
-                {renderSelectableNode(item, "親核種")}
-                <span aria-hidden="true">{item.modeLabel} ↓</span>
+                {renderSelectableNode(item, t("親核種", "Parent"))}
+                <span aria-hidden="true">{localizeModeLabel(item.modeLabel, language)} ↓</span>
               </div>
             ))
           ) : (
-            <p>収録データ内に直接の親核種はありません。</p>
+            <p>{t("収録データ内に直接の親核種はありません。", "No direct parent is available in the dataset.")}</p>
           )}
           {allAncestors.length > ancestors.length && (
-            <small>ほか {allAncestors.length - ancestors.length} 経路</small>
+            <small>
+              {t(
+                `ほか ${allAncestors.length - ancestors.length} 経路`,
+                `${allAncestors.length - ancestors.length} more paths`,
+              )}
+            </small>
           )}
         </div>
       </div>
 
       <div className="genealogy-lineage">
-        <span className="genealogy-rail-label">DESCENDANTS / 娘核種への流れ</span>
+        <span className="genealogy-rail-label">
+          {t("DESCENDANTS / 娘核種への流れ", "DESCENDANTS / DECAY PATH")}
+        </span>
         <div className="genealogy-track">
           {lineage.map((item, index) => (
             <div className="genealogy-step" key={item.key}>
-              {renderSelectableNode(item, index === 0 ? "現在" : `${index}世代後`, index === 0)}
+              {renderSelectableNode(
+                item,
+                index === 0
+                  ? t("現在", "Current")
+                  : t(`${index}世代後`, `Generation +${index}`),
+                index === 0,
+              )}
               <span className={`genealogy-arrow mode-${item.mode}`} aria-hidden="true">
-                <small>{item.modeLabel}</small>
+                <small>{localizeModeLabel(item.modeLabel, language)}</small>
                 <b>→</b>
               </span>
             </div>
@@ -1344,18 +1541,21 @@ function NuclideGenealogy({
             <div className="genealogy-tail">
               {renderSelectableNode(
                 continuation,
-                lineage.length >= 6 ? "さらに続く" : `${lineage.length}世代後`,
+                lineage.length >= 6
+                  ? t("さらに続く", "Continues")
+                  : t(`${lineage.length}世代後`, `Generation +${lineage.length}`),
               )}
             </div>
           ) : (
             <article className="genealogy-node is-terminal">
-              <span>到達核種</span>
+              <span>{t("到達核種", "Terminal nuclide")}</span>
               <NuclideSymbol
                 nuclide={finalStep.daughterNuclide}
                 className="nuclide-symbol-genealogy"
+                language={language}
               />
-              <strong>{finalStep.daughter}</strong>
-              <small>この先の壊変データなし</small>
+              <strong>{localizeNuclideName(finalStep.daughter, finalStep.daughterNuclide, language)}</strong>
+              <small>{t("この先の壊変データなし", "No further decay data")}</small>
             </article>
           )}
         </div>
@@ -1378,6 +1578,7 @@ function DetectorLab({
   onThicknessChange,
   measurementSeconds,
   onMeasurementSecondsChange,
+  language,
 }: {
   preset: IsotopePreset;
   remaining: number;
@@ -1392,9 +1593,19 @@ function DetectorLab({
   onThicknessChange: (thickness: number) => void;
   measurementSeconds: number;
   onMeasurementSecondsChange: (seconds: number) => void;
+  language: Language;
 }) {
+  const t = (japanese: string, english: string) =>
+    localize(language, japanese, english);
   const detector = DETECTORS[detectorKey];
   const shield = SHIELDS[shieldKey];
+  const detectorName = language === "ja" ? detector.name : detector.nameEn;
+  const shieldName = language === "ja" ? shield.name : shield.nameEn;
+  const presetName = localizeNuclideName(
+    preset.parent,
+    preset.parentNuclide,
+    language,
+  );
   const observedMode: DecayMode = preset.modeLabel.includes("γ")
     ? "gamma"
     : preset.mode;
@@ -1417,12 +1628,12 @@ function DetectorLab({
   const signalToNoise = signalRate / detector.background;
   const response =
     transmission < 0.02
-      ? "ほぼ遮蔽"
+      ? t("ほぼ遮蔽", "Almost blocked")
       : transmission < 0.25
-        ? "大きく減衰"
+        ? t("大きく減衰", "Strongly attenuated")
         : transmission < 0.7
-          ? "一部を透過"
-          : "明瞭に検出";
+          ? t("一部を透過", "Partially transmitted")
+          : t("明瞭に検出", "Clearly detected");
   const bars = Array.from({ length: 42 }, (_, index) => {
     const seed =
       ((index + 1) * 37 +
@@ -1444,17 +1655,20 @@ function DetectorLab({
       <div className="section-heading detector-section-heading">
         <div>
           <p className="section-number">04 / DETECTOR LAB</p>
-          <h2 id="detector-title">検出器ラボ</h2>
+          <h2 id="detector-title">{t("検出器ラボ", "Detector lab")}</h2>
         </div>
         <p>
-          検出器、距離、遮蔽物を変え、同じ核種でも計数率がどう変わるか比較できます。
+          {t(
+            "検出器、距離、遮蔽物を変え、同じ核種でも計数率がどう変わるか比較できます。",
+            "Change the detector, distance, and shielding to compare how the count rate changes for the same nuclide.",
+          )}
         </p>
       </div>
 
       <div className="detector-lab-grid">
         <div className="detector-controls">
           <fieldset>
-            <legend>検出器を選択</legend>
+            <legend>{t("検出器を選択", "Select detector")}</legend>
             <div className="detector-options">
               {(Object.entries(DETECTORS) as Array<[DetectorKey, (typeof DETECTORS)[DetectorKey]]>).map(
                 ([key, item]) => (
@@ -1465,8 +1679,8 @@ function DetectorLab({
                     key={key}
                   >
                     <span>{item.shortName}</span>
-                    <strong>{item.name}</strong>
-                    <small>{item.description}</small>
+                    <strong>{language === "ja" ? item.name : item.nameEn}</strong>
+                    <small>{language === "ja" ? item.description : item.descriptionEn}</small>
                   </button>
                 ),
               )}
@@ -1475,7 +1689,7 @@ function DetectorLab({
 
           <label className="detector-range">
             <span>
-              線源からの距離
+              {t("線源からの距離", "Distance from source")}
               <output>{distance} cm</output>
             </span>
             <input
@@ -1489,7 +1703,7 @@ function DetectorLab({
           </label>
 
           <fieldset>
-            <legend>遮蔽物</legend>
+            <legend>{t("遮蔽物", "Shielding")}</legend>
             <div className="shield-options">
               {(Object.entries(SHIELDS) as Array<[ShieldKey, (typeof SHIELDS)[ShieldKey]]>).map(
                 ([key, item]) => (
@@ -1500,7 +1714,7 @@ function DetectorLab({
                     key={key}
                   >
                     <b>{item.symbol}</b>
-                    <span>{item.name}</span>
+                    <span>{language === "ja" ? item.name : item.nameEn}</span>
                   </button>
                 ),
               )}
@@ -1509,7 +1723,7 @@ function DetectorLab({
 
           <label className="detector-range">
             <span>
-              遮蔽厚
+              {t("遮蔽厚", "Shield thickness")}
               <output>{shieldKey === "none" ? "—" : `${thickness} mm`}</output>
             </span>
             <input
@@ -1525,8 +1739,8 @@ function DetectorLab({
 
           <label className="detector-range">
             <span>
-              測定時間
-              <output>{measurementSeconds} 秒</output>
+              {t("測定時間", "Measurement time")}
+              <output>{measurementSeconds} {t("秒", "s")}</output>
             </span>
             <input
               type="range"
@@ -1542,14 +1756,18 @@ function DetectorLab({
         </div>
 
         <div className="detector-console">
-          <div className="detector-apparatus" aria-label={`${preset.parent}の検出実験配置`}>
+          <div
+            className="detector-apparatus"
+            aria-label={t(`${preset.parent}の検出実験配置`, `${presetName} detector experiment layout`)}
+          >
             <div className="detector-source">
               <span>SOURCE</span>
               <NuclideSymbol
                 nuclide={preset.parentNuclide}
                 className="nuclide-symbol-detector"
+                language={language}
               />
-              <strong>{preset.parent}</strong>
+              <strong>{presetName}</strong>
             </div>
             <div className="detector-flight">
               <span style={{ width: `${Math.max(8, transmission * 100)}%` }} />
@@ -1560,12 +1778,12 @@ function DetectorLab({
               style={{ "--shield-thickness": `${6 + thickness * 1.4}px` } as React.CSSProperties}
             >
               <b>{shield.symbol}</b>
-              <small>{shield.name}</small>
+              <small>{shieldName}</small>
             </div>
             <div className="detector-device">
               <span>{detector.shortName}</span>
               <i />
-              <strong>{detector.name}</strong>
+              <strong>{detectorName}</strong>
             </div>
           </div>
 
@@ -1587,24 +1805,28 @@ function DetectorLab({
 
           <div className="detector-readouts">
             <article>
-              <span>計数率</span>
-              <strong>{formatNumber(countRate)} <small>cps</small></strong>
-              <small>{formatNumber(countRate * 60)} cpm</small>
+              <span>{t("計数率", "Count rate")}</span>
+              <strong>{formatNumber(countRate, language)} <small>cps</small></strong>
+              <small>{formatNumber(countRate * 60, language)} cpm</small>
             </article>
             <article>
-              <span>{measurementSeconds}秒間の計数</span>
-              <strong>{totalCounts.toLocaleString("ja-JP")}</strong>
-              <small>統計誤差 ±{uncertainty.toFixed(1)}%</small>
+              <span>{t(`${measurementSeconds}秒間の計数`, `Counts in ${measurementSeconds} s`)}</span>
+              <strong>{totalCounts.toLocaleString(language === "ja" ? "ja-JP" : "en-US")}</strong>
+              <small>{t("統計誤差", "Statistical error")} ±{uncertainty.toFixed(1)}%</small>
             </article>
             <article>
-              <span>透過率</span>
+              <span>{t("透過率", "Transmission")}</span>
               <strong>{(transmission * 100).toFixed(1)}<small>%</small></strong>
-              <small>{shield.name} / {thickness} mm</small>
+              <small>{shieldName} / {thickness} mm</small>
             </article>
             <article>
-              <span>信号 / 背景</span>
-              <strong>{formatNumber(signalToNoise)}</strong>
-              <small>{signalToNoise >= 5 ? "識別しやすい" : "背景に埋もれやすい"}</small>
+              <span>{t("信号 / 背景", "Signal / background")}</span>
+              <strong>{formatNumber(signalToNoise, language)}</strong>
+              <small>
+                {signalToNoise >= 5
+                  ? t("識別しやすい", "Easy to distinguish")
+                  : t("背景に埋もれやすい", "Likely lost in background")}
+              </small>
             </article>
           </div>
         </div>
@@ -1622,6 +1844,7 @@ export default function Home() {
   const resetSeedRef = useRef(131);
   const burstIdRef = useRef(0);
 
+  const [language, setLanguage] = useState<Language>("ja");
   const [presetKey, setPresetKey] = useState(PRESETS[0].key);
   const [seriesKey, setSeriesKey] = useState<DecaySeries>("independent");
   const [simulationMode, setSimulationMode] =
@@ -1651,6 +1874,38 @@ export default function Home() {
   const [shieldThickness, setShieldThickness] = useState(2);
   const [measurementSeconds, setMeasurementSeconds] = useState(10);
 
+  useEffect(() => {
+    let restoreTimer: number | undefined;
+    try {
+      const storedLanguage = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      if (storedLanguage === "ja" || storedLanguage === "en") {
+        restoreTimer = window.setTimeout(() => {
+          setLanguage(storedLanguage);
+          document.documentElement.lang = storedLanguage;
+        }, 0);
+      }
+    } catch {
+      // localStorage can be unavailable in hardened browsing contexts.
+    }
+    return () => {
+      if (restoreTimer !== undefined) window.clearTimeout(restoreTimer);
+    };
+  }, []);
+
+  const selectLanguage = useCallback((nextLanguage: Language) => {
+    setLanguage(nextLanguage);
+    document.documentElement.lang = nextLanguage;
+    try {
+      window.localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLanguage);
+    } catch {
+      // The language still changes for this session when persistence is blocked.
+    }
+  }, []);
+
+  const t = (japanese: string, english: string) =>
+    localize(language, japanese, english);
+  const locale = language === "ja" ? "ja-JP" : "en-US";
+
   const preset = useMemo(
     () => PRESETS.find((item) => item.key === presetKey) ?? PRESETS[0],
     [presetKey],
@@ -1665,7 +1920,10 @@ export default function Home() {
       ),
     [seriesKey],
   );
-  const chainStages = useMemo(() => getChainStages(seriesKey), [seriesKey]);
+  const chainStages = useMemo(
+    () => getChainStages(seriesKey, language),
+    [language, seriesKey],
+  );
   const chainStageCounts = useMemo(() => {
     const counts = Array.from({ length: chainStages.length }, () => 0);
     for (const particle of particles) {
@@ -1676,11 +1934,25 @@ export default function Home() {
     return counts;
   }, [chainStages.length, particles]);
   const seriesLabel =
-    SERIES_OPTIONS.find((series) => series.key === seriesKey)?.label ??
-    "単独核種";
+    (() => {
+      const series = SERIES_OPTIONS.find((item) => item.key === seriesKey);
+      if (!series) return t("単独核種", "Independent");
+      return language === "ja" ? series.label : series.labelEn;
+    })();
+  const presetParentName = localizeNuclideName(
+    preset.parent,
+    preset.parentNuclide,
+    language,
+  );
+  const presetDaughterName = localizeNuclideName(
+    preset.daughter,
+    preset.daughterNuclide,
+    language,
+  );
+  const presetModeLabel = localizeModeLabel(preset.modeLabel, language);
   const parentColor = `rgb(${preset.parentRgb})`;
   const daughterColor = `rgb(${preset.daughterRgb})`;
-  const simulationRate = formatSimulationRate(preset, speed);
+  const simulationRate = formatSimulationRate(preset, speed, language);
 
   const commitAtomCount = useCallback(() => {
     const parsed = Number(atomCountInput);
@@ -1924,13 +2196,22 @@ export default function Home() {
     const rows = historyRef.current.map((point) => [
       point.t.toFixed(4),
       (point.t * preset.halfLife).toFixed(4),
-      preset.unit,
+      localizeUnit(preset.unit, language),
       point.remaining,
       atomCount,
       ((point.remaining / atomCount) * 100).toFixed(2),
     ]);
     const csv = [
-      ["経過半減期", "経過時間", "時間単位", "未壊変数", "初期原子核数", "残存率"],
+      language === "ja"
+        ? ["経過半減期", "経過時間", "時間単位", "未壊変数", "初期原子核数", "残存率"]
+        : [
+            "elapsed_half_lives",
+            "elapsed_time",
+            "time_unit",
+            "undecayed_count",
+            "initial_nuclei",
+            "remaining_percent",
+          ],
       ...rows,
     ]
       .map((row) => row.join(","))
@@ -1943,7 +2224,7 @@ export default function Home() {
     anchor.download = `${preset.key}-decay-observation.csv`;
     anchor.click();
     URL.revokeObjectURL(url);
-  }, [atomCount, preset]);
+  }, [atomCount, language, preset]);
 
   const expected = atomCount * Math.pow(0.5, elapsed);
   const decayed = atomCount - remaining;
@@ -2056,6 +2337,8 @@ export default function Home() {
       />
       <main
         className="lab-shell"
+        lang={language}
+        data-language={language}
       style={
         {
           "--parent-rgb": preset.parentRgb,
@@ -2064,46 +2347,85 @@ export default function Home() {
       }
     >
       <header className="lab-header">
-        <a className="brand" href="#simulator" aria-label="nuclear-decay-lab トップ">
+        <a
+          className="brand"
+          href="#simulator"
+          aria-label={t("nuclear-decay-lab トップ", "nuclear-decay-lab home")}
+        >
           <span>nuclear-decay-lab</span>
         </a>
-        <nav className="header-links" aria-label="Shymohnとプロジェクトへのリンク">
-          <a href="https://github.com/shymohn99" target="_blank" rel="noopener noreferrer">
-            GitHub
-          </a>
-          <a
-            href="https://shymohn99.github.io/portfolio/"
-            target="_blank"
-            rel="noopener noreferrer"
+        <div className="header-actions">
+          <div
+            className="language-toggle"
+            role="group"
+            aria-label={t("表示言語", "Display language")}
           >
-            Portfolio ↗
-          </a>
-        </nav>
+            <button
+              type="button"
+              aria-label="日本語"
+              aria-pressed={language === "ja"}
+              onClick={() => selectLanguage("ja")}
+            >
+              JPN
+            </button>
+            <button
+              type="button"
+              aria-label="English"
+              aria-pressed={language === "en"}
+              onClick={() => selectLanguage("en")}
+            >
+              ENG
+            </button>
+          </div>
+          <nav className="header-links" aria-label={t("Shymohnとプロジェクトへのリンク", "Links to Shymohn and this project")}>
+            <a href="https://github.com/shymohn99" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>
+            <a
+              href="https://shymohn99.github.io/portfolio/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Portfolio ↗
+            </a>
+          </nav>
+        </div>
       </header>
 
       <section className="hero-copy" aria-labelledby="page-title">
         <p className="section-number">01 / SIMULATOR</p>
         <h1 id="page-title">
-          <span>放射性壊変</span>
-          <span>シミュレーター</span>
+          <span>{t("放射性壊変", "Radioactive Decay")}</span>
+          <span>{t("シミュレーター", "Simulator")}</span>
         </h1>
         <p className="hero-description">
-          個々の原子核がいつ壊変するかは予測できません。
-          ここでは多数の原子核を動かし、確率的な現象から半減期の曲線が現れる様子を観察できます。
+          {t(
+            "個々の原子核がいつ壊変するかは予測できません。ここでは多数の原子核を動かし、確率的な現象から半減期の曲線が現れる様子を観察できます。",
+            "The exact moment a single nucleus decays cannot be predicted. Simulate many nuclei and watch a half-life curve emerge from random events.",
+          )}
         </p>
       </section>
 
-      <section className="simulator" id="simulator" aria-label="放射性壊変シミュレーター">
+      <section
+        className="simulator"
+        id="simulator"
+        aria-label={t("放射性壊変シミュレーター", "Radioactive decay simulator")}
+      >
         <div className="nuclide-catalog">
           <div className="catalog-heading">
             <div>
               <span>NUCLIDE CATALOG</span>
-              <strong>核種と放射系列</strong>
+              <strong>{t("核種と放射系列", "Nuclides & decay series")}</strong>
             </div>
-            <p>系列を切り替え、表の核種を選ぶと実験条件へ反映されます。</p>
+            <p>
+              {t(
+                "系列を切り替え、表の核種を選ぶと実験条件へ反映されます。",
+                "Choose a series and select a nuclide to load it into the experiment.",
+              )}
+            </p>
           </div>
 
-          <div className="series-tabs" aria-label="放射系列を選択">
+          <div className="series-tabs" aria-label={t("放射系列を選択", "Select decay series")}>
             {SERIES_OPTIONS.map((series) => (
               <button
                 type="button"
@@ -2112,34 +2434,37 @@ export default function Home() {
                 onClick={() => selectSeries(series.key)}
                 key={series.key}
               >
-                <strong>{series.label}</strong>
-                <small>{series.caption}</small>
+                <strong>{language === "ja" ? series.label : series.labelEn}</strong>
+                <small>{language === "ja" ? series.caption : series.captionEn}</small>
               </button>
             ))}
           </div>
 
           <div className="nuclide-table-meta">
-            <span>{catalogView === "table" ? seriesLabel : "収録核種マップ"}</span>
-            <div className="catalog-view-toggle" role="group" aria-label="核種の表示形式">
+            <span>{catalogView === "table" ? seriesLabel : t("収録核種マップ", "Nuclide map")}</span>
+            <div className="catalog-view-toggle" role="group" aria-label={t("核種の表示形式", "Nuclide view")}>
               <button
                 type="button"
                 aria-pressed={catalogView === "table"}
                 onClick={() => setCatalogView("table")}
               >
-                リスト
+                {t("リスト", "List")}
               </button>
               <button
                 type="button"
                 aria-pressed={catalogView === "map"}
                 onClick={() => setCatalogView("map")}
               >
-                核種マップ
+                {t("核種マップ", "Map")}
               </button>
             </div>
             <strong>
               {catalogView === "table"
-                ? `${seriesPresets.length} 核種`
-                : `${KNOWN_NUCLIDES.length.toLocaleString("ja-JP")} 核種 / 選択可能 ${PRESETS.length.toLocaleString("ja-JP")}`}
+                ? t(`${seriesPresets.length} 核種`, `${seriesPresets.length} nuclides`)
+                : t(
+                    `${KNOWN_NUCLIDES.length.toLocaleString(locale)} 核種 / 選択可能 ${PRESETS.length.toLocaleString(locale)}`,
+                    `${KNOWN_NUCLIDES.length.toLocaleString(locale)} nuclides / ${PRESETS.length.toLocaleString(locale)} selectable`,
+                  )}
             </strong>
           </div>
           {catalogView === "table" ? (
@@ -2147,10 +2472,10 @@ export default function Home() {
               <table className="nuclide-table">
                 <thead>
                   <tr>
-                    <th scope="col">親核種</th>
-                    <th scope="col">壊変</th>
-                    <th scope="col">娘核種</th>
-                    <th scope="col">半減期</th>
+                    <th scope="col">{t("親核種", "Parent")}</th>
+                    <th scope="col">{t("壊変", "Decay")}</th>
+                    <th scope="col">{t("娘核種", "Daughter")}</th>
+                    <th scope="col">{t("半減期", "Half-life")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -2169,13 +2494,14 @@ export default function Home() {
                           <NuclideSymbol
                             nuclide={item.parentNuclide}
                             className="nuclide-symbol-table"
+                            language={language}
                           />
-                          <span>{item.parent}</span>
+                          <span>{localizeNuclideName(item.parent, item.parentNuclide, language)}</span>
                         </button>
                       </td>
                       <td>
                         <span className={`decay-mode mode-${item.mode}`}>
-                          {item.modeLabel}
+                          {localizeModeLabel(item.modeLabel, language)}
                         </span>
                       </td>
                       <td>
@@ -2183,15 +2509,16 @@ export default function Home() {
                           <NuclideSymbol
                             nuclide={item.daughterNuclide}
                             className="nuclide-symbol-table"
+                            language={language}
                           />
-                          <span>{item.daughter}</span>
+                          <span>{localizeNuclideName(item.daughter, item.daughterNuclide, language)}</span>
                         </div>
                       </td>
                       <td>
                         <strong className="half-life-value">
-                          {formatNumber(item.halfLife)}
+                          {formatNumber(item.halfLife, language)}
                         </strong>
-                        <span className="half-life-unit">{item.unit}</span>
+                        <span className="half-life-unit">{localizeUnit(item.unit, language)}</span>
                       </td>
                     </tr>
                   ))}
@@ -2203,18 +2530,23 @@ export default function Home() {
               preset={preset}
               presetKey={presetKey}
               onSelectPreset={selectPreset}
+              language={language}
             />
           )}
         </div>
 
         <div className="simulation-mode-bar">
-          <div className="simulation-mode-toggle" role="group" aria-label="シミュレーション形式">
+          <div
+            className="simulation-mode-toggle"
+            role="group"
+            aria-label={t("シミュレーション形式", "Simulation mode")}
+          >
             <button
               type="button"
               aria-pressed={simulationMode === "single"}
               onClick={() => setSimulationMode("single")}
             >
-              単独壊変
+              {t("単独壊変", "Single decay")}
             </button>
             <button
               type="button"
@@ -2222,15 +2554,21 @@ export default function Home() {
               disabled={seriesKey === "independent"}
               onClick={startChainMode}
             >
-              放射系列の連鎖
+              {t("放射系列の連鎖", "Decay chain")}
             </button>
           </div>
           <p>
             {seriesKey === "independent"
-              ? "U-238・Th-232・U-235系列を選ぶと、連鎖モードを開始できます。"
+              ? t(
+                  "U-238・Th-232・U-235系列を選ぶと、連鎖モードを開始できます。",
+                  "Select the U-238, Th-232, or U-235 series to start chain mode.",
+                )
               : simulationMode === "chain"
-                ? `${seriesLabel}の主要核種を順に追跡中です。`
-                : "単独核種の壊変を観察しています。"}
+                ? t(
+                    `${seriesLabel}の主要核種を順に追跡中です。`,
+                    `Tracking the major nuclides in the ${seriesLabel}.`,
+                  )
+                : t("単独核種の壊変を観察しています。", "Observing a single nuclide decay.")}
           </p>
         </div>
 
@@ -2238,7 +2576,11 @@ export default function Home() {
           <div className="visual-panel">
             <div className="visual-toolbar">
               <div className="visual-status">
-                <span>{simulationMode === "chain" ? "連鎖の進行状況" : "粒子表示"}</span>
+                <span>
+                  {simulationMode === "chain"
+                    ? t("連鎖の進行状況", "Chain progress")
+                    : t("粒子表示", "Particle view")}
+                </span>
                 <strong>
                   <b>
                     {simulationMode === "chain"
@@ -2246,15 +2588,19 @@ export default function Home() {
                       : remaining}
                   </b>
                   <small>
-                    / {atomCount} 個が
-                    {simulationMode === "chain" ? "安定核種へ到達" : "未壊変"}
+                    / {atomCount} {t("個が", "nuclei ·")}{" "}
+                    {simulationMode === "chain"
+                      ? t("安定核種へ到達", "reached stable")
+                      : t("未壊変", "undecayed")}
                   </small>
                 </strong>
               </div>
-              <div className="legend" aria-label="粒子の凡例">
+              <div className="legend" aria-label={t("粒子の凡例", "Particle legend")}>
                 <span>
                   <i className="legend-parent" style={{ backgroundColor: parentColor }} />
-                  {simulationMode === "chain" ? "初期核種" : "親核種"}
+                  {simulationMode === "chain"
+                    ? t("初期核種", "Initial nuclide")
+                    : t("親核種", "Parent")}
                 </span>
                 <span>
                   <i
@@ -2266,9 +2612,11 @@ export default function Home() {
                           : daughterColor,
                     }}
                   />
-                  {simulationMode === "chain" ? "連鎖中" : "娘核種"}
+                  {simulationMode === "chain"
+                    ? t("連鎖中", "In chain")
+                    : t("娘核種", "Daughter")}
                 </span>
-                <span><i className="legend-emission" />放出反応</span>
+                <span><i className="legend-emission" />{t("放出反応", "Emission")}</span>
               </div>
             </div>
 
@@ -2280,20 +2628,26 @@ export default function Home() {
                     <strong>{seriesLabel}</strong>
                   </div>
                   <p>
-                    <span>表示中</span>
+                    <span>{t("表示中", "Showing")}</span>
                     <strong>{chainStages.length}</strong>
-                    <small>段階</small>
+                    <small>{t("段階", "stages")}</small>
                   </p>
                 </div>
                 <div
                   className="chain-track"
-                  aria-label={`${seriesLabel}の主要な壊変段階`}
+                  aria-label={t(
+                    `${seriesLabel}の主要な壊変段階`,
+                    `Major decay stages of the ${seriesLabel}`,
+                  )}
                 >
                   {chainStages.map((stage, index) => (
                     <div className="chain-stage-group" key={stage.key}>
                       <article
                         className={`chain-stage ${stage.stable ? "is-stable" : ""}`}
-                        aria-label={`${index + 1}段階目、${stage.name}、半減期${stage.halfLifeLabel}、現在${chainStageCounts[index] ?? 0}個`}
+                        aria-label={t(
+                          `${index + 1}段階目、${stage.name}、半減期${stage.halfLifeLabel}、現在${chainStageCounts[index] ?? 0}個`,
+                          `Stage ${index + 1}, ${stage.name}, ${stage.stable ? "stable" : `half-life ${stage.halfLifeLabel}`}, ${chainStageCounts[index] ?? 0} nuclei now`,
+                        )}
                         style={
                           {
                             "--stage-color": getChainStageColor(
@@ -2309,17 +2663,22 @@ export default function Home() {
                         <NuclideSymbol
                           nuclide={stage.nuclide}
                           className="nuclide-symbol-chain"
+                          language={language}
                         />
                         <div className="chain-stage-copy">
                           <strong>{stage.name}</strong>
                           <small>
-                            <span>{stage.stable ? "状態" : "半減期"}</span>
+                            <span>
+                              {stage.stable
+                                ? t("状態", "State")
+                                : t("半減期", "Half-life")}
+                            </span>
                             {stage.halfLifeLabel}
                           </small>
                         </div>
                         <output>
                           <b>{chainStageCounts[index] ?? 0}</b>
-                          <span>個</span>
+                          <span>{t("個", "nuclei")}</span>
                         </output>
                       </article>
                       {index < chainStages.length - 1 && (
@@ -2334,11 +2693,20 @@ export default function Home() {
                   ))}
                 </div>
                 <p>
-                  <span>観察メモ</span>
-                  主要核種のみを表示しています。横にスクロールして連鎖を追えます。
+                  <span>{t("観察メモ", "Observation note")}</span>
+                  {t(
+                    "主要核種のみを表示しています。横にスクロールして連鎖を追えます。",
+                    "Only major nuclides are shown. Scroll horizontally to follow the chain. ",
+                  )}
                   {chainRateMode === "physical"
-                    ? "各核種の実際の半減期比で進行しています。"
-                    : "各段階へ共通の観察用壊変定数を適用しています。"}
+                    ? t(
+                        "各核種の実際の半減期比で進行しています。",
+                        "The simulation preserves the actual half-life ratios.",
+                      )
+                    : t(
+                        "各段階へ共通の観察用壊変定数を適用しています。",
+                        "A common observation decay constant is applied to every stage.",
+                      )}
                 </p>
               </div>
             )}
@@ -2352,8 +2720,14 @@ export default function Home() {
                 role="img"
                 aria-label={
                   simulationMode === "chain"
-                    ? `${seriesLabel}の原子核${atomCount}個が主要核種を順に壊変する連鎖シミュレーション`
-                    : `${preset.parent}の原子核${atomCount}個が確率的に壊変し、${preset.daughter}へ変わる粒子シミュレーション`
+                    ? t(
+                        `${seriesLabel}の原子核${atomCount}個が主要核種を順に壊変する連鎖シミュレーション`,
+                        `Decay-chain simulation of ${atomCount} nuclei moving through the major nuclides of the ${seriesLabel}`,
+                      )
+                    : t(
+                        `${preset.parent}の原子核${atomCount}個が確率的に壊変し、${preset.daughter}へ変わる粒子シミュレーション`,
+                        `Particle simulation of ${atomCount} ${presetParentName} nuclei decaying stochastically into ${presetDaughterName}`,
+                      )
                 }
               >
                 <defs>
@@ -2429,62 +2803,80 @@ export default function Home() {
                 })}
               </svg>
               <div className="field-readout" aria-hidden="true">
-                <NuclideSymbol nuclide={preset.parentNuclide} className="nuclide-symbol-field" />
+                <NuclideSymbol
+                  nuclide={preset.parentNuclide}
+                  className="nuclide-symbol-field"
+                  language={language}
+                />
                 <small>
                   {simulationMode === "chain"
-                    ? `${seriesLabel}・${chainStages.length}段階`
-                    : preset.modeLabel}
+                    ? t(
+                        `${seriesLabel}・${chainStages.length}段階`,
+                        `${seriesLabel} · ${chainStages.length} stages`,
+                      )
+                    : presetModeLabel}
                 </small>
               </div>
-              <span className="field-hint">画面を押すと検出パルスを表示</span>
+              <span className="field-hint">
+                {t("画面を押すと検出パルスを表示", "Press the field to trigger a detector pulse")}
+              </span>
             </div>
           </div>
 
-          <aside className="control-panel" aria-label="シミュレーション設定">
+          <aside className="control-panel" aria-label={t("シミュレーション設定", "Simulation settings")}>
             <div className="control-heading">
-              <span>実験条件</span>
+              <span>{t("実験条件", "Experiment settings")}</span>
               <strong>
-                {simulationMode === "chain" ? seriesLabel : preset.parent}
+                {simulationMode === "chain" ? seriesLabel : presetParentName}
               </strong>
               <small>
                 {simulationMode === "chain"
-                  ? `主要核種 ${chainStages.length}段階`
-                  : `半減期 ${preset.halfLife} ${preset.unit}`}
+                  ? t(
+                      `主要核種 ${chainStages.length}段階`,
+                      `${chainStages.length} major stages`,
+                    )
+                  : `${t("半減期", "Half-life")} ${formatNumber(preset.halfLife, language)} ${localizeUnit(preset.unit, language)}`}
               </small>
             </div>
 
             {simulationMode === "chain" && (
               <fieldset className="chain-rate-selector">
-                <legend>連鎖の壊変定数</legend>
+                <legend>{t("連鎖の壊変定数", "Chain decay constants")}</legend>
                 <div>
                   <button
                     type="button"
                     aria-pressed={chainRateMode === "physical"}
                     onClick={() => setChainRateMode("physical")}
                   >
-                    <strong>実時間比</strong>
-                    <small>核種固有の半減期</small>
+                    <strong>{t("実時間比", "Physical ratios")}</strong>
+                    <small>{t("核種固有の半減期", "Nuclide-specific half-lives")}</small>
                   </button>
                   <button
                     type="button"
                     aria-pressed={chainRateMode === "observation"}
                     onClick={() => setChainRateMode("observation")}
                   >
-                    <strong>観察用</strong>
-                    <small>全段階を共通尺度化</small>
+                    <strong>{t("観察用", "Observation")}</strong>
+                    <small>{t("全段階を共通尺度化", "Common scale for all stages")}</small>
                   </button>
                 </div>
                 <p>
                   {chainRateMode === "physical"
-                    ? "実在の半減期比を保ちます。短寿命核種は一瞬で通過する場合があります。"
-                    : "アニメーション観察用の非物理モードです。実在の半減期比は使用しません。"}
+                    ? t(
+                        "実在の半減期比を保ちます。短寿命核種は一瞬で通過する場合があります。",
+                        "Preserves real half-life ratios. Short-lived nuclides may pass almost instantly.",
+                      )
+                    : t(
+                        "アニメーション観察用の非物理モードです。実在の半減期比は使用しません。",
+                        "A non-physical mode for animation study; real half-life ratios are not used.",
+                      )}
                 </p>
               </fieldset>
             )}
 
             <div className="control-field particle-count-field">
               <div className="control-field-heading">
-                <label htmlFor="atom-count-input">原子核の数</label>
+                <label htmlFor="atom-count-input">{t("原子核の数", "Number of nuclei")}</label>
                 <div className="number-input">
                   <input
                     id="atom-count-input"
@@ -2501,7 +2893,7 @@ export default function Home() {
                     }}
                     aria-describedby="atom-count-help"
                   />
-                  <span>個</span>
+                  <span>{t("個", "")}</span>
                 </div>
               </div>
               <input
@@ -2514,16 +2906,19 @@ export default function Home() {
                 onChange={(event) =>
                   updateAtomCount(Number(event.target.value))
                 }
-                aria-label="原子核の数"
+                aria-label={t("原子核の数", "Number of nuclei")}
               />
               <small id="atom-count-help">
-                {MIN_ATOM_COUNT}〜{MAX_ATOM_COUNT}個。数値を直接入力できます。
+                {t(
+                  `${MIN_ATOM_COUNT}〜${MAX_ATOM_COUNT}個。数値を直接入力できます。`,
+                  `${MIN_ATOM_COUNT}–${MAX_ATOM_COUNT} nuclei. You can enter an exact value.`,
+                )}
               </small>
             </div>
 
             <label className="control-field speed-control">
               <span>
-                時間倍率
+                {t("時間倍率", "Time multiplier")}
                 <output>{formatSpeedMultiplier(speed)}</output>
               </span>
               <input
@@ -2536,7 +2931,7 @@ export default function Home() {
                 onChange={(event) =>
                   setSpeed(10 ** Number(event.target.value))
                 }
-                aria-label="時間倍率（対数）"
+                aria-label={t("時間倍率（対数）", "Time multiplier, logarithmic scale")}
                 aria-valuetext={formatSpeedMultiplier(speed)}
               />
               <div className="log-scale-marks" aria-hidden="true">
@@ -2549,7 +2944,12 @@ export default function Home() {
                 <span>10³</span>
                 <span>10⁶</span>
               </div>
-              <small>10⁻¹⁵×〜10⁶×の21桁を連続的に調整します。</small>
+              <small>
+                {t(
+                  "10⁻¹⁵×〜10⁶×の21桁を連続的に調整します。",
+                  "Continuously adjustable across 21 orders of magnitude, from 10⁻¹⁵× to 10⁶×.",
+                )}
+              </small>
             </label>
 
             <div
@@ -2558,25 +2958,32 @@ export default function Home() {
               }`}
               aria-live="polite"
             >
-              <span>TIME SCALE / 現実時間との対応</span>
+              <span>{t("TIME SCALE / 現実時間との対応", "TIME SCALE / REAL-TIME EQUIVALENT")}</span>
               <div>
-                <small>現実の</small>
-                <strong>1秒</strong>
+                <small>{t("現実の", "real time")}</small>
+                <strong>{t("1秒", "1 s")}</strong>
                 <b aria-hidden="true">→</b>
-                <small>シミュレーション内</small>
-                <strong>約{simulationRate}</strong>
+                <small>{t("シミュレーション内", "simulation")}</small>
+                <strong>{t(`約${simulationRate}`, `≈ ${simulationRate}`)}</strong>
               </div>
               {simulationMode === "chain" ? (
                 <p>
                   {chainRateMode === "physical"
-                    ? `${preset.parent}の半減期を基準に、現実の1秒ごとに実時間が約${simulationRate}進みます。連鎖内の各核種も同じ実時間で計算します。`
-                    : `現実の1秒ごとに約${formatNumber(
-                        SIMULATED_HALF_LIVES_PER_SECOND * speed,
-                      )} T½進みます。各段階へ同じ観察用壊変定数を適用します。`}
+                    ? t(
+                        `${preset.parent}の半減期を基準に、現実の1秒ごとに実時間が約${simulationRate}進みます。連鎖内の各核種も同じ実時間で計算します。`,
+                        `Each real-time second advances about ${simulationRate}. Every nuclide in the chain uses that same physical elapsed time.`,
+                      )
+                    : t(
+                        `現実の1秒ごとに約${formatNumber(SIMULATED_HALF_LIVES_PER_SECOND * speed)} T½進みます。各段階へ同じ観察用壊変定数を適用します。`,
+                        `Each real-time second advances about ${formatNumber(SIMULATED_HALF_LIVES_PER_SECOND * speed, language)} T½. The same observation decay constant is applied to every stage.`,
+                      )}
                 </p>
               ) : (
                 <p>
-                  現実の1秒ごとに、現在の核種の時間が約{simulationRate}進みます。
+                  {t(
+                    `現実の1秒ごとに、現在の核種の時間が約${simulationRate}進みます。`,
+                    `Each real-time second advances the selected nuclide by about ${simulationRate}.`,
+                  )}
                 </p>
               )}
             </div>
@@ -2587,52 +2994,74 @@ export default function Home() {
                 className="primary-action"
                 onClick={() => setPaused((value) => !value)}
               >
-                {paused ? "▶ 再開" : "Ⅱ 一時停止"}
+                {paused ? t("▶ 再開", "▶ Resume") : t("Ⅱ 一時停止", "Ⅱ Pause")}
               </button>
-              <button type="button" onClick={resetSimulation}>↻ リセット</button>
+              <button type="button" onClick={resetSimulation}>↻ {t("リセット", "Reset")}</button>
             </div>
 
             <div className="formula">
-              <span>壊変の法則</span>
+              <span>{t("壊変の法則", "Decay law")}</span>
               <code>N(t) = N₀ · 2<sup>−t / T½</sup></code>
-              <small>時間が半減期 T½ だけ進むごとに、親核種は半分になります。</small>
+              <small>
+                {t(
+                  "時間が半減期 T½ だけ進むごとに、親核種は半分になります。",
+                  "After each half-life T½, half of the parent nuclei remain on average.",
+                )}
+              </small>
             </div>
           </aside>
         </div>
 
-        <div className="equation-panel" aria-label={`${preset.parent}の壊変式`}>
+        <div
+          className="equation-panel"
+          aria-label={t(`${preset.parent}の壊変式`, `${presetParentName} decay equation`)}
+        >
           <div className="equation-heading">
             <div>
               <span>DECAY REACTION / REFERENCE</span>
-              <strong>{simulationMode === "chain" ? "最初の壊変" : "壊変式"}</strong>
+              <strong>
+                {simulationMode === "chain"
+                  ? t("最初の壊変", "First decay")
+                  : t("壊変式", "Decay equation")}
+              </strong>
             </div>
             <div className="equation-heading-actions">
-              <small>{preset.modeLabel}</small>
+              <small>{presetModeLabel}</small>
               <button type="button" onClick={copyEquation}>
-                {equationCopied ? "コピーしました" : "式をコピー"}
+                {equationCopied
+                  ? t("コピーしました", "Copied")
+                  : t("式をコピー", "Copy equation")}
               </button>
             </div>
           </div>
           <div className="decay-flow">
             <div className="reaction-species reaction-parent">
-              <span>親核種</span>
-              <NuclideSymbol nuclide={preset.parentNuclide} className="reaction-symbol" />
-              <small>{preset.parent}</small>
+              <span>{t("親核種", "Parent")}</span>
+              <NuclideSymbol
+                nuclide={preset.parentNuclide}
+                className="reaction-symbol"
+                language={language}
+              />
+              <small>{presetParentName}</small>
             </div>
             <div className="reaction-arrow" aria-hidden="true">
-              <span>{preset.modeLabel}</span>
+              <span>{presetModeLabel}</span>
               <b>→</b>
             </div>
             <div className="reaction-species reaction-daughter">
-              <span>娘核種</span>
-              <NuclideSymbol nuclide={preset.daughterNuclide} className="reaction-symbol" />
-              <small>{preset.daughter}</small>
+              <span>{t("娘核種", "Daughter")}</span>
+              <NuclideSymbol
+                nuclide={preset.daughterNuclide}
+                className="reaction-symbol"
+                language={language}
+              />
+              <small>{presetDaughterName}</small>
             </div>
             <b className="reaction-plus" aria-hidden="true">＋</b>
             <div className="reaction-species reaction-emission">
-              <span>放出粒子</span>
+              <span>{t("放出粒子", "Emission")}</span>
               <code>{preset.emissionSymbol}</code>
-              <small>{preset.emission}</small>
+              <small>{localizeEmission(preset.emission, language)}</small>
             </div>
           </div>
         </div>
@@ -2642,64 +3071,77 @@ export default function Home() {
         <div className="section-heading">
           <div>
             <p className="section-number">02 / OBSERVATION</p>
-            <h2 id="observation-title">観測値と理論値</h2>
+            <h2 id="observation-title">{t("観測値と理論値", "Observation & theory")}</h2>
           </div>
           <p>
             {simulationMode === "chain"
-              ? "初期核種が系列の次段階へ移った割合を、理論的な指数減衰と比較します。"
-              : "赤い点と実線が今回の試行、青い破線が理論値です。リセットするたびに、確率による揺らぎ方が変わります。"}
+              ? t(
+                  "初期核種が系列の次段階へ移った割合を、理論的な指数減衰と比較します。",
+                  "Compare the fraction leaving the initial nuclide for later chain stages with theoretical exponential decay.",
+                )
+              : t(
+                  "赤い点と実線が今回の試行、青い破線が理論値です。リセットするたびに、確率による揺らぎ方が変わります。",
+                  "Points and the solid line show this trial; the dashed line is the theoretical curve. Reset to see a new stochastic fluctuation.",
+                )}
           </p>
         </div>
 
         <div className="stats-grid">
           <article>
-            <span>経過時間</span>
-            <strong>{formatElapsed(elapsed, preset)}</strong>
+            <span>{t("経過時間", "Elapsed time")}</span>
+            <strong>{formatElapsed(elapsed, preset, language)}</strong>
             <small>
               {simulationMode === "chain"
-                ? `${elapsed.toFixed(2)} × ${preset.parent}のT½`
+                ? t(
+                    `${elapsed.toFixed(2)} × ${preset.parent}のT½`,
+                    `${elapsed.toFixed(2)} × ${presetParentName} T½`,
+                  )
                 : `${elapsed.toFixed(2)} × T½`}
             </small>
           </article>
           <article>
             <span>
-              {simulationMode === "chain" ? "初期核種に残る原子核" : "未壊変の原子核"}
+              {simulationMode === "chain"
+                ? t("初期核種に残る原子核", "Nuclei in initial nuclide")
+                : t("未壊変の原子核", "Undecayed nuclei")}
             </span>
             <strong>{remaining}<small> / {atomCount}</small></strong>
             <small>{remainingPercent.toFixed(1)}%</small>
           </article>
           <article>
             <span>
-              {simulationMode === "chain" ? "系列へ移った原子核" : "壊変した原子核"}
+              {simulationMode === "chain"
+                ? t("系列へ移った原子核", "Nuclei moved into chain")
+                : t("壊変した原子核", "Decayed nuclei")}
             </span>
             <strong>{decayed}</strong>
-            <small>理論上は {Math.round(atomCount - expected)}</small>
+            <small>{t("理論上は", "Expected")} {Math.round(atomCount - expected)}</small>
           </article>
         </div>
 
         <div className="chart-panel">
           <div className="chart-meta">
-            <span><i className="observed-line" style={{ backgroundColor: parentColor }} />観測値</span>
-            <span><i className="theory-line" style={{ borderTopColor: daughterColor }} />理論値</span>
-            <div className="chart-scale-toggle" role="group" aria-label="グラフの目盛り">
+            <span><i className="observed-line" style={{ backgroundColor: parentColor }} />{t("観測値", "Observed")}</span>
+            <span><i className="theory-line" style={{ borderTopColor: daughterColor }} />{t("理論値", "Theory")}</span>
+            <div className="chart-scale-toggle" role="group" aria-label={t("グラフの目盛り", "Chart scale")}>
               <button
                 type="button"
                 aria-pressed={chartScale === "linear"}
                 onClick={() => setChartScale("linear")}
               >
-                線形
+                {t("線形", "Linear")}
               </button>
               <button
                 type="button"
                 aria-pressed={chartScale === "log"}
                 onClick={() => setChartScale("log")}
               >
-                対数
+                {t("対数", "Log")}
               </button>
             </div>
-            <strong>推定活動度 {activity.toFixed(1)} / T½</strong>
+            <strong>{t("推定活動度", "Estimated activity")} {activity.toFixed(1)} / T½</strong>
             <button type="button" className="export-button" onClick={exportHistoryCsv}>
-              CSVで保存
+              {t("CSVで保存", "Save CSV")}
             </button>
           </div>
           <svg
@@ -2709,13 +3151,16 @@ export default function Home() {
             aria-labelledby="chart-title chart-description"
           >
             <title id="chart-title">
-              {simulationMode === "chain" ? "初期核種数" : "未壊変原子核数"}
-              の時間変化（{chartScale === "log" ? "対数" : "線形"}目盛り）
+              {t(
+                `${simulationMode === "chain" ? "初期核種数" : "未壊変原子核数"}の時間変化（${chartScale === "log" ? "対数" : "線形"}目盛り）`,
+                `${simulationMode === "chain" ? "Initial-nuclide population" : "Undecayed nuclei"} over time (${chartScale === "log" ? "log" : "linear"} scale)`,
+              )}
             </title>
             <desc id="chart-description">
-              {simulationMode === "chain" ? seriesLabel : preset.parent}
-              の観測値と指数関数による理論値を
-              {chartScale === "log" ? "対数" : "線形"}目盛りで比較したグラフです。
+              {t(
+                `${simulationMode === "chain" ? seriesLabel : preset.parent}の観測値と指数関数による理論値を${chartScale === "log" ? "対数" : "線形"}目盛りで比較したグラフです。`,
+                `Chart comparing observed values for ${simulationMode === "chain" ? seriesLabel : presetParentName} with exponential theory on a ${chartScale === "log" ? "log" : "linear"} scale.`,
+              )}
             </desc>
             {chart.yTicks.map((tick) => {
               return (
@@ -2780,8 +3225,11 @@ export default function Home() {
             ))}
             <text className="axis-caption" x={chart.width - chart.right} y={chart.height - 2}>
               {simulationMode === "chain"
-                ? `経過時間（${preset.unit} / ${preset.parent}基準）`
-                : "経過時間（半減期 T½）"}
+                ? t(
+                    `経過時間（${preset.unit} / ${preset.parent}基準）`,
+                    `Elapsed time (${localizeUnit(preset.unit, language)} / ${presetParentName} basis)`,
+                  )
+                : t("経過時間（半減期 T½）", "Elapsed time (half-lives T½)")}
             </text>
           </svg>
         </div>
@@ -2790,6 +3238,7 @@ export default function Home() {
       <NuclideGenealogy
         preset={preset}
         onSelectPreset={selectPreset}
+        language={language}
       />
 
       <DetectorLab
@@ -2806,6 +3255,7 @@ export default function Home() {
         onThicknessChange={setShieldThickness}
         measurementSeconds={measurementSeconds}
         onMeasurementSecondsChange={setMeasurementSeconds}
+        language={language}
       />
 
       <footer>
@@ -2813,7 +3263,7 @@ export default function Home() {
           <strong>nuclear-decay-lab</strong>
           <span>MONTE CARLO DECAY SIMULATOR / 2026</span>
         </div>
-        <nav aria-label="Shymohnとプロジェクトへのリンク">
+        <nav aria-label={t("Shymohnとプロジェクトへのリンク", "Links to Shymohn and this project")}>
           <a href="https://x.com/Shymohn" target="_blank" rel="noopener noreferrer">
             @Shymohn on X ↗
           </a>
