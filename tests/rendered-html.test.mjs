@@ -42,6 +42,8 @@ test("server-renders the nuclear decay lab", async () => {
   assert.match(html, /"@type":"WebApplication"/);
   assert.match(html, /<span>放射性壊変<\/span>/);
   assert.match(html, /<span>シミュレーター<\/span>/);
+  assert.match(html, />JPN<\/button>/);
+  assert.match(html, />ENG<\/button>/);
   assert.match(html, />nuclear-decay-lab</);
   assert.match(
     html,
@@ -174,6 +176,14 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(page, /function formatSimulationRate/);
   assert.match(page, /SIMULATED_HALF_LIVES_PER_SECOND \*[\s\S]*speed/);
   assert.match(page, /TIME SCALE \/ 現実時間との対応/);
+  assert.match(page, /type Language = "ja" \| "en"/);
+  assert.match(page, /nuclear-decay-lab-language/);
+  assert.match(page, /aria-pressed=\{language === "ja"\}/);
+  assert.match(page, /aria-pressed=\{language === "en"\}/);
+  assert.match(page, /document\.documentElement\.lang = nextLanguage/);
+  assert.match(page, /Radioactive Decay/);
+  assert.match(page, /localizeNuclideName/);
+  assert.match(page, /elapsed_half_lives/);
   assert.match(page, /経過時間（\$\{preset\.unit\} \/ \$\{preset\.parent\}基準）/);
   assert.match(page, /実時間が約/);
   assert.doesNotMatch(page, /段階T½|規格化時間|段階ごとに時間尺度/);
@@ -202,6 +212,8 @@ test("ships the simulation source without starter dependencies", async () => {
   assert.match(css, /\.chain-stage-copy/);
   assert.match(css, /\.chain-rate-selector/);
   assert.match(css, /\.header-links/);
+  assert.match(css, /\.language-toggle/);
+  assert.match(css, /\.language-toggle button\[aria-pressed="true"\]/);
   assert.match(css, /\.footer-brand/);
   assert.match(
     css,
