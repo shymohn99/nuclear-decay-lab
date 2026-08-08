@@ -77,6 +77,46 @@ footer {
   text-decoration: none;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+}
+
+.language-toggle {
+  display: inline-flex;
+  min-height: 36px;
+  border: 1px solid var(--line);
+}
+
+.language-toggle button {
+  min-width: 43px;
+  padding: 0 9px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.language-toggle button:last-child { border-right: 0; }
+
+.language-toggle button:hover:not([aria-pressed="true"]) {
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.language-toggle button[aria-pressed="true"] {
+  color: var(--paper);
+  background: var(--ink);
+}
+
 .header-links {
   display: flex;
   align-items: center;
@@ -2431,8 +2471,14 @@ footer .repository-link:hover {
     gap: 12px;
     padding: 17px 0;
   }
-  .header-links {
+  .header-actions {
     width: 100%;
+    margin-left: 0;
+  }
+  .header-links {
+    width: auto;
+    min-width: 0;
+    flex: 1;
     overflow-x: auto;
   }
   .header-links a {
