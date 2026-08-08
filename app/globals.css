@@ -113,9 +113,10 @@ footer {
 .hero-copy {
   display: grid;
   grid-template-columns: 112px minmax(0, 1fr);
-  gap: 24px;
+  column-gap: 24px;
+  row-gap: 0;
   align-items: start;
-  padding: 50px 0 44px;
+  padding: 36px 0 32px;
 }
 
 .section-number {
@@ -157,7 +158,7 @@ footer {
 }
 
 .nuclide-catalog {
-  padding: 22px 24px 24px;
+  padding: 18px 20px 20px;
   border-bottom: 1px solid var(--ink);
   background: rgba(255, 255, 255, 0.16);
 }
@@ -200,14 +201,14 @@ footer {
 .series-tabs {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   border: 1px solid var(--ink);
 }
 
 .series-tabs button {
   display: grid;
   gap: 5px;
-  min-height: 56px;
+  min-height: 52px;
   padding: 9px 12px;
   border: 0;
   border-right: 1px solid var(--line);
@@ -300,7 +301,7 @@ footer {
 }
 
 .nuclide-table th {
-  padding: 10px 12px;
+  padding: 8px 12px;
   color: var(--muted);
   border-bottom: 1px solid var(--line);
   font-family: var(--mono);
@@ -311,7 +312,7 @@ footer {
 }
 
 .nuclide-table td {
-  height: 50px;
+  height: 46px;
   padding: 7px 12px;
   border-bottom: 1px solid var(--line);
   font-size: 11px;
@@ -877,11 +878,11 @@ footer {
 
 .simulation-mode-bar {
   display: flex;
-  min-height: 50px;
+  min-height: 44px;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 8px 24px;
+  padding: 6px 20px;
   border-bottom: 1px solid var(--ink);
   background: var(--paper-dark);
 }
