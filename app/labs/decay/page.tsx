@@ -490,12 +490,3012 @@ const CORE_PRESETS: IsotopePreset[] = [
     parentNuclide: { massNumber: 131, protonNumber: 53, element: "I" },
     daughterNuclide: { massNumber: 131, protonNumber: 54, element: "Xe" },
     halfLife: 8.02,
-    unit: "æ—¥ß}üÚÚ$z{-®éÜj×¢B€Ğ¢xûîZéş8ãzy.8N88¾{HBG¶f÷&ÖDçVÖ&W"…4”ÕTÄDTEô„ÄeôÄ•dU5õU%õ4T4ôäB¢7VVB—ÒL+Ş˜.8ş8î88.YNjë^™¨î8YÎ8Šk>ZùşyJZ8®ZHZé®i[8).˜yJ8~8î88&ÀĞ¢V6‚&VÂ×F–ÖR6V6öæBGfæ6W2&÷WBG¶f÷&ÖDçVÖ&W"…4”ÕTÄDTEô„ÄeôÄ•dU5õU%õ4T4ôäB¢7VVBÂÆæwVvR—ÒL+ÒâF†R6ÖRö'6W'fF–öâFV6’6öç7FçB—2Æ–VBFòWfW'’7FvRæÀĞ¢—ĞĞ¢Â÷àĞ¢’¢€Ğ¢ÇàĞ¢·B€Ğ¢xûîZéş8ãzy.8N88¾8xûîYÊ8îjzŠî8îi˜.™i>8Î{HBG·6–×VÆF–öå&FWŞ˜.8ş8î88&ÀĞ¢V6‚&VÂ×F–ÖR6V6öæBGfæ6W2F†R6VÆV7FVBçV6Æ–FR'’&÷WBG·6–×VÆF–öå&FWÒæÀĞ¢—ĞĞ¢Â÷àĞ¢—ĞĞ¢ÂöF—càĞ Ğ¢ÆF—b6Æ74æÖSÒ&6öçG&öÂÖ7F–öç2#à¢Æ'WGFöà¢G—SÒ&'WGFöâ ¢6Æ74æÖSÒ'&–Ö'’Ö7F–öâ Ğ¢öä6Æ–6³×²‚’Óâ6WEW6VB‚‡fÇVR’ÓâfÇVR—ĞĞ¢àĞ¢·W6VBòB‚.)kbXhŞ™h²"Â.)kb&W7VÖR"’¢B‚.(ZKˆi˜.XÎjÚ""Â.(ZW6R"—ĞĞ¢Âö'WGFöãàĞ¢Æ'WGFöâG—SÒ&'WGFöâ"öä6Æ–6³×·&W6WE6–×VÆF–öçÓî(k²·B‚.8:®8+¾88>88‚"Â%&W6WB"—ÓÂö'WGFöãà¢ÂöF—cà ¢ÆÆ&VÂ6Æ74æÖSÒ'&W6WB×6VVB#à¢Ç7ãå$U4UB4TTCÂ÷7ãà¢Æ–çW@¢G—SÒ&çVÖ&W" ¢Ö–ãÒ# ¢Öƒ×´Ô…õ$U4UEõ4TTGĞ¢7FWÒ# ¢–çWDÖöFSÒ&çVÖW&–2 ¢fÇVS×·6VVD–çWGĞ¢öä6†ævS×²†WfVçB’Óâ6WE6VVD–çWB†WfVçBçF&vWBçfÇVR—Ğ¢öä&ÇW#×¶6öÖÖ—E&W6WE6VVGĞ¢öä¶W”F÷vã×²†WfVçB’Óâ°¢–b†WfVçBæ¶W’ÓÓÒ$VçFW""’WfVçBæ7W'&VçEF&vWBæ&ÇW"‚“°¢×Ğ¢&–ÖFW67&–&VF'“Ò'&W6WB×6VVBÖ†VÇ ¢óà¢Ç6ÖÆÂ–CÒ'&W6WB×6VVBÖ†VÇ#à¢·B€¢.i[X
-N8).ZH88dVçFW.8î8ş8ş89^8*8;Î8*¾8+8).ZIn8888Ş8ç6VVN8¾8(XhŞ™h¾8~8î88.˜XŞ{Úî8Z8®ZH8*N898;>88X‰~8).X‰ŞiÉşXÉn8~8î88.yK¾™Ú.Kˆ®8îi˜.X‹¾8şzºşiÊ¾8N88¾ZH8(ş8(®8î88""À¢$6†ævRF†RçVÖ&W"æB&W72VçFW"÷"ÆVfRF†Rf–VÆBFò&W7F'Bg&öÒF†B6VVBâ—B–æ—F–Æ—¦W2F†RÆ–÷WBæBFV6’ÖWfVçB7G&VÓ²öâ×67&VVâF–Ö–ærf&–W2'’'&÷w6W"â"À¢—Ğ¢Â÷6ÖÆÃà¢ÂöÆ&VÃà ¢ÄÆ%7FFUFööÇ0¢Æ#×¶FV6”Æ'Ğ¢ÆæwVvS×¶ÆæwVvWĞ¢7FFS×·6fVDFV6•7FFWĞ¢öå&W7F÷&S×·&W7F÷&TFV6•7FFWĞ¢&W7F÷&TöäÖ÷VçC×²&WVW7FVE&÷WFU&W6WGĞ¢óà ¢ÆF—b6Æ74æÖSÒ&f÷&×VÆ#à¢Ç7ãç·B‚.Z8®ZH8îk9^X˜r"Â$FV6’Ær"—ÓÂ÷7ãàĞ¢Æ6öFSäâ‡B’Òî((+r#Ç7Wî(‰'BòL+ÓÂ÷7WãÂö6öFSàĞ¢Ç6ÖÆÃàĞ¢·B€Ğ¢.i˜.™i>8ÎXØ®k‰¾iÉòL+Ò88˜.8(8N88¾8Šj®jzŠî8şXØ®Xˆn8¾8®8(®8î88""ÀĞ¢$gFW"V6‚†ÆbÖÆ–fRL+ÒÂ†ÆböbF†R&VçBçV6ÆV’&VÖ–âöâfW&vRâ"ÀĞ¢—ĞĞ¢Â÷6ÖÆÃàĞ¢ÂöF—càĞ¢Âö6–FSàĞ¢ÂöF—càĞ Ğ¢ÆF—`Ğ¢6Æ74æÖSÒ&WVF–öâ×æVÂ Ğ¢&–ÖÆ&VÃ×·B†G·&W6WBç&VçGŞ8îZ8®ZH[ÈöÂG·&W6WE&VçDæÖWÒFV6’WVF–öæ—ĞĞ¢àĞ¢ÆF—b6Æ74æÖSÒ&WVF–öâÖ†VF–ær#àĞ¢ÆF—càĞ¢Ç7ãäDT4’$T5D”ôâò$TdU$Tä4SÂ÷7ãàĞ¢Ç7G&öæsàĞ¢·6–×VÆF–öäÖöFRÓÓÒ&6†–â Ğ¢òB‚.iÈX‰Ş8îZ8®ZH’"Â$f—'7BFV6’"Ğ¢¢B‚.Z8®ZH[Èò"Â$FV6’WVF–öâ"—ĞĞ¢Â÷7G&öæsàĞ¢ÂöF—càĞ¢ÆF—b6Æ74æÖSÒ&WVF–öâÖ†VF–ærÖ7F–öç2#àĞ¢Ç6ÖÆÃç·&W6WDÖöFTÆ&VÇÓÂ÷6ÖÆÃàĞ¢Æ'WGFöâG—SÒ&'WGFöâ"öä6Æ–6³×¶6÷”WVF–öçÓàĞ¢¶WVF–öä6÷–V@Ğ¢òB‚.8+>89N8;Î8~8î8~8ò"Â$6÷–VB"Ğ¢¢B‚.[Èş8).8+>89N8;Â"Â$6÷’WVF–öâ"—ĞĞ¢Âö'WGFöãàĞ¢ÂöF—càĞ¢ÂöF—càĞ¢ÆF—b6Æ74æÖSÒ&FV6’ÖfÆ÷r#àĞ¢ÆF—b6Æ74æÖSÒ'&V7F–öâ×7V6–W2&V7F–öâ×&VçB#àĞ¢Ç7ãç·B‚.Šj®jzŠâ"Â%&VçB"—ÓÂ÷7ãàĞ¢ÄçV6Æ–FU7–Ö&öÀĞ¢çV6Æ–FS×·&W6WBç&VçDçV6Æ–FWĞĞ¢6Æ74æÖSÒ'&V7F–öâ×7–Ö&öÂ Ğ¢ÆæwVvS×¶ÆæwVvWĞĞ¢óàĞ¢Ç6ÖÆÃç·&W6WE&VçDæÖWÓÂ÷6ÖÆÃàĞ¢ÂöF—càĞ¢ÆF—b6Æ74æÖSÒ'&V7F–öâÖ'&÷r"&–Ö†–FFVãÒ'G'VR#àĞ¢Ç7ãç·&W6WDÖöFTÆ&VÇÓÂ÷7ãàĞ¢Æ#î(i#Âö#àĞ¢ÂöF—càĞ¢ÆF—b6Æ74æÖSÒ'&V7F–öâ×7V6–W2&V7F–öâÖFVv‡FW"#àĞ¢Ç7ãç·B‚.Z‰jzŠâ"Â$FVv‡FW""—ÓÂ÷7ãàĞ¢ÄçV6Æ–FU7–Ö&öÀĞ¢çV6Æ–FS×·&W6WBæFVv‡FW$çV6Æ–FWĞĞ¢6Æ74æÖSÒ'&V7F–öâ×7–Ö&öÂ Ğ¢ÆæwVvS×¶ÆæwVvWĞĞ¢óàĞ¢Ç6ÖÆÃç·&W6WDFVv‡FW$æÖWÓÂ÷6ÖÆÃàĞ¢ÂöF—càĞ¢Æ"6Æ74æÖSÒ'&V7F–öâ×ÇW2"&–Ö†–FFVãÒ'G'VR#îûÈ³Âö#àĞ¢ÆF—b6Æ74æÖSÒ'&V7F–öâ×7V6–W2&V7F–öâÖVÖ—76–öâ#àĞ¢Ç7ãç·B‚.iKîX{®{).ZÙ"Â$VÖ—76–öâ"—ÓÂ÷7ãàĞ¢Æ6öFSç·&W6WBæVÖ—76–öå7–Ö&öÇÓÂö6öFSàĞ¢Ç6ÖÆÃç¶Æö6Æ—¦TVÖ—76–öâ‡&W6WBæVÖ—76–öâÂÆæwVvR—ÓÂ÷6ÖÆÃàĞ¢ÂöF—càĞ¢ÂöF—càĞ¢ÂöF—càĞ¢Â÷6V7F–öãàĞ Ğ¢Ç6V7F–öâ6Æ74æÖSÒ&FF×6V7F–öâ"&–ÖÆ&VÆÆVF'“Ò&ö'6W'fF–öâ×F—FÆR#àĞ¢ÆF—b6Æ74æÖSÒ'6V7F–öâÖ†VF–ær#àĞ¢ÆF—càĞ¢Ç6Æ74æÖSÒ'6V7F–öâÖçVÖ&W"#ã"òô%4U%dD”ôãÂ÷àĞ¢Æƒ"–CÒ&ö'6W'fF–öâ×F—FÆR#ç·B‚.Šk>kŠÎX
-N8ynŠ¹nX
-B"Â$ö'6W'fF–öâbF†V÷'’"—ÓÂöƒ#àĞ¢ÂöF—càĞ¢ÇàĞ¢·6–×VÆF–öäÖöFRÓÓÒ&6†–â Ğ¢òB€Ğ¢.X‰ŞiÉşjzŠî8Î{;¾X‰~8îjÊjë^™¨î8z{¾8>8şX›.Y8).8ynŠ¹ny¨N8®hÈ~i[k‰¾Š8jùN‹È>8~8î88""ÀĞ¢$6ö×&RF†Rg&7F–öâÆVf–ærF†R–æ—F–ÂçV6Æ–FRf÷"ÆFW"6†–â7FvW2v—F‚F†V÷&WF–6ÂW‡öæVçF–ÂFV6’â"ÀĞ¢Ğ¢¢B€Ğ¢.‹ZN8Nx+8Zéş{y®8ÎK¸®Y¹î8îŠšnŠÎ8™Ù.8NzN{y®8ÎynŠ¹nX
-N8~88.8:®8+¾88>8888(¾8ş8>8¾8z+®xè~8¾8(8(¾hû®8(8îik8ÎZH8(ş8(®8î88""ÀĞ¢%ö–çG2æBF†R6öÆ–BÆ–æR6†÷rF†—2G&–Ã²F†RF6†VBÆ–æR—2F†RF†V÷&WF–6Â7W'fRâ&W6WBFò6VRæWr7Fö6†7F–2fÇV7GVF–öââ"ÀĞ¢—ĞĞ¢Â÷àĞ¢ÂöF—càĞ Ğ¢ÆF—b6Æ74æÖSÒ'7FG2Öw&–B#àĞ¢Æ'F–6ÆSàĞ¢Ç7ãç·B‚.{XÎ˜îi˜.™i2"Â$VÆ6VBF–ÖR"—ÓÂ÷7ãàĞ¢Ç7G&öæsç¶f÷&ÖDVÆ6VB†VÆ6VBÂ&W6WBÂÆæwVvR—ÓÂ÷7G&öæsàĞ¢Ç6ÖÆÃàĞ¢·6–×VÆF–öäÖöFRÓÓÒ&6†–â Ğ¢òB€Ğ¢G¶VÆ6VBçFôf—†VBƒ"—Ò9rG·&W6WBç&VçGŞ8åL+ÖÀĞ¢G¶VÆ6VBçFôf—†VBƒ"—Ò9rG·&W6WE&VçDæÖWÒL+ÖÀĞ¢Ğ¢¢G¶VÆ6VBçFôf—†VBƒ"—Ò9rL+ÖĞĞ¢Â÷6ÖÆÃàĞ¢Âö'F–6ÆSàĞ¢Æ'F–6ÆSàĞ¢Ç7ãàĞ¢·6–×VÆF–öäÖöFRÓÓÒ&6†–â Ğ¢òB‚.X‰ŞiÉşjzŠî8¾jè¾8(¾XéşZÙj‚"Â$çV6ÆV’–â–æ—F–ÂçV6Æ–FR"Ğ¢¢B‚.iÊ®Z8®ZH8îXéşZÙj‚"Â%VæFV6–VBçV6ÆV’"—ĞĞ¢Â÷7ãàĞ¢Ç7G&öæsç·&VÖ–æ–æwÓÇ6ÖÆÃâò¶FöÔ6÷VçGÓÂ÷6ÖÆÃãÂ÷7G&öæsàĞ¢Ç6ÖÆÃç·&VÖ–æ–æuW&6VçBçFôf—†VBƒ—ÒSÂ÷6ÖÆÃàĞ¢Âö'F–6ÆSàĞ¢Æ'F–6ÆSàĞ¢Ç7ãàĞ¢·6–×VÆF–öäÖöFRÓÓÒ&6†–â Ğ¢òB‚.{;¾X‰~8z{¾8>8şXéşZÙj‚"Â$çV6ÆV’Ö÷fVB–çFò6†–â"Ğ¢¢B‚.Z8®ZH8~8şXéşZÙj‚"Â$FV6–VBçV6ÆV’"—ĞĞ¢Â÷7ãàĞ¢Ç7G&öæsç¶FV6–VGÓÂ÷7G&öæsàĞ¢Ç6ÖÆÃç·B‚.ynŠ¹nKˆ®8ò"Â$W‡V7FVB"—Ò´ÖF‚ç&÷VæB†FöÔ6÷VçBÒW‡V7FVB—ÓÂ÷6ÖÆÃàĞ¢Âö'F–6ÆSàĞ¢ÂöF—càĞ Ğ¢ÆF—b6Æ74æÖSÒ&6†'B×æVÂ#àĞ¢ÆF—b6Æ74æÖSÒ&6†'BÖÖWF#àĞ¢Ç7ããÆ’6Æ74æÖSÒ&ö'6W'fVBÖÆ–æR"7G–ÆS×·²&6¶w&÷VæD6öÆ÷#¢&VçD6öÆ÷"×Òóç·B‚.Šk>kŠÎX
-B"Â$ö'6W'fVB"—ÓÂ÷7ãàĞ¢Ç7ããÆ’6Æ74æÖSÒ'F†V÷'’ÖÆ–æR"7G–ÆS×·²&÷&FW%F÷6öÆ÷#¢FVv‡FW$6öÆ÷"×Òóç·B‚.ynŠ¹nX
-B"Â%F†V÷'’"—ÓÂ÷7ãàĞ¢ÆF—b6Æ74æÖSÒ&6†'B×66ÆR×FövvÆR"&öÆSÒ&w&÷W"&–ÖÆ&VÃ×·B‚.8+8:89^8îyºîy¹¾8(¢"Â$6†'B66ÆR"—ÓàĞ¢Æ'WGFöàĞ¢G—SÒ&'WGFöâ Ğ¢&–×&W76VC×¶6†'E66ÆRÓÓÒ&Æ–æV"'ĞĞ¢öä6Æ–6³×²‚’Óâ6WD6†'E66ÆR‚&Æ–æV""—ĞĞ¢àĞ¢·B‚.{y®[Ú""Â$Æ–æV""—ĞĞ¢Âö'WGFöãàĞ¢Æ'WGFöàĞ¢G—SÒ&'WGFöâ Ğ¢&–×&W76VC×¶6†'E66ÆRÓÓÒ&Æör'ĞĞ¢öä6Æ–6³×²‚’Óâ6WD6†'E66ÆR‚&Æör"—ĞĞ¢àĞ¢·B‚.Zûîi["Â$Æör"—ĞĞ¢Âö'WGFöãàĞ¢ÂöF—càĞ¢Ç7G&öæsç·B‚.jÚ>ŠhşXÉnZ8®ZHxèr"Â$æ÷&ÖÆ—¦VBFV6’&FR"—Ò¶7F—f—G’çFôf—†VBƒ—ÒòL+ÓÂ÷7G&öæsà¢Æ'WGFöâG—SÒ&'WGFöâ"6Æ74æÖSÒ&W‡÷'BÖ'WGFöâ"öä6Æ–6³×¶W‡÷'D†—7F÷'”77gÓàĞ¢·B‚$55n8~KùŞZÙ‚"Â%6fR55b"—ĞĞ¢Âö'WGFöãàĞ¢ÂöF—càĞ¢Ç7fpĞ¢6Æ74æÖSÒ&FV6’Ö6†'B Ğ¢f–Wt&÷ƒ×¶G¶6†'Bçv–GF‡ÒG¶6†'Bæ†V–v‡GÖĞĞ¢&öÆSÒ&–Ör Ğ¢&–ÖÆ&VÆÆVF'“Ò&6†'B×F—FÆR6†'BÖFW67&—F–öâ Ğ¢àĞ¢ÇF—FÆR–CÒ&6†'B×F—FÆR#àĞ¢·B€Ğ¢G·6–×VÆF–öäÖöFRÓÓÒ&6†–â"ò.X‰ŞiÉşjzŠîi["¢.iÊ®Z8®ZHXéşZÙji['Ş8îi˜.™i>ZHXÉnûÈ‚G¶6†'E66ÆRÓÓÒ&Æör"ò.Zûîi["¢.{y®[Ú"'Şyºîy¹¾8(®ûÈ–ÀĞ¢G·6–×VÆF–öäÖöFRÓÓÒ&6†–â"ò$–æ—F–ÂÖçV6Æ–FR÷VÆF–öâ"¢%VæFV6–VBçV6ÆV’'Ò÷fW"F–ÖR‚G¶6†'E66ÆRÓÓÒ&Æör"ò&Æör"¢&Æ–æV"'Ò66ÆR–ÀĞ¢—ĞĞ¢Â÷F—FÆSàĞ¢ÆFW62–CÒ&6†'BÖFW67&—F–öâ#àĞ¢·B€Ğ¢G·6–×VÆF–öäÖöFRÓÓÒ&6†–â"ò6W&–W4Æ&VÂ¢&W6WBç&VçGŞ8îŠk>kŠÎX
-N8hÈ~i[™j.i[8¾8(8(¾ynŠ¹nX
-N8)"G¶6†'E66ÆRÓÓÒ&Æör"ò.Zûîi["¢.{y®[Ú"'Şyºîy¹¾8(®8~jùN‹È>8~8ş8+8:89^8~88&ÀĞ¢6†'B6ö×&–ærö'6W'fVBfÇVW2f÷"G·6–×VÆF–öäÖöFRÓÓÒ&6†–â"ò6W&–W4Æ&VÂ¢&W6WE&VçDæÖWÒv—F‚W‡öæVçF–ÂF†V÷'’öâG¶6†'E66ÆRÓÓÒ&Æör"ò&Æör"¢&Æ–æV"'Ò66ÆRæÀĞ¢—ĞĞ¢ÂöFW63àĞ¢¶6†'Bç•F–6·2æÖ‚‡F–6²’Óâ°Ğ¢&WGW&â€Ğ¢Ær¶W“×·F–6²æÆ&VÇÓàĞ¢ÆÆ–æPĞ¢6Æ74æÖSÒ&6†'BÖw&–BÖÆ–æR Ğ¢ƒ×¶6†'BæÆVgGĞĞ¢ƒ#×¶6†'Bçv–GF‚Ò6†'Bç&–v‡GĞĞ¢“×·F–6²ç—ĞĞ¢“#×·F–6²ç—ĞĞ¢óàĞ¢ÇFW‡BƒÒ#‚"“×·F–6²ç’²GÓç·F–6²æÆ&VÇÓÂ÷FW‡CàĞ¢ÂösàĞ¢“°Ğ¢Ò—ĞĞ¢µ³Âã#RÂãRÂãsRÂÒæÖ‚‡&F–ò’Óâ°Ğ¢6öç7B‚Ò6†'BæÆVgB²&F–ò¢6†'BçÆ÷Ev–GFƒ°Ğ¢&WGW&â€Ğ¢Ær¶W“×·&F–÷ÓàĞ¢ÆÆ–æPĞ¢6Æ74æÖSÒ&6†'B×F–6² Ğ¢ƒ×·‡ĞĞ¢ƒ#×·‡ĞĞ¢“×¶6†'Bæ†V–v‡BÒ6†'Bæ&÷GFö×ĞĞ¢“#×¶6†'Bæ†V–v‡BÒ6†'Bæ&÷GFöÒ²gĞĞ¢óàĞ¢ÇFW‡B6Æ74æÖSÒ'‚×F–6²ÖÆ&VÂ"ƒ×·‡Ò“×¶6†'Bæ†V–v‡BÒ‡ÓàĞ¢·6–×VÆF–öäÖöFRÓÓÒ&6†–â Ğ¢òf÷&ÖDçVÖ&W"†6†'BæÖ…B¢&F–ò¢&W6WBæ†ÆdÆ–fRĞ¢¢†6†'BæÖ…B¢&F–ò’çFôf—†VBƒ"—ĞĞ¢Â÷FW‡CàĞ¢ÂösàĞ¢“°Ğ¢Ò—ĞĞ¢ÆÆ–æPĞ¢6Æ74æÖSÒ&6†'BÖ†—2 Ğ¢ƒ×¶6†'BæÆVgGĞĞ¢ƒ#×¶6†'Bçv–GF‚Ò6†'Bç&–v‡GĞĞ¢“×¶6†'Bæ†V–v‡BÒ6†'Bæ&÷GFö×ĞĞ¢“#×¶6†'Bæ†V–v‡BÒ6†'Bæ&÷GFö×ĞĞ¢óàĞ¢ÇF€Ğ¢6Æ74æÖSÒ'F†V÷'’×F‚ Ğ¢C×¶6†'BçF†V÷&WF–6ÅF‡ĞĞ¢7G&ö¶S×¶FVv‡FW$6öÆ÷'ĞĞ¢óàĞ¢ÇF€Ğ¢6Æ74æÖSÒ&ö'6W'fVB×F‚ Ğ¢C×¶6†'Bæö'6W'fVEF‡ĞĞ¢7G&ö¶S×·&VçD6öÆ÷'ĞĞ¢óàĞ¢¶6†'Bæö'6W'fVEö–çG2æÖ‚‡ö–çBÂ–æFW‚’Óâ€Ğ¢Æ6—&6ÆPĞ¢6Æ74æÖSÒ&ö'6W'fVB×ö–çB Ğ¢7ƒ×·ö–çBç‡ĞĞ¢7“×·ö–çBç—ĞĞ¢f–ÆÃ×·&VçD6öÆ÷'ĞĞ¢7G&ö¶SÒ"6fc†c" Ğ¢#Ò#"ãR Ğ¢¶W“×¶G¶–æFW‡ÒÒG·ö–çBç‡ÖĞĞ¢óàĞ¢’—ĞĞ¢ÇFW‡B6Æ74æÖSÒ&†—2Ö6F–öâ"ƒ×¶6†'Bçv–GF‚Ò6†'Bç&–v‡GÒ“×¶6†'Bæ†V–v‡BÒ'ÓàĞ¢·6–×VÆF–öäÖöFRÓÓÒ&6†–â Ğ¢òB€Ğ¢{XÎ˜îi˜.™i>ûÈ‚G·&W6WBçVæ—GÒòG·&W6WBç&VçGŞYû®k©nûÈ–ÀĞ¢VÆ6VBF–ÖR‚G¶Æö6Æ—¦UVæ—B‡&W6WBçVæ—BÂÆæwVvR—ÒòG·&W6WE&VçDæÖWÒ&6—2–ÀĞ¢Ğ¢¢B‚.{XÎ˜îi˜.™i>ûÈXØ®k‰¾iÉòL+ŞûÈ’"Â$VÆ6VBF–ÖR††ÆbÖÆ—fW2L+Ò’"—ĞĞ¢Â÷FW‡CàĞ¢Â÷7fsàĞ¢ÂöF—càĞ¢Â÷6V7F–öãàĞ Ğ¢ÄçV6Æ–FTvVæVÆöwĞ¢&W6WC×·&W6WGĞĞ¢öå6VÆV7E&W6WC×·6VÆV7E&W6WGĞĞ¢ÆæwVvS×¶ÆæwVvWĞĞ¢óàĞ Ğ¢ÄFWFV7F÷$Æ ¢&W6WC×·&W6WGĞĞ¢&VÖ–æ–æs×·&VÖ–æ–æwĞĞ¢FöÔ6÷VçC×¶FöÔ6÷VçGĞĞ¢FWFV7F÷$¶W“×¶FWFV7F÷$¶W—ĞĞ¢öäFWFV7F÷$6†ævS×·6WDFWFV7F÷$¶W—ĞĞ¢6†–VÆD¶W“×·6†–VÆD¶W—ĞĞ¢öå6†–VÆD6†ævS×·6WE6†–VÆD¶W—ĞĞ¢F—7Fæ6S×¶FWFV7F÷$F—7Fæ6WĞĞ¢öäF—7Fæ6T6†ævS×·6WDFWFV7F÷$F—7Fæ6WĞĞ¢F†–6¶æW73×·6†–VÆEF†–6¶æW77ĞĞ¢öåF†–6¶æW746†ævS×·6WE6†–VÆEF†–6¶æW77ĞĞ¢ÖV7W&VÖVçE6V6öæG3×¶ÖV7W&VÖVçE6V6öæG7ĞĞ¢öäÖV7W&VÖVçE6V6öæG46†ævS×·6WDÖV7W&VÖVçE6V6öæG7ĞĞ¢ÆæwVvS×¶ÆæwVvWĞ¢óà ¢ÄÖöFVÄF—66Æ÷7W&RÆ#×¶FV6”Æ'ÒÆæwVvS×¶ÆæwVvWÒóà¢Å6fWG”æ÷FRÆ#×¶FV6”Æ'ÒÆæwVvS×¶ÆæwVvWÒóà ¢Æfö÷FW#à¢ÆF—b6Æ74æÖSÒ&fö÷FW"Ö'&æB#àĞ¢Ç7G&öæså„TäôÔTäÂ÷7G&öæsà¢Ç7ãädõTäDD”ôâcòÔôåDR4$ÄòDT4’Ä#Â÷7ãà¢ÂöF—càĞ¢Ææb&–ÖÆ&VÃ×·B‚%6‡–Öö†î889~8:Ş8+8*~8*ş8888î8:®8;>8*ò"Â$Æ–æ·2Fò6‡–Öö†âæBF†—2&ö¦V7B"—ÓàĞ¢Æ‡&VcÒ&‡GG3¢ò÷‚æ6öÒõ6‡–Öö†â"F&vWCÒ%ö&Ææ²"&VÃÒ&æö÷VæW"æ÷&VfW'&W"#àĞ¢6‡–Öö†âöâ‚(ipĞ¢ÂöàĞ¢Æ‡&VcÒ&‡GG3¢òöv—F‡V"æ6öÒ÷6‡–Öö†ã“’"F&vWCÒ%ö&Ææ²"&VÃÒ&æö÷VæW"æ÷&VfW'&W"#àĞ¢v—D‡V"&öf–ÆR(ipĞ¢ÂöàĞ¢ÆĞ¢‡&VcÒ&‡GG3¢ò÷6‡–Öö†ã“’æv—F‡V"æ–ò÷÷'FföÆ–òò Ğ¢F&vWCÒ%ö&Ææ² Ğ¢&VÃÒ&æö÷VæW"æ÷&VfW'&W" Ğ¢àĞ¢6‡–Öö†â÷'FföÆ–ò(ipĞ¢ÂöàĞ¢ÆĞ¢6Æ74æÖSÒ'&W÷6—F÷'’ÖÆ–æ² Ğ¢‡&VcÒ&‡GG3¢òöv—F‡V"æ6öÒ÷6‡–Öö†ã“’öçV6ÆV"ÖFV6’ÖÆ" Ğ¢F&vWCÒ%ö&Ææ² Ğ¢&VÃÒ&æö÷VæW"æ÷&VfW'&W" Ğ¢àĞ¢f–Wr6÷W&6R(ipĞ¢ÂöàĞ¢ÂöæcàĞ¢Çç·B‚,*’##b6‡–Öö†î8.8+Ş89^888*n8*~8*#¢Ô•BòjzŠî88~8;Î8+ó¢XŠ^iÚK»b"Â,*’##b6‡–Öö†ââ6ögGv&S¢Ô•BòçV6ÆV"FF¢6W&FRFW&×2â"—ÓÂ÷à¢Âöfö÷FW#àĞ¢ÂöÖ–ãàĞ¢ÂóàĞ¢“°Ğ§ĞĞ
+    unit: "æ—¥",
+    mode: "beta",
+    parentRgb: "221, 80, 78",
+    daughterRgb: "49, 163, 177",
+  }),
+  createPreset({
+    key: "carbon-14",
+    series: "independent",
+    parent: "ç‚­ç´ 14",
+    daughter: "çª’ç´ 14",
+    parentNuclide: { massNumber: 14, protonNumber: 6, element: "C" },
+    daughterNuclide: { massNumber: 14, protonNumber: 7, element: "N" },
+    halfLife: 5730,
+    unit: "å¹´",
+    mode: "beta",
+    parentRgb: "205, 120, 38",
+    daughterRgb: "39, 145, 102",
+  }),
+  createPreset({
+    key: "cobalt-60",
+    series: "independent",
+    parent: "ã‚³ãƒãƒ«ãƒˆ60",
+    daughter: "ãƒ‹ãƒƒã‚±ãƒ«60",
+    parentNuclide: { massNumber: 60, protonNumber: 27, element: "Co" },
+    daughterNuclide: { massNumber: 60, protonNumber: 28, element: "Ni" },
+    halfLife: 5.27,
+    unit: "å¹´",
+    mode: "gamma",
+    modeLabel: "Î²â»å£Šå¤‰ + Î³æ”¾å‡º",
+    emission: "é›»å­ãƒ»åé›»å­ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒªãƒãƒ»Î³ç·š",
+    emissionSymbol: "eâ» + Î½Ì„â‚‘ + Î³",
+    parentRgb: "132, 85, 183",
+    daughterRgb: "43, 132, 185",
+  }),
+  createPreset({
+    key: "uranium-238",
+    series: "uranium-238",
+    parent: "ã‚¦ãƒ©ãƒ³238",
+    daughter: "ãƒˆãƒªã‚¦ãƒ 234",
+    parentNuclide: { massNumber: 238, protonNumber: 92, element: "U" },
+    daughterNuclide: { massNumber: 234, protonNumber: 90, element: "Th" },
+    halfLife: 4.468e9,
+    unit: "å¹´",
+    mode: "alpha",
+    parentRgb: "78, 103, 153",
+    daughterRgb: "174, 108, 53",
+  }),
+  createPreset({
+    key: "thorium-234",
+    series: "uranium-238",
+    parent: "ãƒˆãƒªã‚¦ãƒ 234",
+    daughter: "ãƒ—ãƒ­ãƒˆã‚¢ã‚¯ãƒãƒ‹ã‚¦ãƒ 234m",
+    parentNuclide: { massNumber: 234, protonNumber: 90, element: "Th" },
+    daughterNuclide: { massNumber: 234, protonNumber: 91, element: "Paáµ" },
+    halfLife: 24.1,
+    unit: "æ—¥",
+    mode: "beta",
+    parentRgb: "78, 103, 153",
+    daughterRgb: "174, 108, 53",
+  }),
+  createPreset({
+    key: "uranium-234",
+    series: "uranium-238",
+    parent: "ã‚¦ãƒ©ãƒ³234",
+    daughter: "ãƒˆãƒªã‚¦ãƒ 230",
+    parentNuclide: { massNumber: 234, protonNumber: 92, element: "U" },
+    daughterNuclide: { massNumber: 230, protonNumber: 90, element: "Th" },
+    halfLife: 245500,
+    unit: "å¹´",
+    mode: "alpha",
+    parentRgb: "78, 103, 153",
+    daughterRgb: "174, 108, 53",
+  }),
+  createPreset({
+    key: "radium-226",
+    series: "uranium-238",
+    parent: "ãƒ©ã‚¸ã‚¦ãƒ 226",
+    daughter: "ãƒ©ãƒ‰ãƒ³222",
+    parentNuclide: { massNumber: 226, protonNumber: 88, element: "Ra" },
+    daughterNuclide: { massNumber: 222, protonNumber: 86, element: "Rn" },
+    halfLife: 1600,
+    unit: "å¹´",
+    mode: "alpha",
+    parentRgb: "78, 103, 153",
+    daughterRgb: "174, 108, 53",
+  }),
+  createPreset({
+    key: "radon-222",
+    series: "uranium-238",
+    parent: "ãƒ©ãƒ‰ãƒ³222",
+    daughter: "ãƒãƒ­ãƒ‹ã‚¦ãƒ 218",
+    parentNuclide: { massNumber: 222, protonNumber: 86, element: "Rn" },
+    daughterNuclide: { massNumber: 218, protonNumber: 84, element: "Po" },
+    halfLife: 3.8222,
+    unit: "æ—¥",
+    mode: "alpha",
+    parentRgb: "78, 103, 153",
+    daughterRgb: "174, 108, 53",
+  }),
+  createPreset({
+    key: "polonium-210",
+    series: "uranium-238",
+    parent: "ãƒãƒ­ãƒ‹ã‚¦ãƒ 210",
+    daughter: "é‰›206",
+    parentNuclide: { massNumber: 210, protonNumber: 84, element: "Po" },
+    daughterNuclide: { massNumber: 206, protonNumber: 82, element: "Pb" },
+    halfLife: 138.4,
+    unit: "æ—¥",
+    mode: "alpha",
+    parentRgb: "194, 66, 60",
+    daughterRgb: "38, 119, 173",
+  }),
+  createPreset({
+    key: "thorium-232",
+    series: "thorium-232",
+    parent: "ãƒˆãƒªã‚¦ãƒ 232",
+    daughter: "ãƒ©ã‚¸ã‚¦ãƒ 228",
+    parentNuclide: { massNumber: 232, protonNumber: 90, element: "Th" },
+    daughterNuclide: { massNumber: 228, protonNumber: 88, element: "Ra" },
+    halfLife: 1.405e10,
+    unit: "å¹´",
+    mode: "alpha",
+    parentRgb: "94, 111, 75",
+    daughterRgb: "177, 104, 72",
+  }),
+  createPreset({
+    key: "radium-228",
+    series: "thorium-232",
+    parent: "ãƒ©ã‚¸ã‚¦ãƒ 228",
+    daughter: "ã‚¢ã‚¯ãƒãƒ‹ã‚¦ãƒ 228",
+    parentNuclide: { massNumber: 228, protonNumber: 88, element: "Ra" },
+    daughterNuclide: { massNumber: 228, protonNumber: 89, element: "Ac" },
+    halfLife: 5.75,
+    unit: "å¹´",
+    mode: "beta",
+    parentRgb: "94, 111, 75",
+    daughterRgb: "177, 104, 72",
+  }),
+  createPreset({
+    key: "actinium-228",
+    series: "thorium-232",
+    parent: "ã‚¢ã‚¯ãƒãƒ‹ã‚¦ãƒ 228",
+    daughter: "ãƒˆãƒªã‚¦ãƒ 228",
+    parentNuclide: { massNumber: 228, protonNumber: 89, element: "Ac" },
+    daughterNuclide: { massNumber: 228, protonNumber: 90, element: "Th" },
+    halfLife: 6.15,
+    unit: "æ™‚é–“",
+    mode: "beta",
+    parentRgb: "94, 111, 75",
+    daughterRgb: "177, 104, 72",
+  }),
+  createPreset({
+    key: "thorium-228",
+    series: "thorium-232",
+    parent: "ãƒˆãƒªã‚¦ãƒ 228",
+    daughter: "ãƒ©ã‚¸ã‚¦ãƒ 224",
+    parentNuclide: { massNumber: 228, protonNumber: 90, element: "Th" },
+    daughterNuclide: { massNumber: 224, protonNumber: 88, element: "Ra" },
+    halfLife: 1.9125,
+    unit: "å¹´",
+    mode: "alpha",
+    parentRgb: "94, 111, 75",
+    daughterRgb: "177, 104, 72",
+  }),
+  createPreset({
+    key: "radium-224",
+    series: "thorium-232",
+    parent: "ãƒ©ã‚¸ã‚¦ãƒ 224",
+    daughter: "ãƒ©ãƒ‰ãƒ³220",
+    parentNuclide: { massNumber: 224, protonNumber: 88, element: "Ra" },
+    daughterNuclide: { massNumber: 220, protonNumber: 86, element: "Rn" },
+    halfLife: 3.66,
+    unit: "æ—¥",
+    mode: "alpha",
+    parentRgb: "94, 111, 75",
+    daughterRgb: "177, 104, 72",
+  }),
+  createPreset({
+    key: "radon-220",
+    series: "thorium-232",
+    parent: "ãƒ©ãƒ‰ãƒ³220",
+    daughter: "ãƒãƒ­ãƒ‹ã‚¦ãƒ 216",
+    parentNuclide: { massNumber: 220, protonNumber: 86, element: "Rn" },
+    daughterNuclide: { massNumber: 216, protonNumber: 84, element: "Po" },
+    halfLife: 55.6,
+    unit: "ç§’",
+    mode: "alpha",
+    parentRgb: "94, 111, 75",
+    daughterRgb: "177, 104, 72",
+  }),
+  createPreset({
+    key: "uranium-235",
+    series: "uranium-235",
+    parent: "ã‚¦ãƒ©ãƒ³235",
+    daughter: "ãƒˆãƒªã‚¦ãƒ 231",
+    parentNuclide: { massNumber: 235, protonNumber: 92, element: "U" },
+    daughterNuclide: { massNumber: 231, protonNumber: 90, element: "Th" },
+    halfLife: 7.038e8,
+    unit: "å¹´",
+    mode: "alpha",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
+  createPreset({
+    key: "thorium-231",
+    series: "uranium-235",
+    parent: "ãƒˆãƒªã‚¦ãƒ 231",
+    daughter: "ãƒ—ãƒ­ãƒˆã‚¢ã‚¯ãƒãƒ‹ã‚¦ãƒ 231",
+    parentNuclide: { massNumber: 231, protonNumber: 90, element: "Th" },
+    daughterNuclide: { massNumber: 231, protonNumber: 91, element: "Pa" },
+    halfLife: 25.52,
+    unit: "æ™‚é–“",
+    mode: "beta",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
+  createPreset({
+    key: "protactinium-231",
+    series: "uranium-235",
+    parent: "ãƒ—ãƒ­ãƒˆã‚¢ã‚¯ãƒãƒ‹ã‚¦ãƒ 231",
+    daughter: "ã‚¢ã‚¯ãƒãƒ‹ã‚¦ãƒ 227",
+    parentNuclide: { massNumber: 231, protonNumber: 91, element: "Pa" },
+    daughterNuclide: { massNumber: 227, protonNumber: 89, element: "Ac" },
+    halfLife: 32760,
+    unit: "å¹´",
+    mode: "alpha",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
+  createPreset({
+    key: "actinium-227",
+    series: "uranium-235",
+    parent: "ã‚¢ã‚¯ãƒãƒ‹ã‚¦ãƒ 227",
+    daughter: "ãƒˆãƒªã‚¦ãƒ 227",
+    parentNuclide: { massNumber: 227, protonNumber: 89, element: "Ac" },
+    daughterNuclide: { massNumber: 227, protonNumber: 90, element: "Th" },
+    halfLife: 21.772,
+    unit: "å¹´",
+    mode: "beta",
+    modeLabel: "Î²â»å£Šå¤‰ï¼ˆ98.62%ï¼‰",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
+  createPreset({
+    key: "thorium-227",
+    series: "uranium-235",
+    parent: "ãƒˆãƒªã‚¦ãƒ 227",
+    daughter: "ãƒ©ã‚¸ã‚¦ãƒ 223",
+    parentNuclide: { massNumber: 227, protonNumber: 90, element: "Th" },
+    daughterNuclide: { massNumber: 223, protonNumber: 88, element: "Ra" },
+    halfLife: 18.68,
+    unit: "æ—¥",
+    mode: "alpha",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
+  createPreset({
+    key: "radium-223",
+    series: "uranium-235",
+    parent: "ãƒ©ã‚¸ã‚¦ãƒ 223",
+    daughter: "ãƒ©ãƒ‰ãƒ³219",
+    parentNuclide: { massNumber: 223, protonNumber: 88, element: "Ra" },
+    daughterNuclide: { massNumber: 219, protonNumber: 86, element: "Rn" },
+    halfLife: 11.4366,
+    unit: "æ—¥",
+    mode: "alpha",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
+  createPreset({
+    key: "radon-219",
+    series: "uranium-235",
+    parent: "ãƒ©ãƒ‰ãƒ³219",
+    daughter: "ãƒãƒ­ãƒ‹ã‚¦ãƒ 215",
+    parentNuclide: { massNumber: 219, protonNumber: 86, element: "Rn" },
+    daughterNuclide: { massNumber: 215, protonNumber: 84, element: "Po" },
+    halfLife: 3.96,
+    unit: "ç§’",
+    mode: "alpha",
+    parentRgb: "117, 82, 135",
+    daughterRgb: "184, 112, 49",
+  }),
+];
+
+const FEATURED_INDEPENDENT_KEYS = new Set([
+  "iodine-131",
+  "carbon-14",
+  "cobalt-60",
+]);
+
+const MAP_DECAY_CONFIG: Record<
+  MapDecayCode,
+  {
+    mode: DecayMode;
+    label: string;
+    emission: string;
+    emissionSymbol: string;
+    parentRgb: string;
+    daughterRgb: string;
+  }
+> = {
+  alpha: {
+    mode: "alpha",
+    label: "Î±å£Šå¤‰",
+    emission: "ãƒ˜ãƒªã‚¦ãƒ åŸå­æ ¸",
+    emissionSymbol: "â´â‚‚He",
+    parentRgb: "194, 66, 60",
+    daughterRgb: "38, 119, 173",
+  },
+  "beta-minus": {
+    mode: "beta",
+    label: "Î²â»å£Šå¤‰",
+    emission: "é›»å­ãƒ»åé›»å­ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒªãƒ",
+    emissionSymbol: "eâ» + Î½Ì„â‚‘",
+    parentRgb: "49, 151, 170",
+    daughterRgb: "56, 137, 92",
+  },
+  "beta-plus-ec": {
+    mode: "beta",
+    label: "Î²âºå£Šå¤‰ / é›»å­æ•ç²",
+    emission: "é™½é›»å­ãƒ»ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒªãƒã€ã¾ãŸã¯ç‰¹æ€§Xç·š",
+    emissionSymbol: "eâº + Î½â‚‘ / EC",
+    parentRgb: "196, 111, 47",
+    daughterRgb: "74, 133, 157",
+  },
+  "electron-capture": {
+    mode: "beta",
+    label: "é›»å­æ•ç²",
+    emission: "ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒªãƒãƒ»ç‰¹æ€§Xç·š",
+    emissionSymbol: "Î½â‚‘ + X",
+    parentRgb: "177, 126, 48",
+    daughterRgb: "72, 135, 143",
+  },
+  "isomeric-transition": {
+    mode: "gamma",
+    label: "æ ¸ç•°æ€§ä½“è»¢ç§»",
+    emission: "Î³ç·š",
+    emissionSymbol: "Î³",
+    parentRgb: "132, 85, 183",
+    daughterRgb: "67, 125, 174",
+  },
+};
+
+const CORE_MAP_POSITIONS = new Set(
+  CORE_PRESETS.map(
+    (item) =>
+      `${item.parentNuclide.protonNumber}:${item.parentNuclide.massNumber}`,
+  ),
+);
+
+const MAP_ONLY_PRESETS: IsotopePreset[] = MAP_RADIONUCLIDES.filter(
+  ([, massNumber, protonNumber]) =>
+    !CORE_MAP_POSITIONS.has(`${protonNumber}:${massNumber}`),
+).map(
+  ([
+    parentSymbol,
+    parentMass,
+    parentProtons,
+    daughterSymbol,
+    daughterMass,
+    daughterProtons,
+    daughterMetastable,
+    halfLife,
+    unit,
+    decayCode,
+    branchingFraction,
+  ]) => {
+    const config = MAP_DECAY_CONFIG[decayCode];
+    const branchLabel =
+      branchingFraction < 0.9995
+        ? `ï¼ˆ${formatNumber(branchingFraction * 100)}%ï¼‰`
+        : "";
+    const daughterSuffix = daughterMetastable ? "m" : "";
+
+    return createPreset({
+      key: `map-${parentSymbol.toLowerCase()}-${parentMass}`,
+      series: "independent",
+      parent: `${parentSymbol}-${parentMass}`,
+      daughter: `${daughterSymbol}-${daughterMass}${daughterSuffix}`,
+      parentNuclide: {
+        massNumber: parentMass,
+        protonNumber: parentProtons,
+        element: parentSymbol,
+      },
+      daughterNuclide: {
+        massNumber: daughterMass,
+        protonNumber: daughterProtons,
+        element: `${daughterSymbol}${daughterMetastable ? "áµ" : ""}`,
+      },
+      halfLife,
+      unit,
+      mode: config.mode,
+      modeLabel: `${config.label}${branchLabel}`,
+      emission: config.emission,
+      emissionSymbol: config.emissionSymbol,
+      parentRgb: config.parentRgb,
+      daughterRgb: config.daughterRgb,
+    });
+  },
+);
+
+const PRESETS: IsotopePreset[] = [
+  ...CORE_PRESETS,
+  ...MAP_ONLY_PRESETS,
+];
+
+function nuclideIdentity(nuclide: Nuclide) {
+  return `${nuclide.element.replace("áµ", "")}-${nuclide.massNumber}-${nuclide.protonNumber}`;
+}
+
+const PRESET_BY_PARENT = new Map(
+  PRESETS.map((item) => [nuclideIdentity(item.parentNuclide), item]),
+);
+
+const PRESETS_BY_DAUGHTER = new Map<string, IsotopePreset[]>();
+for (const item of PRESETS) {
+  const key = nuclideIdentity(item.daughterNuclide);
+  const parents = PRESETS_BY_DAUGHTER.get(key) ?? [];
+  parents.push(item);
+  PRESETS_BY_DAUGHTER.set(key, parents);
+}
+
+const SECONDS_PER_UNIT: Record<string, number> = {
+  ç§’: 1,
+  åˆ†: 60,
+  æ™‚é–“: 60 * 60,
+  æ—¥: 24 * 60 * 60,
+  å¹´: 365.25 * 24 * 60 * 60,
+};
+
+function getChainStages(series: DecaySeries, language: Language): ChainStage[] {
+  if (series === "independent") return [];
+
+  const presets = PRESETS.filter((item) => item.series === series);
+  const stages: ChainStage[] = presets.map((item) => ({
+    key: item.key,
+    name: localizeNuclideName(item.parent, item.parentNuclide, language),
+    nuclide: item.parentNuclide,
+    halfLifeLabel: `${formatNumber(item.halfLife, language)} ${localizeUnit(item.unit, language)}`,
+    halfLifeSeconds:
+      item.halfLife * (SECONDS_PER_UNIT[item.unit] ?? 1),
+    mode: item.mode,
+  }));
+  const terminal = presets.at(-1);
+
+  if (terminal) {
+    stages.push({
+      key: `${terminal.key}-display-limit`,
+      name: localizeNuclideName(
+        terminal.daughter,
+        terminal.daughterNuclide,
+        language,
+      ),
+      nuclide: terminal.daughterNuclide,
+      halfLifeLabel: localize(language, "è¡¨ç¤ºä¸Šã®çµ‚ç‚¹ï¼ˆå£Šå¤‰ã¯ç¶šãï¼‰", "Display limit â€” decay continues"),
+      truncated: true,
+    });
+  }
+
+  return stages;
+}
+
+function getChainStageColor(index: number, total: number) {
+  if (index === total - 1) return "#d8d4c9";
+  return CHAIN_STAGE_COLORS[index % CHAIN_STAGE_COLORS.length];
+}
+
+function handleChainTrackKeyDown(
+  event: ReactKeyboardEvent<HTMLDivElement>,
+) {
+  const track = event.currentTarget;
+  const step = Math.max(120, Math.round(track.clientWidth * 0.72));
+
+  if (event.key === "ArrowLeft") {
+    event.preventDefault();
+    track.scrollBy({ left: -step, behavior: "auto" });
+  } else if (event.key === "ArrowRight") {
+    event.preventDefault();
+    track.scrollBy({ left: step, behavior: "auto" });
+  } else if (event.key === "Home") {
+    event.preventDefault();
+    track.scrollTo({ left: 0, behavior: "auto" });
+  } else if (event.key === "End") {
+    event.preventDefault();
+    track.scrollTo({ left: track.scrollWidth, behavior: "auto" });
+  }
+}
+
+const SIMULATED_HALF_LIVES_PER_SECOND = 0.18;
+const VISUAL_UPDATE_INTERVAL_MS = 140;
+const MIN_ATOM_COUNT = 20;
+const MAX_ATOM_COUNT = 500;
+const MAX_RESET_SEED = 2_147_483_647;
+
+const DEFAULT_DECAY_STATE: DecaySavedState = {
+  presetKey: PRESETS[0].key,
+  seriesKey: "independent",
+  simulationMode: "single",
+  chainRateMode: "physical",
+  atomCount: 160,
+  speed: 1,
+  chartScale: "linear",
+  detectorKey: "scintillator",
+  shieldKey: "none",
+  detectorDistance: 25,
+  shieldThickness: 2,
+  measurementSeconds: 10,
+  resetSeed: 131,
+};
+const ATOM_COUNT_STEP = 10;
+
+function makeParticles(count: number, seed: number): Particle[] {
+  const random = createSeededRandom(seed);
+  return Array.from({ length: count }, (_, index) => {
+    return {
+      id: index,
+      x: 0.045 + random() * 0.91,
+      y: 0.07 + random() * 0.86,
+      vx: (random() - 0.5) * 0.025,
+      vy: (random() - 0.5) * 0.025,
+      phase: "parent",
+      chainStage: 0,
+      pulse: random() * Math.PI * 2,
+      radius: 4.2 + random() * 2.8,
+    };
+  });
+}
+
+function formatNumber(value: number, language: Language = "ja") {
+  return new Intl.NumberFormat(language === "ja" ? "ja-JP" : "en-US", {
+    maximumFractionDigits: value < 10 ? 2 : 1,
+  }).format(value);
+}
+
+function formatSpeedMultiplier(value: number) {
+  if (value >= 0.01 && value < 10000) {
+    return `${formatNumber(value)}Ã—`;
+  }
+
+  const exponent = Math.floor(Math.log10(value));
+  const coefficient = value / 10 ** exponent;
+  const exponentLabel = `${exponent < 0 ? "â»" : ""}${scriptNumber(
+    Math.abs(exponent),
+    SUPERSCRIPT_DIGITS,
+  )}`;
+  return `${formatNumber(coefficient)}Ã—10${exponentLabel}`;
+}
+
+function formatElapsed(
+  halfLives: number,
+  preset: IsotopePreset,
+  language: Language = "ja",
+) {
+  const value = halfLives * preset.halfLife;
+  const unit = localizeUnit(preset.unit, language);
+  if (value === 0) return `0 ${unit}`;
+  if (value < 0.01) return `${value.toExponential(2)} ${unit}`;
+  return `${formatNumber(value, language)} ${unit}`;
+}
+
+function formatSimulationRate(
+  preset: IsotopePreset,
+  speed: number,
+  language: Language = "ja",
+) {
+  const simulatedSeconds =
+    preset.halfLife *
+    (SECONDS_PER_UNIT[preset.unit] ?? 1) *
+    SIMULATED_HALF_LIVES_PER_SECOND *
+    speed;
+  const simulatedYears = simulatedSeconds / SECONDS_PER_UNIT.å¹´;
+
+  if (language === "en") {
+    if (simulatedSeconds < 60) return `${formatNumber(simulatedSeconds, language)} s`;
+    if (simulatedSeconds < SECONDS_PER_UNIT.æ™‚é–“) {
+      return `${formatNumber(simulatedSeconds / SECONDS_PER_UNIT.åˆ†, language)} min`;
+    }
+    if (simulatedSeconds < SECONDS_PER_UNIT.æ—¥) {
+      return `${formatNumber(simulatedSeconds / SECONDS_PER_UNIT.æ™‚é–“, language)} h`;
+    }
+    if (simulatedSeconds < SECONDS_PER_UNIT.å¹´) {
+      return `${formatNumber(simulatedSeconds / SECONDS_PER_UNIT.æ—¥, language)} d`;
+    }
+    if (simulatedYears < 1000) return `${formatNumber(simulatedYears, language)} y`;
+    if (simulatedYears < 1e6) {
+      return `${formatNumber(simulatedYears / 1e3, language)} kyr`;
+    }
+    if (simulatedYears < 1e9) {
+      return `${formatNumber(simulatedYears / 1e6, language)} Myr`;
+    }
+    return `${formatNumber(simulatedYears / 1e9, language)} Gyr`;
+  }
+
+  if (simulatedSeconds < 60) return `${formatNumber(simulatedSeconds)}ç§’`;
+  if (simulatedSeconds < SECONDS_PER_UNIT.æ™‚é–“) {
+    return `${formatNumber(simulatedSeconds / SECONDS_PER_UNIT.åˆ†)}åˆ†`;
+  }
+  if (simulatedSeconds < SECONDS_PER_UNIT.æ—¥) {
+    return `${formatNumber(simulatedSeconds / SECONDS_PER_UNIT.æ™‚é–“)}æ™‚é–“`;
+  }
+  if (simulatedSeconds < SECONDS_PER_UNIT.å¹´) {
+    return `${formatNumber(simulatedSeconds / SECONDS_PER_UNIT.æ—¥)}æ—¥`;
+  }
+  if (simulatedYears < 10000) return `${formatNumber(simulatedYears)}å¹´`;
+  if (simulatedYears < 1e8) {
+    return `${formatNumber(simulatedYears / 10000)}ä¸‡å¹´`;
+  }
+  return `${formatNumber(simulatedYears / 1e8)}å„„å¹´`;
+}
+
+function appendHistoryPoint(
+  points: HistoryPoint[],
+  point: HistoryPoint,
+): HistoryPoint[] {
+  if (points.at(-1)?.remaining === point.remaining) return points;
+  return [...points, point];
+}
+
+function NuclideSymbol({
+  nuclide,
+  className = "",
+  language = "ja",
+}: {
+  nuclide: Nuclide;
+  className?: string;
+  language?: Language;
+}) {
+  return (
+    <span
+      className={`nuclide-symbol ${className}`.trim()}
+      aria-label={localize(
+        language,
+        `${nuclide.element}ã€è³ªé‡æ•°${nuclide.massNumber}ã€é™½å­æ•°${nuclide.protonNumber}`,
+        `${nuclide.element}, mass number ${nuclide.massNumber}, proton number ${nuclide.protonNumber}`,
+      )}
+    >
+      <span className="nuclide-indexes" aria-hidden="true">
+        <sup>{nuclide.massNumber}</sup>
+        <sub>{nuclide.protonNumber}</sub>
+      </span>
+      <span className="nuclide-element" aria-hidden="true">{nuclide.element}</span>
+    </span>
+  );
+}
+
+function NuclideMapExplorer({
+  preset,
+  presetKey,
+  onSelectPreset,
+  language,
+}: {
+  preset: IsotopePreset;
+  presetKey: string;
+  onSelectPreset: (preset: IsotopePreset) => void;
+  language: Language;
+}) {
+  const t = (japanese: string, english: string) =>
+    localize(language, japanese, english);
+  const locale = language === "ja" ? "ja-JP" : "en-US";
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const zoomOutputRef = useRef<HTMLOutputElement | null>(null);
+  const viewportRef = useRef<MapViewport>({ ...NUCLIDE_MAP_DEFAULT_VIEW });
+  const dragRef = useRef<{
+    pointerId: number;
+    clientX: number;
+    clientY: number;
+    viewport: MapViewport;
+  } | null>(null);
+
+  const applyViewport = useCallback((next: MapViewport) => {
+    const width = Math.max(260, Math.min(NUCLIDE_MAP_WORLD.width, next.width));
+    const height =
+      width * (NUCLIDE_MAP_WORLD.height / NUCLIDE_MAP_WORLD.width);
+    const x = Math.max(
+      0,
+      Math.min(NUCLIDE_MAP_WORLD.width - width, next.x),
+    );
+    const y = Math.max(
+      0,
+      Math.min(NUCLIDE_MAP_WORLD.height - height, next.y),
+    );
+    const viewport = { x, y, width, height };
+    viewportRef.current = viewport;
+    svgRef.current?.setAttribute(
+      "viewBox",
+      `${viewport.x} ${viewport.y} ${viewport.width} ${viewport.height}`,
+    );
+    if (zoomOutputRef.current) {
+      zoomOutputRef.current.textContent = `${Math.round(
+        (NUCLIDE_MAP_WORLD.width / viewport.width) * 100,
+      )}%`;
+    }
+  }, []);
+
+  const zoomMap = useCallback(
+    (factor: number, focusX = 0.5, focusY = 0.5) => {
+      const viewport = viewportRef.current;
+      const nextWidth = viewport.width * factor;
+      const nextHeight =
+        nextWidth * (NUCLIDE_MAP_WORLD.height / NUCLIDE_MAP_WORLD.width);
+      const worldFocusX = viewport.x + viewport.width * focusX;
+      const worldFocusY = viewport.y + viewport.height * focusY;
+      applyViewport({
+        x: worldFocusX - nextWidth * focusX,
+        y: worldFocusY - nextHeight * focusY,
+        width: nextWidth,
+        height: nextHeight,
+      });
+    },
+    [applyViewport],
+  );
+
+  const resetMap = useCallback(() => {
+    applyViewport({ ...NUCLIDE_MAP_DEFAULT_VIEW });
+  }, [applyViewport]);
+
+  useEffect(() => {
+    const map = svgRef.current;
+    if (!map) return;
+
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const rect = map.getBoundingClientRect();
+      zoomMap(
+        event.deltaY > 0 ? 1.16 : 1 / 1.16,
+        (event.clientX - rect.left) / rect.width,
+        (event.clientY - rect.top) / rect.height,
+      );
+    };
+
+    map.addEventListener("wheel", handleWheel, { passive: false });
+    return () => map.removeEventListener("wheel", handleWheel);
+  }, [zoomMap]);
+
+  const handleMapPointerDown = (
+    event: ReactPointerEvent<SVGSVGElement>,
+  ) => {
+    if (
+      event.target instanceof Element &&
+      event.target.closest(".nuclide-map-node")
+    ) {
+      return;
+    }
+    event.currentTarget.setPointerCapture(event.pointerId);
+    event.currentTarget.classList.add("is-dragging");
+    dragRef.current = {
+      pointerId: event.pointerId,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      viewport: { ...viewportRef.current },
+    };
+  };
+
+  const handleMapPointerMove = (
+    event: ReactPointerEvent<SVGSVGElement>,
+  ) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    applyViewport({
+      ...drag.viewport,
+      x:
+        drag.viewport.x -
+        ((event.clientX - drag.clientX) / rect.width) * drag.viewport.width,
+      y:
+        drag.viewport.y -
+        ((event.clientY - drag.clientY) / rect.height) * drag.viewport.height,
+    });
+  };
+
+  const finishMapDrag = (event: ReactPointerEvent<SVGSVGElement>) => {
+    if (dragRef.current?.pointerId !== event.pointerId) return;
+    dragRef.current = null;
+    event.currentTarget.classList.remove("is-dragging");
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  const handleMapKeyDown = (
+    event: ReactKeyboardEvent<SVGSVGElement>,
+  ) => {
+    const viewport = viewportRef.current;
+    const horizontalStep = viewport.width * 0.09;
+    const verticalStep = viewport.height * 0.09;
+    const next = { ...viewport };
+
+    if (event.key === "ArrowLeft") next.x -= horizontalStep;
+    else if (event.key === "ArrowRight") next.x += horizontalStep;
+    else if (event.key === "ArrowUp") next.y -= verticalStep;
+    else if (event.key === "ArrowDown") next.y += verticalStep;
+    else if (event.key === "+" || event.key === "=") {
+      event.preventDefault();
+      zoomMap(1 / 1.28);
+      return;
+    } else if (event.key === "-") {
+      event.preventDefault();
+      zoomMap(1.28);
+      return;
+    } else if (event.key === "0") {
+      event.preventDefault();
+      resetMap();
+      return;
+    } else {
+      return;
+    }
+
+    event.preventDefault();
+    applyViewport(next);
+  };
+
+  return (
+    <div className="nuclide-map-wrap">
+      <div className="nuclide-map-stage">
+        <div className="nuclide-map-toolbar">
+          <div className="nuclide-map-legend" aria-label={t("æ ¸ç¨®ãƒãƒƒãƒ—ã®å‡¡ä¾‹", "Nuclide map legend")}>
+            <span><i className="known-swatch" />{t("æ—¢çŸ¥æ ¸ç¨®", "Known nuclides")} {KNOWN_NUCLIDES.length.toLocaleString(locale)}</span>
+            <span>
+              <i className="implemented-swatch" />
+              {t("é¸æŠå¯èƒ½", "Selectable")} {PRESETS.length.toLocaleString(locale)}
+            </span>
+          </div>
+          <div className="nuclide-map-controls" role="group" aria-label={t("æ ¸ç¨®ãƒãƒƒãƒ—ã®è¡¨ç¤ºæ“ä½œ", "Nuclide map controls")}>
+            <button type="button" onClick={() => zoomMap(1 / 1.35)} aria-label={t("æ‹¡å¤§", "Zoom in")}>ï¼‹</button>
+            <output ref={zoomOutputRef} aria-live="polite">100%</output>
+            <button type="button" onClick={() => zoomMap(1.35)} aria-label={t("ç¸®å°", "Zoom out")}>âˆ’</button>
+            <button type="button" onClick={resetMap}>{t("å…¨ä½“", "Reset")}</button>
+          </div>
+        </div>
+        <svg
+          ref={svgRef}
+          className="nuclide-map"
+          viewBox={`0 0 ${NUCLIDE_MAP_WORLD.width} ${NUCLIDE_MAP_WORLD.height}`}
+          tabIndex={0}
+          role="img"
+          aria-labelledby="nuclide-map-title nuclide-map-description"
+          onPointerDown={handleMapPointerDown}
+          onPointerMove={handleMapPointerMove}
+          onPointerUp={finishMapDrag}
+          onPointerCancel={finishMapDrag}
+          onKeyDown={handleMapKeyDown}
+        >
+          <title id="nuclide-map-title">
+            {t("æ—¢çŸ¥æ ¸ç¨®ã¨å®Ÿè£…æ¸ˆã¿æ ¸ç¨®ã®ãƒãƒƒãƒ—", "Map of known and selectable nuclides")}
+          </title>
+          <desc id="nuclide-map-description">
+            {t(
+              "æ¨ªè»¸ãŒä¸­æ€§å­æ•°ã€ç¸¦è»¸ãŒé™½å­æ•°ã§ã™ã€‚ãƒ‰ãƒ©ãƒƒã‚°ã§ç§»å‹•ã€ãƒ›ã‚¤ãƒ¼ãƒ«ã§æ‹¡å¤§ç¸®å°ã§ãã¾ã™ã€‚è‰²ä»˜ãã®æ ¸ç¨®ã¯ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚¿ãƒ¼å®Ÿè£…æ¸ˆã¿ã§ã™ã€‚",
+              "Neutron number is on the horizontal axis and proton number on the vertical axis. Drag to pan and use the wheel to zoom. Colored nuclides are available in the simulator.",
+            )}
+          </desc>
+          <rect
+            className="nuclide-map-background"
+            width={NUCLIDE_MAP_WORLD.width}
+            height={NUCLIDE_MAP_WORLD.height}
+          />
+          <g className="nuclide-map-magic-lines" aria-hidden="true">
+            {MAGIC_NUMBERS.map((value) => {
+              const x = getNuclideMapPosition(value, 0).x;
+              return value <= NUCLIDE_MAP_MAX_NEUTRONS ? (
+                <line
+                  key={`magic-n-${value}`}
+                  x1={x}
+                  x2={x}
+                  y1={0}
+                  y2={NUCLIDE_MAP_WORLD.height}
+                />
+              ) : null;
+            })}
+            {MAGIC_NUMBERS.map((value) => {
+              const y = getNuclideMapPosition(0, value).y;
+              return value <= NUCLIDE_MAP_MAX_PROTONS ? (
+                <line
+                  key={`magic-z-${value}`}
+                  x1={0}
+                  x2={NUCLIDE_MAP_WORLD.width}
+                  y1={y}
+                  y2={y}
+                />
+              ) : null;
+            })}
+          </g>
+          <path
+            className="nuclide-map-known-field"
+            d={KNOWN_NUCLIDE_PATH}
+            aria-hidden="true"
+          />
+          {PRESETS.map((item) => {
+            const neutronNumber =
+              item.parentNuclide.massNumber -
+              item.parentNuclide.protonNumber;
+            const { x, y } = getNuclideMapPosition(
+              neutronNumber,
+              item.parentNuclide.protonNumber,
+            );
+            return (
+              <g
+                className={`nuclide-map-node ${
+                  presetKey === item.key ? "is-active" : ""
+                }`}
+                role="button"
+                tabIndex={presetKey === item.key ? 0 : -1}
+                aria-label={t(
+                  `${item.parent}ã€ä¸­æ€§å­æ•°${neutronNumber}ã€${item.modeLabel}ã€åŠæ¸›æœŸ${item.halfLife}${item.unit}`,
+                  `${localizeNuclideName(item.parent, item.parentNuclide, language)}, neutron number ${neutronNumber}, ${localizeModeLabel(item.modeLabel, language)}, half-life ${item.halfLife} ${localizeUnit(item.unit, language)}`,
+                )}
+                onClick={() => onSelectPreset(item)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    onSelectPreset(item);
+                  }
+                }}
+                key={item.key}
+              >
+                <rect
+                  x={x}
+                  y={y}
+                  width="7.25"
+                  height="7.25"
+                  fill={`rgb(${item.parentRgb})`}
+                />
+                <text className="nuclide-map-mass" x={x + 0.55} y={y + 2.5}>
+                  {item.parentNuclide.massNumber}
+                </text>
+                <text
+                  className="nuclide-map-element"
+                  x={x + 3.65}
+                  y={y + 5.7}
+                >
+                  {item.parentNuclide.element}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+        <span className="nuclide-map-axis nuclide-map-axis-n" aria-hidden="true">
+          {t("ä¸­æ€§å­æ•° N â†’", "Neutrons N â†’")}
+        </span>
+        <span className="nuclide-map-axis nuclide-map-axis-z" aria-hidden="true">
+          {t("é™½å­æ•° Z â†‘", "Protons Z â†‘")}
+        </span>
+        <p className="nuclide-map-help">
+          {t(
+            "ãƒ‰ãƒ©ãƒƒã‚°ã§ç§»å‹• ãƒ» ãƒ›ã‚¤ãƒ¼ãƒ«ã§æ‹¡å¤§ç¸®å° ãƒ» çŸ¢å°ã‚­ãƒ¼ã§ã‚‚ç§»å‹•",
+            "Drag to pan Â· Wheel to zoom Â· Arrow keys to pan",
+          )}
+        </p>
+      </div>
+      <div className="nuclide-map-selection" aria-live="polite">
+        <span className="selection-label">
+          {t("SELECTED / ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³å¯èƒ½", "SELECTED / SIMULATION READY")}
+        </span>
+        <NuclideSymbol
+          nuclide={preset.parentNuclide}
+          className="nuclide-symbol-table"
+          language={language}
+        />
+        <strong>{localizeNuclideName(preset.parent, preset.parentNuclide, language)}</strong>
+        <span>â†’ {localizeNuclideName(preset.daughter, preset.daughterNuclide, language)}</span>
+        <small>
+          {localizeModeLabel(preset.modeLabel, language)} / {t("åŠæ¸›æœŸ", "half-life")} {formatNumber(preset.halfLife, language)} {localizeUnit(preset.unit, language)}
+        </small>
+        <a
+          href="https://www.nndc.bnl.gov/nudat3/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          {t("æ—¢çŸ¥æ ¸ç¨®ãƒãƒƒãƒ—: NNDC NuDat â†—", "Known nuclides: NNDC NuDat â†—")}
+          <span className="visually-hidden">{t("ï¼ˆæ–°ã—ã„ã‚¿ãƒ–ã§é–‹ãã¾ã™ï¼‰", " (opens in a new tab)")}</span>
+        </a>
+        <a
+          href="https://radioactivedecay.github.io/overview.html"
+          target="_blank"
+          rel="noreferrer"
+        >
+          {t("å£Šå¤‰ãƒ‡ãƒ¼ã‚¿: ICRP-107 / AME2020 â†—", "Decay data: ICRP-107 / AME2020 â†—")}
+          <span className="visually-hidden">{t("ï¼ˆæ–°ã—ã„ã‚¿ãƒ–ã§é–‹ãã¾ã™ï¼‰", " (opens in a new tab)")}</span>
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function NuclideGenealogy({
+  preset,
+  onSelectPreset,
+  language,
+}: {
+  preset: IsotopePreset;
+  onSelectPreset: (preset: IsotopePreset) => void;
+  language: Language;
+}) {
+  const t = (japanese: string, english: string) =>
+    localize(language, japanese, english);
+  const rootKey = nuclideIdentity(preset.parentNuclide);
+  const allAncestors = PRESETS_BY_DAUGHTER.get(rootKey) ?? [];
+  const ancestors = allAncestors.slice(0, 4);
+  const lineage: IsotopePreset[] = [];
+  const visited = new Set<string>();
+  let cursor: IsotopePreset | undefined = preset;
+
+  while (cursor && lineage.length < 6 && !visited.has(cursor.key)) {
+    lineage.push(cursor);
+    visited.add(cursor.key);
+    cursor = PRESET_BY_PARENT.get(nuclideIdentity(cursor.daughterNuclide));
+  }
+
+  const finalStep = lineage.at(-1) ?? preset;
+  const continuation = PRESET_BY_PARENT.get(
+    nuclideIdentity(finalStep.daughterNuclide),
+  );
+
+  const renderSelectableNode = (
+    item: IsotopePreset,
+    relationship: string,
+    isRoot = false,
+  ) => (
+    <button
+      type="button"
+      className={`genealogy-node ${isRoot ? "is-root" : ""}`}
+      onClick={() => onSelectPreset(item)}
+      aria-label={t(
+        `${relationship}ã€${item.parent}ã€åŠæ¸›æœŸ${item.halfLife}${item.unit}`,
+        `${relationship}, ${localizeNuclideName(item.parent, item.parentNuclide, language)}, half-life ${item.halfLife} ${localizeUnit(item.unit, language)}`,
+      )}
+    >
+      <span>{relationship}</span>
+      <NuclideSymbol
+        nuclide={item.parentNuclide}
+        className="nuclide-symbol-genealogy"
+        language={language}
+      />
+      <strong>{localizeNuclideName(item.parent, item.parentNuclide, language)}</strong>
+      <small>{formatNumber(item.halfLife, language)} {localizeUnit(item.unit, language)}</small>
+    </button>
+  );
+
+  return (
+    <section className="genealogy-panel" aria-labelledby="genealogy-title">
+      <div className="genealogy-heading">
+        <div>
+          <span>03 / NUCLIDE GENEALOGY</span>
+          <strong id="genealogy-title">{t("æ ¸ç¨®ã®ç³»è­œå›³", "Nuclide genealogy")}</strong>
+        </div>
+        <p>
+          {t(
+            "é¸æŠä¸­ã®æ ¸ç¨®ã¸è‡³ã‚‹è¦ªæ ¸ç¨®ã¨ã€ãã®å…ˆã®å¨˜æ ¸ç¨®ã‚’ãŸã©ã‚Œã¾ã™ã€‚è‰²ä»˜ãã®æ ¸ç¨®ã‚’é¸ã¶ã¨å®Ÿé¨“æ¡ä»¶ã‚‚åˆ‡ã‚Šæ›¿ã‚ã‚Šã¾ã™ã€‚",
+            "Trace the parents leading to the selected nuclide and the daughters that follow. Select a colored nuclide to load it into the experiment.",
+          )}
+        </p>
+      </div>
+
+      <div className="genealogy-ancestors">
+        <span className="genealogy-rail-label">
+          {t("PARENTS / ã“ã®æ ¸ç¨®ã¸è‡³ã‚‹çµŒè·¯", "PARENTS / PATH TO THIS NUCLIDE")}
+        </span>
+        <div>
+          {ancestors.length > 0 ? (
+            ancestors.map((item) => (
+              <div className="genealogy-parent-link" key={item.key}>
+                {renderSelectableNode(item, t("è¦ªæ ¸ç¨®", "Parent"))}
+                <span aria-hidden="true">{localizeModeLabel(item.modeLabel, language)} â†“</span>
+              </div>
+            ))
+          ) : (
+            <p>{t("åéŒ²ãƒ‡ãƒ¼ã‚¿å†…ã«ç›´æ¥ã®è¦ªæ ¸ç¨®ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚", "No direct parent is available in the dataset.")}</p>
+          )}
+          {allAncestors.length > ancestors.length && (
+            <small>
+              {t(
+                `ã»ã‹ ${allAncestors.length - ancestors.length} çµŒè·¯`,
+                `${allAncestors.length - ancestors.length} more paths`,
+              )}
+            </small>
+          )}
+        </div>
+      </div>
+
+      <div className="genealogy-lineage">
+        <span className="genealogy-rail-label">
+          {t("DESCENDANTS / å¨˜æ ¸ç¨®ã¸ã®æµã‚Œ", "DESCENDANTS / DECAY PATH")}
+        </span>
+        <div className="genealogy-track">
+          {lineage.map((item, index) => (
+            <div className="genealogy-step" key={item.key}>
+              {renderSelectableNode(
+                item,
+                index === 0
+                  ? t("ç¾åœ¨", "Current")
+                  : t(`${index}ä¸–ä»£å¾Œ`, `Generation +${index}`),
+                index === 0,
+              )}
+              <span className={`genealogy-arrow mode-${item.mode}`} aria-hidden="true">
+                <small>{localizeModeLabel(item.modeLabel, language)}</small>
+                <b>â†’</b>
+              </span>
+            </div>
+          ))}
+          {continuation ? (
+            <div className="genealogy-tail">
+              {renderSelectableNode(
+                continuation,
+                lineage.length >= 6
+                  ? t("ã•ã‚‰ã«ç¶šã", "Continues")
+                  : t(`${lineage.length}ä¸–ä»£å¾Œ`, `Generation +${lineage.length}`),
+              )}
+            </div>
+          ) : (
+            <article className="genealogy-node is-terminal">
+              <span>{t("åˆ°é”æ ¸ç¨®", "Terminal nuclide")}</span>
+              <NuclideSymbol
+                nuclide={finalStep.daughterNuclide}
+                className="nuclide-symbol-genealogy"
+                language={language}
+              />
+              <strong>{localizeNuclideName(finalStep.daughter, finalStep.daughterNuclide, language)}</strong>
+              <small>{t("ã“ã®å…ˆã®å£Šå¤‰ãƒ‡ãƒ¼ã‚¿ãªã—", "No further decay data")}</small>
+            </article>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DetectorLab({
+  preset,
+  remaining,
+  atomCount,
+  detectorKey,
+  onDetectorChange,
+  shieldKey,
+  onShieldChange,
+  distance,
+  onDistanceChange,
+  thickness,
+  onThicknessChange,
+  measurementSeconds,
+  onMeasurementSecondsChange,
+  language,
+}: {
+  preset: IsotopePreset;
+  remaining: number;
+  atomCount: number;
+  detectorKey: DetectorKey;
+  onDetectorChange: (detector: DetectorKey) => void;
+  shieldKey: ShieldKey;
+  onShieldChange: (shield: ShieldKey) => void;
+  distance: number;
+  onDistanceChange: (distance: number) => void;
+  thickness: number;
+  onThicknessChange: (thickness: number) => void;
+  measurementSeconds: number;
+  onMeasurementSecondsChange: (seconds: number) => void;
+  language: Language;
+}) {
+  const t = (japanese: string, english: string) =>
+    localize(language, japanese, english);
+  const detector = DETECTORS[detectorKey];
+  const shield = SHIELDS[shieldKey];
+  const detectorName = language === "ja" ? detector.name : detector.nameEn;
+  const shieldName = language === "ja" ? shield.name : shield.nameEn;
+  const presetName = localizeNuclideName(
+    preset.parent,
+    preset.parentNuclide,
+    language,
+  );
+  const observedMode: DecayMode = preset.modeLabel.includes("Î³")
+    ? "gamma"
+    : preset.mode;
+  const activityRatio = Math.max(0, remaining / Math.max(1, atomCount));
+  const distanceFactor = Math.min(1, Math.pow(10 / distance, 2));
+  const transmission =
+    shieldKey === "none"
+      ? 1
+      : Math.exp(-shield.coefficient[observedMode] * thickness);
+  const relativeSignal =
+    180 *
+    activityRatio *
+    distanceFactor *
+    detector.efficiency[observedMode] *
+    transmission;
+  const relativeRate = relativeSignal + detector.background;
+  const relativeEvents = Math.round(relativeRate * measurementSeconds);
+  const uncertainty =
+    relativeEvents > 0 ? Math.min(100, 100 / Math.sqrt(relativeEvents)) : 100;
+  const signalToNoise = relativeSignal / detector.background;
+  const response =
+    transmission < 0.02
+      ? t("ã»ã¼é®è”½", "Almost blocked")
+      : transmission < 0.25
+        ? t("å¤§ããæ¸›è¡°", "Strongly attenuated")
+        : transmission < 0.7
+          ? t("ä¸€éƒ¨ã‚’é€é", "Partially transmitted")
+          : t("æ˜ç­ã«æ¤œå‡º", "Clearly detected");
+  const bars = Array.from({ length: 42 }, (_, index) => {
+    const seed =
+      ((index + 1) * 37 +
+        preset.parentNuclide.massNumber * 11 +
+        distance * 3 +
+        thickness * 7 +
+        detectorKey.length * 13) %
+      101;
+    const normalized = seed / 100;
+    const hit = normalized < Math.min(0.92, 0.08 + relativeRate / 72);
+    return {
+      hit,
+      height: hit ? 22 + ((seed * 17) % 72) : 5 + (seed % 9),
+    };
+  });
+
+  return (
+    <section className="detector-section" id="detector-lab" aria-labelledby="detector-title">
+      <div className="section-heading detector-section-heading">
+        <div>
+          <p className="section-number">04 / RELATIVE DETECTOR MODEL</p>
+          <h2 id="detector-title">{t("æ¤œå‡ºå¿œç­”ã‚’æ¯”ã¹ã‚‹", "Compare detector response")}</h2>
+        </div>
+        <p>
+          {t(
+            "æ¤œå‡ºå™¨ã€è·é›¢ã€é®è”½ç‰©ã‚’å¤‰ãˆã€åŒã˜æ ¸ç¨®ã®ç›¸å¯¾çš„ãªå¿œç­”ãŒã©ã†å¤‰ã‚ã‚‹ã‹ã‚’æ¯”ã¹ã¾ã™ã€‚è¡¨ç¤ºã¯æ ¡æ­£æ¸ˆã¿ã®è¨ˆæ•°ç‡ã§ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚",
+            "Change detector, distance, and shielding to compare relative response for the same nuclide. The display is not a calibrated count rate.",
+          )}
+        </p>
+      </div>
+
+      <div className="detector-lab-grid">
+        <div className="detector-controls">
+          <p className="detector-model-note">
+            {t(
+              "ã“ã®æ¯”è¼ƒã¯æ•™è‚²ç”¨ã®ç›¸å¯¾ãƒ¢ãƒ‡ãƒ«ã§ã™ã€‚ç‹¬ç«‹ã—ãŸå®Ÿé¨“ç”»é¢ã¯ Detector Lab ã§é–‹ã‘ã¾ã™ã€‚",
+              "This comparison is a relative teaching model. Open Detector Lab for the independent experiment.",
+            )}{" "}
+            <Link href={`/labs/detector?source=${preset.parentNuclide.element === "Co" && preset.parentNuclide.massNumber === 60 ? "cobalt-60" : preset.parentNuclide.element === "I" && preset.parentNuclide.massNumber === 131 ? "iodine-131" : "cesium-137"}`}>
+              {t("Detector Labã¸", "Open Detector Lab")}
+            </Link>
+          </p>
+          <fieldset>
+            <legend>{t("æ¤œå‡ºå™¨ã‚’é¸æŠ", "Select detector")}</legend>
+            <div className="detector-options">
+              {(Object.entries(DETECTORS) as Array<[DetectorKey, (typeof DETECTORS)[DetectorKey]]>).map(
+                ([key, item]) => (
+                  <button
+                    type="button"
+                    aria-pressed={detectorKey === key}
+                    onClick={() => onDetectorChange(key)}
+                    key={key}
+                  >
+                    <span>{item.shortName}</span>
+                    <strong>{language === "ja" ? item.name : item.nameEn}</strong>
+                    <small>{language === "ja" ? item.description : item.descriptionEn}</small>
+                  </button>
+                ),
+              )}
+            </div>
+          </fieldset>
+
+          <label className="detector-range">
+            <span>
+              {t("ç·šæºã‹ã‚‰ã®è·é›¢", "Distance from source")}
+              <output>{distance} cm</output>
+            </span>
+            <input
+              type="range"
+              min="5"
+              max="100"
+              step="5"
+              value={distance}
+              onChange={(event) => onDistanceChange(Number(event.target.value))}
+            />
+          </label>
+
+          <fieldset>
+            <legend>{t("é®è”½ç‰©", "Shielding")}</legend>
+            <div className="shield-options">
+              {(Object.entries(SHIELDS) as Array<[ShieldKey, (typeof SHIELDS)[ShieldKey]]>).map(
+                ([key, item]) => (
+                  <button
+                    type="button"
+                    aria-pressed={shieldKey === key}
+                    onClick={() => onShieldChange(key)}
+                    key={key}
+                  >
+                    <b>{item.symbol}</b>
+                    <span>{language === "ja" ? item.name : item.nameEn}</span>
+                  </button>
+                ),
+              )}
+            </div>
+          </fieldset>
+
+          <label className="detector-range">
+            <span>
+              {t("é®è”½åš", "Shield thickness")}
+              <output>{shieldKey === "none" ? "â€”" : `${thickness} mm`}</output>
+            </span>
+            <input
+              type="range"
+              min="0"
+              max="20"
+              step="1"
+              value={thickness}
+              disabled={shieldKey === "none"}
+              onChange={(event) => onThicknessChange(Number(event.target.value))}
+            />
+          </label>
+
+          <label className="detector-range">
+            <span>
+              {t("æ¸¬å®šæ™‚é–“", "Measurement time")}
+              <output>{measurementSeconds} {t("ç§’", "s")}</output>
+            </span>
+            <input
+              type="range"
+              min="1"
+              max="60"
+              step="1"
+              value={measurementSeconds}
+              onChange={(event) =>
+                onMeasurementSecondsChange(Number(event.target.value))
+              }
+            />
+          </label>
+        </div>
+
+        <div className="detector-console">
+          <div
+            className="detector-apparatus"
+            aria-label={t(`${preset.parent}ã®æ¤œå‡ºå®Ÿé¨“é…ç½®`, `${presetName} detector experiment layout`)}
+          >
+            <div className="detector-source">
+              <span>SOURCE</span>
+              <NuclideSymbol
+                nuclide={preset.parentNuclide}
+                className="nuclide-symbol-detector"
+                language={language}
+              />
+              <strong>{presetName}</strong>
+            </div>
+            <div className="detector-flight">
+              <span style={{ width: `${Math.max(8, transmission * 100)}%` }} />
+              <small>{distance} cm</small>
+            </div>
+            <div
+              className={`detector-shield shield-${shieldKey}`}
+              style={{ "--shield-thickness": `${6 + thickness * 1.4}px` } as React.CSSProperties}
+            >
+              <b>{shield.symbol}</b>
+              <small>{shieldName}</small>
+            </div>
+            <div className="detector-device">
+              <span>{detector.shortName}</span>
+              <i />
+              <strong>{detectorName}</strong>
+            </div>
+          </div>
+
+          <div className="detector-scope">
+            <div className="scope-heading">
+              <span>RELATIVE RESPONSE / {observedMode.toUpperCase()}</span>
+              <strong>{response}</strong>
+            </div>
+            <div className="scope-bars" aria-hidden="true">
+              {bars.map((bar, index) => (
+                <i
+                  className={bar.hit ? "is-hit" : ""}
+                  style={{ height: `${bar.height}%` }}
+                  key={index}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="detector-readouts">
+            <article>
+              <span>{t("ç›¸å¯¾ä¿¡å· / ç§’", "Relative signal / s")}</span>
+              <strong>{formatNumber(relativeRate, language)} <small>r.u.</small></strong>
+              <small>{t("æ•™è‚²ç”¨ãƒ¢ãƒ‡ãƒ«å˜ä½", "teaching model units")}</small>
+            </article>
+            <article>
+              <span>{t(`${measurementSeconds}ç§’ã®ç›¸å¯¾ã‚¤ãƒ™ãƒ³ãƒˆ`, `Relative events in ${measurementSeconds} s`)}</span>
+              <strong>{relativeEvents.toLocaleString(language === "ja" ? "ja-JP" : "en-US")}</strong>
+              <small>{t("ãƒ¢ãƒ‡ãƒ«ä¸Šã®ã°ã‚‰ã¤ã", "model variation")} Â±{uncertainty.toFixed(1)}%</small>
+            </article>
+            <article>
+              <span>{t("é€éç‡", "Transmission")}</span>
+              <strong>{(transmission * 100).toFixed(1)}<small>%</small></strong>
+              <small>{shieldName} / {thickness} mm</small>
+            </article>
+            <article>
+              <span>{t("ä¿¡å· / èƒŒæ™¯", "Signal / background")}</span>
+              <strong>{formatNumber(signalToNoise, language)}</strong>
+              <small>
+                {signalToNoise >= 5
+                  ? t("è­˜åˆ¥ã—ã‚„ã™ã„", "Easy to distinguish")
+                  : t("èƒŒæ™¯ã«åŸ‹ã‚‚ã‚Œã‚„ã™ã„", "Likely lost in background")}
+              </small>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function Home() {
+  const [language, setLanguage] = usePhenomenaLanguage();
+  const reducedMotion = useReducedMotion();
+  const routeNuclide = typeof window === "undefined" ? null : readExperimentQuery(window.location.search, "nuclide")?.trim().toLowerCase() ?? null;
+  const requestedRoutePreset = routeNuclide
+    ? PRESETS.find(
+        (item) =>
+          `${item.parentNuclide.element}-${item.parentNuclide.massNumber}`.toLowerCase() ===
+          routeNuclide,
+      )
+    : undefined;
+  const particlesRef = useRef<Particle[]>(makeParticles(160, 131));
+  const particleNodeRefs = useRef<Array<SVGGElement | null>>([]);
+  const burstsRef = useRef<Burst[]>([]);
+  const elapsedRef = useRef(0);
+  const historyRef = useRef<HistoryPoint[]>([{ t: 0, remaining: 160 }]);
+  const resetSeedRef = useRef(131);
+  const decayRandomRef = useRef<() => number>(createSeededRandom(131));
+  const interactionRandomRef = useRef<() => number>(createSeededRandom(131 ^ 0x5bd1e995));
+  const burstIdRef = useRef(0);
+  const suppressNextSimulationResetRef = useRef(false);
+  const hasInitializedSimulationRef = useRef(false);
+
+  const [presetKey, setPresetKey] = useState(PRESETS[0].key);
+  const [seriesKey, setSeriesKey] = useState<DecaySeries>("independent");
+  const [simulationMode, setSimulationMode] =
+    useState<SimulationMode>("single");
+  const [chainRateMode, setChainRateMode] =
+    useState<ChainRateMode>("physical");
+  const [catalogView, setCatalogView] = useState<CatalogView>("table");
+  const [atomCount, setAtomCount] = useState(160);
+  const [atomCountInput, setAtomCountInput] = useState("160");
+  const [resetSeed, setResetSeed] = useState(131);
+  const [seedInput, setSeedInput] = useState("131");
+  const [speed, setSpeed] = useState(1);
+  const [paused, setPaused] = useState(false);
+  const [remaining, setRemaining] = useState(160);
+  const [elapsed, setElapsed] = useState(0);
+  const [particles, setParticles] = useState<Particle[]>(() =>
+    makeParticles(160, 131),
+  );
+  const [bursts, setBursts] = useState<Burst[]>([]);
+  const [history, setHistory] = useState<HistoryPoint[]>([
+    { t: 0, remaining: 160 },
+  ]);
+  const [equationCopied, setEquationCopied] = useState(false);
+  const [chartScale, setChartScale] = useState<ChartScale>("linear");
+  const [detectorKey, setDetectorKey] =
+    useState<DetectorKey>("scintillator");
+  const [shieldKey, setShieldKey] = useState<ShieldKey>("none");
+  const [detectorDistance, setDetectorDistance] = useState(25);
+  const [shieldThickness, setShieldThickness] = useState(2);
+  const [measurementSeconds, setMeasurementSeconds] = useState(10);
+
+  useEffect(() => {
+    if (!requestedRoutePreset) return;
+    const queryTimer = window.setTimeout(() => {
+      setSeriesKey(requestedRoutePreset.series);
+      setPresetKey(requestedRoutePreset.key);
+      setSimulationMode("single");
+    }, 0);
+    return () => {
+      window.clearTimeout(queryTimer);
+    };
+  }, [requestedRoutePreset]);
+
+  const t = (japanese: string, english: string) =>
+    localize(language, japanese, english);
+  const locale = language === "ja" ? "ja-JP" : "en-US";
+
+  const preset = useMemo(
+    () => PRESETS.find((item) => item.key === presetKey) ?? PRESETS[0],
+    [presetKey],
+  );
+  const seriesPresets = useMemo(
+    () =>
+      CORE_PRESETS.filter(
+        (item) =>
+          item.series === seriesKey &&
+          (seriesKey !== "independent" ||
+            FEATURED_INDEPENDENT_KEYS.has(item.key)),
+      ),
+    [seriesKey],
+  );
+  const chainStages = useMemo(
+    () => getChainStages(seriesKey, language),
+    [language, seriesKey],
+  );
+  const chainStageCounts = useMemo(() => {
+    const counts = Array.from({ length: chainStages.length }, () => 0);
+    for (const particle of particles) {
+      if (counts[particle.chainStage] !== undefined) {
+        counts[particle.chainStage] += 1;
+      }
+    }
+    return counts;
+  }, [chainStages.length, particles]);
+  const seriesLabel =
+    (() => {
+      const series = SERIES_OPTIONS.find((item) => item.key === seriesKey);
+      if (!series) return t("å˜ç‹¬æ ¸ç¨®", "Independent");
+      return language === "ja" ? series.label : series.labelEn;
+    })();
+  const presetParentName = localizeNuclideName(
+    preset.parent,
+    preset.parentNuclide,
+    language,
+  );
+  const presetDaughterName = localizeNuclideName(
+    preset.daughter,
+    preset.daughterNuclide,
+    language,
+  );
+  const presetModeLabel = localizeModeLabel(preset.modeLabel, language);
+  const parentColor = `rgb(${preset.parentRgb})`;
+  const daughterColor = `rgb(${preset.daughterRgb})`;
+  const simulationRate = formatSimulationRate(preset, speed, language);
+
+  const commitAtomCount = useCallback(() => {
+    const parsed = Number(atomCountInput);
+    const nextCount = Number.isFinite(parsed)
+      ? Math.max(MIN_ATOM_COUNT, Math.min(MAX_ATOM_COUNT, Math.round(parsed)))
+      : atomCount;
+    setAtomCount(nextCount);
+    setAtomCountInput(String(nextCount));
+  }, [atomCount, atomCountInput]);
+
+  const updateAtomCount = useCallback((nextCount: number) => {
+    setAtomCount(nextCount);
+    setAtomCountInput(String(nextCount));
+  }, []);
+
+  const selectSeries = useCallback((nextSeries: DecaySeries) => {
+    const firstPreset = PRESETS.find((item) => item.series === nextSeries);
+    setSeriesKey(nextSeries);
+    if (nextSeries === "independent") setSimulationMode("single");
+    if (firstPreset) {
+      setPresetKey(firstPreset.key);
+      replaceExperimentQuery("nuclide", `${firstPreset.parentNuclide.element}-${firstPreset.parentNuclide.massNumber}`);
+    }
+  }, []);
+
+  const selectPreset = useCallback((item: IsotopePreset) => {
+    setSeriesKey(item.series);
+    setPresetKey(item.key);
+    setSimulationMode("single");
+    replaceExperimentQuery("nuclide", `${item.parentNuclide.element}-${item.parentNuclide.massNumber}`);
+  }, []);
+
+  const startChainMode = useCallback(() => {
+    if (seriesKey === "independent") return;
+    const firstPreset = PRESETS.find((item) => item.series === seriesKey);
+    if (firstPreset) setPresetKey(firstPreset.key);
+    setSimulationMode("chain");
+  }, [seriesKey]);
+
+  const initializeSimulation = useCallback((count: number, seed: number) => {
+    const nextParticles = makeParticles(count, seed);
+    const initialHistory = [{ t: 0, remaining: count }];
+    particlesRef.current = nextParticles;
+    decayRandomRef.current = createSeededRandom(seed);
+    interactionRandomRef.current = createSeededRandom(seed ^ 0x5bd1e995);
+    burstsRef.current = [];
+    elapsedRef.current = 0;
+    historyRef.current = initialHistory;
+    setParticles(nextParticles.map((particle) => ({ ...particle })));
+    setBursts([]);
+    setHistory(initialHistory);
+    setElapsed(0);
+    setRemaining(count);
+    setPaused(false);
+  }, []);
+
+  const resetSimulation = useCallback(() => {
+    const nextSeed = resetSeedRef.current >= MAX_RESET_SEED - 97
+      ? DEFAULT_DECAY_STATE.resetSeed
+      : resetSeedRef.current + 97;
+    resetSeedRef.current = nextSeed;
+    setResetSeed(nextSeed);
+    setSeedInput(String(nextSeed));
+    initializeSimulation(atomCount, nextSeed);
+  }, [atomCount, initializeSimulation]);
+
+  const commitResetSeed = useCallback(() => {
+    const parsed = Number(seedInput);
+    const nextSeed = Number.isFinite(parsed)
+      ? Math.max(1, Math.min(MAX_RESET_SEED, Math.floor(parsed)))
+      : resetSeed;
+    resetSeedRef.current = nextSeed;
+    setResetSeed(nextSeed);
+    setSeedInput(String(nextSeed));
+    initializeSimulation(atomCount, nextSeed);
+  }, [atomCount, initializeSimulation, resetSeed, seedInput]);
+
+  const savedDecayState = useMemo<DecaySavedState>(() => ({
+    presetKey,
+    seriesKey,
+    simulationMode,
+    chainRateMode,
+    atomCount,
+    speed,
+    chartScale,
+    detectorKey,
+    shieldKey,
+    detectorDistance,
+    shieldThickness,
+    measurementSeconds,
+    resetSeed,
+  }), [
+    atomCount,
+    chainRateMode,
+    chartScale,
+    detectorDistance,
+    detectorKey,
+    measurementSeconds,
+    presetKey,
+    seriesKey,
+    shieldKey,
+    shieldThickness,
+    simulationMode,
+    speed,
+    resetSeed,
+  ]);
+
+  const restoreDecayState = useCallback((next: DecaySavedState) => {
+    if (!next || typeof next !== "object") return;
+    const restoredPreset = PRESETS.find((item) => item.key === next.presetKey);
+    if (!restoredPreset) return;
+    const clamp = (value: number, min: number, max: number, fallback: number) =>
+      Number.isFinite(value) ? Math.max(min, Math.min(max, value)) : fallback;
+    const nextAtomCount = Math.round(clamp(next.atomCount, MIN_ATOM_COUNT, MAX_ATOM_COUNT, DEFAULT_DECAY_STATE.atomCount));
+    const nextDetector = ["gm", "scintillator", "semiconductor"].includes(next.detectorKey)
+      ? next.detectorKey
+      : DEFAULT_DECAY_STATE.detectorKey;
+    const nextShield = ["none", "paper", "aluminum", "lead"].includes(next.shieldKey)
+      ? next.shieldKey
+      : DEFAULT_DECAY_STATE.shieldKey;
+    const nextChartScale = next.chartScale === "log" ? "log" : "linear";
+    const nextChainRate = next.chainRateMode === "observation" ? "observation" : "physical";
+    const nextSimulationMode = restoredPreset.series === "independent" || next.simulationMode !== "chain"
+      ? "single"
+      : "chain";
+
+    suppressNextSimulationResetRef.current =
+      nextAtomCount !== atomCount ||
+      restoredPreset.key !== presetKey ||
+      nextSimulationMode !== simulationMode ||
+      nextChainRate !== chainRateMode;
+    setPresetKey(restoredPreset.key);
+    setSeriesKey(restoredPreset.series);
+    setSimulationMode(nextSimulationMode);
+    setChainRateMode(nextChainRate);
+    setAtomCount(nextAtomCount);
+    setAtomCountInput(String(nextAtomCount));
+    setSpeed(clamp(next.speed, 1e-15, 1e6, DEFAULT_DECAY_STATE.speed));
+    setChartScale(nextChartScale);
+    setDetectorKey(nextDetector);
+    setShieldKey(nextShield);
+    setDetectorDistance(Math.round(clamp(next.detectorDistance, 5, 100, DEFAULT_DECAY_STATE.detectorDistance)));
+    setShieldThickness(Math.round(clamp(next.shieldThickness, 0, 20, DEFAULT_DECAY_STATE.shieldThickness)));
+    setMeasurementSeconds(Math.round(clamp(next.measurementSeconds, 1, 60, DEFAULT_DECAY_STATE.measurementSeconds)));
+    const nextResetSeed = Math.max(1, Math.floor(clamp(next.resetSeed, 1, MAX_RESET_SEED, DEFAULT_DECAY_STATE.resetSeed)));
+    resetSeedRef.current = nextResetSeed;
+    setResetSeed(nextResetSeed);
+    setSeedInput(String(nextResetSeed));
+    initializeSimulation(nextAtomCount, nextResetSeed);
+  }, [atomCount, chainRateMode, initializeSimulation, presetKey, simulationMode]);
+
+  useEffect(() => {
+    if (suppressNextSimulationResetRef.current) {
+      suppressNextSimulationResetRef.current = false;
+      return;
+    }
+    if (!hasInitializedSimulationRef.current) {
+      hasInitializedSimulationRef.current = true;
+      initializeSimulation(atomCount, resetSeedRef.current);
+      return;
+    }
+    resetSimulation();
+  }, [atomCount, chainRateMode, initializeSimulation, presetKey, resetSimulation, simulationMode]);
+
+  useEffect(() => {
+    let frameId = 0;
+    let lastFrame = performance.now();
+    let lastSnapshot = 0;
+    const simulate = (timestamp: number) => {
+      frameId = requestAnimationFrame(simulate);
+      const frameElapsed = timestamp - lastFrame;
+
+      const dt = Math.max(0, Math.min(frameElapsed / 1000, 0.08));
+      lastFrame = timestamp;
+      const deltaHalfLives = paused
+        ? 0
+        : dt * speed * SIMULATED_HALF_LIVES_PER_SECOND;
+      const transitionProbability = decayProbability(deltaHalfLives);
+      const simulatedSeconds =
+        deltaHalfLives *
+        preset.halfLife *
+        (SECONDS_PER_UNIT[preset.unit] ?? 1);
+      const motionScale = reducedMotion ? 0 : paused ? 0.15 : 1;
+
+      if (!paused) elapsedRef.current += deltaHalfLives;
+
+      for (const particle of particlesRef.current) {
+        particle.x += particle.vx * dt * motionScale;
+        particle.y += particle.vy * dt * motionScale;
+        if (particle.x < 0.035 || particle.x > 0.965) particle.vx *= -1;
+        if (particle.y < 0.055 || particle.y > 0.945) particle.vy *= -1;
+        particle.x = Math.max(0.035, Math.min(0.965, particle.x));
+        particle.y = Math.max(0.055, Math.min(0.945, particle.y));
+        particle.pulse += dt * 2;
+        particleNodeRefs.current[particle.id]?.setAttribute(
+          "transform",
+          `translate(${particle.x * 1000} ${particle.y * 520})`,
+        );
+
+        if (simulationMode === "chain") {
+          if (chainRateMode === "observation") {
+            const stage = chainStages[particle.chainStage];
+            if (
+              stage &&
+              particle.chainStage < chainStages.length - 1 &&
+              transitionProbability > 0 &&
+              decayRandomRef.current() < transitionProbability
+            ) {
+              particle.chainStage += 1;
+              particle.phase = "daughter";
+              burstsRef.current.push({
+                id: burstIdRef.current++,
+                x: particle.x,
+                y: particle.y,
+                life: 1,
+                angle: decayRandomRef.current() * Math.PI * 2,
+                kind: stage.mode ?? "alpha",
+              });
+            }
+          } else {
+            let availableSeconds = simulatedSeconds;
+            let transitions = 0;
+
+            while (
+              particle.chainStage < chainStages.length - 1 &&
+              availableSeconds > 0 &&
+              transitions < chainStages.length
+            ) {
+              const stage = chainStages[particle.chainStage];
+              if (!stage?.halfLifeSeconds) break;
+
+              const randomValue = Math.max(Number.EPSILON, 1 - decayRandomRef.current());
+              const waitSeconds =
+                (-Math.log(randomValue) * stage.halfLifeSeconds) / Math.LN2;
+              if (waitSeconds > availableSeconds) break;
+
+              availableSeconds -= waitSeconds;
+              particle.chainStage += 1;
+              particle.phase = "daughter";
+              transitions += 1;
+              burstsRef.current.push({
+                id: burstIdRef.current++,
+                x: particle.x,
+                y: particle.y,
+                life: 1,
+                angle: decayRandomRef.current() * Math.PI * 2,
+                kind: stage.mode ?? "alpha",
+              });
+            }
+          }
+        } else if (
+          particle.phase === "parent" &&
+          transitionProbability > 0 &&
+          decayRandomRef.current() < transitionProbability
+        ) {
+          particle.phase = "daughter";
+          burstsRef.current.push({
+            id: burstIdRef.current++,
+            x: particle.x,
+            y: particle.y,
+            life: 1,
+            angle: decayRandomRef.current() * Math.PI * 2,
+            kind: preset.mode,
+          });
+        }
+      }
+
+      burstsRef.current = burstsRef.current
+        .map((burst) => ({ ...burst, life: burst.life - dt * 1.25 }))
+        .filter((burst) => burst.life > 0)
+        .slice(-20);
+
+      if (timestamp - lastSnapshot >= VISUAL_UPDATE_INTERVAL_MS) {
+        const currentRemaining = particlesRef.current.reduce(
+          (total, particle) =>
+            total +
+            (simulationMode === "chain"
+              ? particle.chainStage === 0
+                ? 1
+                : 0
+              : particle.phase === "parent"
+                ? 1
+                : 0),
+          0,
+        );
+        const shouldRecordHistory =
+          !paused &&
+          currentRemaining !== historyRef.current.at(-1)?.remaining;
+
+        if (shouldRecordHistory) {
+          const nextHistory = appendHistoryPoint(historyRef.current, {
+            t: elapsedRef.current,
+            remaining: currentRemaining,
+          });
+          historyRef.current = nextHistory;
+          setHistory(nextHistory);
+        }
+        setParticles(
+          particlesRef.current.map((particle) => ({ ...particle })),
+        );
+        setBursts(burstsRef.current.map((burst) => ({ ...burst })));
+        setRemaining(currentRemaining);
+        setElapsed(elapsedRef.current);
+        lastSnapshot = timestamp;
+      }
+    };
+
+    frameId = requestAnimationFrame(simulate);
+    return () => cancelAnimationFrame(frameId);
+  }, [
+    chainRateMode,
+    chainStages,
+    paused,
+    preset.halfLife,
+    preset.mode,
+    preset.unit,
+    reducedMotion,
+    simulationMode,
+    speed,
+  ]);
+
+  const handleDetectorPulse = (
+    event: ReactPointerEvent<SVGSVGElement>,
+  ) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    burstsRef.current.push({
+      id: burstIdRef.current++,
+      x: (event.clientX - rect.left) / rect.width,
+      y: (event.clientY - rect.top) / rect.height,
+      life: 1,
+      angle: interactionRandomRef.current() * Math.PI * 2,
+      kind: "gamma",
+    });
+  };
+
+  const copyEquation = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(preset.equation);
+      setEquationCopied(true);
+      window.setTimeout(() => setEquationCopied(false), 1800);
+    } catch {
+      setEquationCopied(false);
+    }
+  }, [preset.equation]);
+
+  const exportHistoryCsv = useCallback(() => {
+    const rows = historyRef.current.map((point) => [
+      point.t.toFixed(4),
+      (point.t * preset.halfLife).toFixed(4),
+      localizeUnit(preset.unit, language),
+      point.remaining,
+      atomCount,
+      ((point.remaining / atomCount) * 100).toFixed(2),
+    ]);
+    downloadCsv(`${preset.key}-decay-observation.csv`, [
+      ...experimentProvenanceRows(decayLab),
+      ["model", "Phenomena Foundation v1 decay model"],
+      ["parent_nuclide", `${preset.parentNuclide.element}-${preset.parentNuclide.massNumber}`],
+      ["simulation_mode", simulationMode],
+      ["chain_rate_mode", chainRateMode],
+      ["atom_count", atomCount],
+      ["reset_seed", resetSeed],
+      [],
+      language === "ja"
+        ? ["çµŒéåŠæ¸›æœŸ", "çµŒéæ™‚é–“", "æ™‚é–“å˜ä½", "æœªå£Šå¤‰æ•°", "åˆæœŸåŸå­æ ¸æ•°", "æ®‹å­˜ç‡"]
+        : [
+            "elapsed_half_lives",
+            "elapsed_time",
+            "time_unit",
+            "undecayed_count",
+            "initial_nuclei",
+            "remaining_percent",
+          ],
+      ...rows,
+    ]);
+  }, [atomCount, chainRateMode, language, preset, resetSeed, simulationMode]);
+
+  const expected = theoreticalPopulation(atomCount, elapsed);
+  const decayed = atomCount - remaining;
+  const activity = remaining * Math.LN2;
+  const remainingPercent = (remaining / atomCount) * 100;
+
+  const chart = useMemo(() => {
+    const width = 760;
+    const height = 280;
+    const left = 58;
+    const right = 24;
+    const top = 20;
+    const bottom = 44;
+    const maxT = Math.max(1, Math.ceil(elapsed * 2) / 2);
+    const plotWidth = width - left - right;
+    const plotHeight = height - top - bottom;
+    const logMinimum = 0.001;
+
+    const position = (t: number, value: number) => {
+      const fraction = value / atomCount;
+      const y =
+        chartScale === "log"
+          ? top +
+            (-Math.log10(Math.max(logMinimum, Math.min(1, fraction))) /
+              -Math.log10(logMinimum)) *
+              plotHeight
+          : top + (1 - fraction) * plotHeight;
+      return {
+        x: left + (t / maxT) * plotWidth,
+        y,
+      };
+    };
+    const toPath = (points: Array<{ t: number; value: number }>) =>
+      points
+        .map((point, index) => {
+          const { x, y } = position(point.t, point.value);
+          return `${index === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
+        })
+        .join(" ");
+    const toStepPath = (points: Array<{ t: number; value: number }>) =>
+      points
+        .map((point, index) => {
+          const { x, y } = position(point.t, point.value);
+          if (index === 0) return `M ${x.toFixed(2)} ${y.toFixed(2)}`;
+          return `H ${x.toFixed(2)} V ${y.toFixed(2)}`;
+        })
+        .join(" ");
+
+    const theoretical = Array.from({ length: 100 }, (_, index) => {
+      const t = (index / 99) * maxT;
+      return { t, value: theoreticalPopulation(atomCount, t) };
+    });
+    const visibleTheoretical =
+      chartScale === "log"
+        ? theoretical.filter((point) => point.value / atomCount >= logMinimum)
+        : theoretical;
+    const completeHistory =
+      history.at(-1)?.t === elapsed
+        ? history
+        : [...history, { t: elapsed, remaining }];
+    const observed = completeHistory
+      .filter(
+        (point) =>
+          point.t <= maxT &&
+          (chartScale === "linear" || point.remaining > 0),
+      )
+      .map((point) => ({ t: point.t, value: point.remaining }));
+    const observedPointStep = Math.max(1, Math.ceil(observed.length / 32));
+    const yTickFractions =
+      chartScale === "log"
+        ? [1, 0.1, 0.01, 0.001]
+        : [1, 0.75, 0.5, 0.25, 0];
+
+    return {
+      theoreticalPath: toPath(visibleTheoretical),
+      observedPath: toStepPath(observed),
+      observedPoints: observed
+        .filter(
+          (_, index) =>
+            index % observedPointStep === 0 || index === observed.length - 1,
+        )
+        .map((point) => position(point.t, point.value)),
+      yTicks: yTickFractions.map((fraction) => ({
+        y: position(0, fraction * atomCount).y,
+        label:
+          fraction >= 0.01
+            ? `${Math.round(fraction * 100)}%`
+            : `${(fraction * 100).toFixed(1)}%`,
+      })),
+      maxT,
+      left,
+      right,
+      top,
+      bottom,
+      width,
+      height,
+      plotWidth,
+      plotHeight,
+    };
+  }, [atomCount, chartScale, elapsed, history, remaining]);
+
+  return (
+    <>
+      <script
+        id="nuclear-decay-lab-structured-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(DECAY_LAB_STRUCTURED_DATA),
+        }}
+      />
+      <main
+        className="lab-shell"
+        lang={language}
+        data-language={language}
+      style={
+        {
+          "--parent-rgb": preset.parentRgb,
+          "--daughter-rgb": preset.daughterRgb,
+        } as React.CSSProperties
+      }
+    >
+      <a className="skip-link" href="#simulator">{t("ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚¿ãƒ¼ã¸ç§»å‹•", "Skip to simulator")}</a>
+      <header className="lab-header">
+        <Link
+          className="brand"
+          href="/"
+          aria-label={t("Phenomenaã®ãƒ›ãƒ¼ãƒ ", "Phenomena home")}
+        >
+          <span>PHENOMENA / LAB 01</span>
+        </Link>
+        <div className="header-actions">
+          <div
+            className="language-toggle"
+            role="group"
+            aria-label={t("è¡¨ç¤ºè¨€èª", "Display language")}
+          >
+            <button
+              type="button"
+              aria-label={t("æ—¥æœ¬èª", "Japanese")}
+              aria-pressed={language === "ja"}
+              onClick={() => setLanguage("ja")}
+            >
+              JPN
+            </button>
+            <button
+              type="button"
+              aria-label="English"
+              aria-pressed={language === "en"}
+              onClick={() => setLanguage("en")}
+            >
+              ENG
+            </button>
+          </div>
+          <nav className="header-links" aria-label={t("LabãƒŠãƒ“ã‚²ãƒ¼ã‚·ãƒ§ãƒ³", "Lab navigation")}>
+            <span aria-current="page">01 / Decay</span>
+            <Link href="/labs/atlas">02 / Atlas</Link>
+            <Link href="/labs/detector">03 / Detector</Link>
+            <Link href="/labs/pulse">04 / Pulse</Link>
+          </nav>
+        </div>
+      </header>
+
+      <section className="hero-copy" aria-labelledby="page-title">
+        <p className="section-number">01 / SIMULATOR</p>
+        <h1 id="page-title">
+          <span>{t("æ”¾å°„æ€§å£Šå¤‰", "Radioactive Decay")}</span>
+          <span>{t("ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚¿ãƒ¼", "Simulator")}</span>
+        </h1>
+        <p className="hero-description">
+          {t(
+            "å€‹ã€…ã®åŸå­æ ¸ãŒã„ã¤å£Šå¤‰ã™ã‚‹ã‹ã¯äºˆæ¸¬ã§ãã¾ã›ã‚“ã€‚ã“ã“ã§ã¯å¤šæ•°ã®åŸå­æ ¸ã‚’å‹•ã‹ã—ã€ç¢ºç‡çš„ãªç¾è±¡ã‹ã‚‰åŠæ¸›æœŸã®æ›²ç·šãŒç¾ã‚Œã‚‹æ§˜å­ã‚’è¦³å¯Ÿã§ãã¾ã™ã€‚",
+            "The exact moment a single nucleus decays cannot be predicted. Simulate many nuclei and watch a half-life curve emerge from random events.",
+          )}
+        </p>
+      </section>
+
+      <section
+        className="simulator"
+        id="simulator"
+        tabIndex={-1}
+        aria-label={t("æ”¾å°„æ€§å£Šå¤‰ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚¿ãƒ¼", "Radioactive decay simulator")}
+      >
+        <div className="nuclide-catalog">
+          <div className="catalog-heading">
+            <div>
+              <span>NUCLIDE CATALOG</span>
+              <strong>{t("æ ¸ç¨®ã¨æ”¾å°„ç³»åˆ—", "Nuclides & decay series")}</strong>
+            </div>
+            <p>
+              {t(
+                "ç³»åˆ—ã‚’åˆ‡ã‚Šæ›¿ãˆã€è¡¨ã®æ ¸ç¨®ã‚’é¸ã¶ã¨å®Ÿé¨“æ¡ä»¶ã¸åæ˜ ã•ã‚Œã¾ã™ã€‚",
+                "Choose a series and select a nuclide to load it into the experiment.",
+              )}
+            </p>
+          </div>
+
+          <div className="series-tabs" role="group" aria-label={t("æ”¾å°„ç³»åˆ—ã‚’é¸æŠ", "Select decay series")}>
+            {SERIES_OPTIONS.map((series) => (
+              <button
+                type="button"
+                aria-pressed={seriesKey === series.key}
+                className={seriesKey === series.key ? "is-active" : ""}
+                onClick={() => selectSeries(series.key)}
+                key={series.key}
+              >
+                <strong>{language === "ja" ? series.label : series.labelEn}</strong>
+                <small>{language === "ja" ? series.caption : series.captionEn}</small>
+              </button>
+            ))}
+          </div>
+
+          <div className="nuclide-table-meta">
+            <span>{catalogView === "table" ? seriesLabel : t("åéŒ²æ ¸ç¨®ãƒãƒƒãƒ—", "Nuclide map")}</span>
+            <div className="catalog-view-toggle" role="group" aria-label={t("æ ¸ç¨®ã®è¡¨ç¤ºå½¢å¼", "Nuclide view")}>
+              <button
+                type="button"
+                aria-pressed={catalogView === "table"}
+                onClick={() => setCatalogView("table")}
+              >
+                {t("ãƒªã‚¹ãƒˆ", "List")}
+              </button>
+              <button
+                type="button"
+                aria-pressed={catalogView === "map"}
+                onClick={() => setCatalogView("map")}
+              >
+                {t("æ ¸ç¨®ãƒãƒƒãƒ—", "Map")}
+              </button>
+            </div>
+            <strong>
+              {catalogView === "table"
+                ? t(`${seriesPresets.length} æ ¸ç¨®`, `${seriesPresets.length} nuclides`)
+                : t(
+                    `${KNOWN_NUCLIDES.length.toLocaleString(locale)} æ ¸ç¨® / é¸æŠå¯èƒ½ ${PRESETS.length.toLocaleString(locale)}`,
+                    `${KNOWN_NUCLIDES.length.toLocaleString(locale)} nuclides / ${PRESETS.length.toLocaleString(locale)} selectable`,
+                  )}
+            </strong>
+          </div>
+          {catalogView === "table" ? (
+            <div className="nuclide-table-wrap">
+              <table className="nuclide-table">
+                <thead>
+                  <tr>
+                    <th scope="col">{t("è¦ªæ ¸ç¨®", "Parent")}</th>
+                    <th scope="col">{t("å£Šå¤‰", "Decay")}</th>
+                    <th scope="col">{t("å¨˜æ ¸ç¨®", "Daughter")}</th>
+                    <th scope="col">{t("åŠæ¸›æœŸ", "Half-life")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {seriesPresets.map((item) => (
+                    <tr
+                      className={presetKey === item.key ? "is-active" : ""}
+                      key={item.key}
+                    >
+                      <td>
+                        <button
+                          type="button"
+                          className="nuclide-select"
+                          aria-pressed={presetKey === item.key}
+                          onClick={() => selectPreset(item)}
+                        >
+                          <NuclideSymbol
+                            nuclide={item.parentNuclide}
+                            className="nuclide-symbol-table"
+                            language={language}
+                          />
+                          <span>{localizeNuclideName(item.parent, item.parentNuclide, language)}</span>
+                        </button>
+                      </td>
+                      <td>
+                        <span className={`decay-mode mode-${item.mode}`}>
+                          {localizeModeLabel(item.modeLabel, language)}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="daughter-cell">
+                          <NuclideSymbol
+                            nuclide={item.daughterNuclide}
+                            className="nuclide-symbol-table"
+                            language={language}
+                          />
+                          <span>{localizeNuclideName(item.daughter, item.daughterNuclide, language)}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <strong className="half-life-value">
+                          {formatNumber(item.halfLife, language)}
+                        </strong>
+                        <span className="half-life-unit">{localizeUnit(item.unit, language)}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <NuclideMapExplorer
+              preset={preset}
+              presetKey={presetKey}
+              onSelectPreset={selectPreset}
+              language={language}
+            />
+          )}
+        </div>
+
+        <div className="simulation-mode-bar">
+          <div
+            className="simulation-mode-toggle"
+            role="group"
+            aria-label={t("ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³å½¢å¼", "Simulation mode")}
+          >
+            <button
+              type="button"
+              aria-pressed={simulationMode === "single"}
+              onClick={() => setSimulationMode("single")}
+            >
+              {t("å˜ç‹¬å£Šå¤‰", "Single decay")}
+            </button>
+            <button
+              type="button"
+              aria-pressed={simulationMode === "chain"}
+              disabled={seriesKey === "independent"}
+              onClick={startChainMode}
+            >
+              {t("æ”¾å°„ç³»åˆ—ã®é€£é–", "Decay chain")}
+            </button>
+          </div>
+          <p>
+            {seriesKey === "independent"
+              ? t(
+                  "U-238ãƒ»Th-232ãƒ»U-235ç³»åˆ—ã‚’é¸ã¶ã¨ã€é€£é–ãƒ¢ãƒ¼ãƒ‰ã‚’é–‹å§‹ã§ãã¾ã™ã€‚",
+                  "Select the U-238, Th-232, or U-235 series to start chain mode.",
+                )
+              : simulationMode === "chain"
+                ? t(
+                    `${seriesLabel}ã®ä¸»è¦æ ¸ç¨®ã‚’é †ã«è¿½è·¡ä¸­ã§ã™ã€‚`,
+                    `Tracking the major nuclides in the ${seriesLabel}.`,
+                  )
+                : t("å˜ç‹¬æ ¸ç¨®ã®å£Šå¤‰ã‚’è¦³å¯Ÿã—ã¦ã„ã¾ã™ã€‚", "Observing a single nuclide decay.")}
+          </p>
+        </div>
+
+        <div className="simulator-grid">
+          <div className="visual-panel">
+            <div className="visual-toolbar">
+              <div className="visual-status">
+                <span>
+                  {simulationMode === "chain"
+                    ? t("é€£é–ã®é€²è¡ŒçŠ¶æ³", "Chain progress")
+                    : t("ç²’å­è¡¨ç¤º", "Particle view")}
+                </span>
+                <strong>
+                  <b>
+                    {simulationMode === "chain"
+                      ? chainStageCounts.at(-1) ?? 0
+                      : remaining}
+                  </b>
+                  <small>
+                    / {atomCount} {t("å€‹ãŒ", "nuclei Â·")}{" "}
+                    {simulationMode === "chain"
+                      ? t("è¡¨ç¤ºç¯„å›²ã«åˆ°é”", "at display limit")
+                      : t("æœªå£Šå¤‰", "undecayed")}
+                  </small>
+                </strong>
+              </div>
+              <div className="legend" aria-label={t("ç²’å­ã®å‡¡ä¾‹", "Particle legend")}>
+                <span>
+                  <i className="legend-parent" style={{ backgroundColor: parentColor }} />
+                  {simulationMode === "chain"
+                    ? t("åˆæœŸæ ¸ç¨®", "Initial nuclide")
+                    : t("è¦ªæ ¸ç¨®", "Parent")}
+                </span>
+                <span>
+                  <i
+                    className="legend-daughter"
+                    style={{
+                      backgroundColor:
+                        simulationMode === "chain"
+                          ? CHAIN_STAGE_COLORS[3]
+                          : daughterColor,
+                    }}
+                  />
+                  {simulationMode === "chain"
+                    ? t("é€£é–ä¸­", "In chain")
+                    : t("å¨˜æ ¸ç¨®", "Daughter")}
+                </span>
+                <span><i className="legend-emission" />{t("æ”¾å‡ºåå¿œ", "Emission")}</span>
+              </div>
+            </div>
+
+            {simulationMode === "chain" && (
+              <div className="chain-progress">
+                <div className="chain-progress-heading">
+                  <div>
+                    <span>MAJOR DECAY CHAIN</span>
+                    <strong>{seriesLabel}</strong>
+                  </div>
+                  <p>
+                    <span>{t("è¡¨ç¤ºä¸­", "Showing")}</span>
+                    <strong>{chainStages.length}</strong>
+                    <small>{t("æ®µéš", "stages")}</small>
+                  </p>
+                </div>
+                <p className="chain-track-instructions" id="chain-track-instructions">
+                  <span>SCROLL â†”</span>
+                  {t(
+                    "å·¦å³ã®çŸ¢å°ã‚­ãƒ¼ã¾ãŸã¯æ¨ªã«ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã—ã¦ã€ã™ã¹ã¦ã®ä¸»è¦æ®µéšã‚’ç¢ºèªã§ãã¾ã™ã€‚",
+                    "Use Left and Right Arrow keys or scroll sideways to inspect every major stage.",
+                  )}
+                </p>
+                <div
+                  className="chain-track"
+                  role="region"
+                  tabIndex={0}
+                  aria-label={t(
+                    `${seriesLabel}ã®ä¸»è¦ãªå£Šå¤‰æ®µéš`,
+                    `Major decay stages of the ${seriesLabel}`,
+                  )}
+                  aria-describedby="chain-track-instructions"
+                  onKeyDown={handleChainTrackKeyDown}
+                >
+                  {chainStages.map((stage, index) => (
+                    <div className="chain-stage-group" key={stage.key}>
+                      <article
+                        className={`chain-stage ${stage.truncated ? "is-display-limit" : ""}`}
+                        aria-label={t(
+                          `${index + 1}æ®µéšç›®ã€${stage.name}ã€åŠæ¸›æœŸ${stage.halfLifeLabel}ã€ç¾åœ¨${chainStageCounts[index] ?? 0}å€‹`,
+                          `Stage ${index + 1}, ${stage.name}, ${stage.truncated ? stage.halfLifeLabel : `half-life ${stage.halfLifeLabel}`}, ${chainStageCounts[index] ?? 0} nuclei now`,
+                        )}
+                        style={
+                          {
+                            "--stage-color": getChainStageColor(
+                              index,
+                              chainStages.length,
+                            ),
+                          } as React.CSSProperties
+                        }
+                      >
+                        <span className="chain-stage-index">
+                          STEP {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <NuclideSymbol
+                          nuclide={stage.nuclide}
+                          className="nuclide-symbol-chain"
+                          language={language}
+                        />
+                        <div className="chain-stage-copy">
+                          <strong>{stage.name}</strong>
+                          <small>
+                            <span>
+                              {stage.truncated
+                                ? t("è¡¨ç¤ºç¯„å›²", "Display scope")
+                                : t("åŠæ¸›æœŸ", "Half-life")}
+                            </span>
+                            {stage.halfLifeLabel}
+                          </small>
+                        </div>
+                        <output>
+                          <b>{chainStageCounts[index] ?? 0}</b>
+                          <span>{t("å€‹", "nuclei")}</span>
+                        </output>
+                      </article>
+                      {index < chainStages.length - 1 && (
+                        <span className="chain-arrow" aria-hidden="true">
+                          <span>
+                            {stage.mode === "beta" ? "Î²â»" : stage.mode === "gamma" ? "Î³" : "Î±"}
+                          </span>
+                          <b>â†’</b>
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <p>
+                  <span>{t("è¦³å¯Ÿãƒ¡ãƒ¢", "Observation note")}</span>
+                  {t(
+                    "ä¸»è¦æ ¸ç¨®ã®ã¿ã‚’è¡¨ç¤ºã—ã¦ã„ã¾ã™ã€‚æ¨ªã«ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã—ã¦é€£é–ã‚’è¿½ãˆã¾ã™ã€‚",
+                    "Only major nuclides are shown. Scroll horizontally to follow the chain. ",
+                  )}
+                  {chainRateMode === "physical"
+                    ? t(
+                        "å„æ ¸ç¨®ã®å®Ÿéš›ã®åŠæ¸›æœŸæ¯”ã§é€²è¡Œã—ã¦ã„ã¾ã™ã€‚",
+                        "The simulation preserves the actual half-life ratios.",
+                      )
+                    : t(
+                        "å„æ®µéšã¸å…±é€šã®è¦³å¯Ÿç”¨å£Šå¤‰å®šæ•°ã‚’é©ç”¨ã—ã¦ã„ã¾ã™ã€‚",
+                        "A common observation decay constant is applied to every stage.",
+                      )}
+                </p>
+              </div>
+            )}
+
+            <div className="particle-field">
+              <svg
+                className="particle-svg"
+                viewBox="0 0 1000 520"
+                preserveAspectRatio="xMidYMid meet"
+                onPointerDown={handleDetectorPulse}
+                role="img"
+                aria-label={
+                  simulationMode === "chain"
+                    ? t(
+                        `${seriesLabel}ã®åŸå­æ ¸${atomCount}å€‹ãŒä¸»è¦æ ¸ç¨®ã‚’é †ã«å£Šå¤‰ã™ã‚‹é€£é–ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³`,
+                        `Decay-chain simulation of ${atomCount} nuclei moving through the major nuclides of the ${seriesLabel}`,
+                      )
+                    : t(
+                        `${preset.parent}ã®åŸå­æ ¸${atomCount}å€‹ãŒç¢ºç‡çš„ã«å£Šå¤‰ã—ã€${preset.daughter}ã¸å¤‰ã‚ã‚‹ç²’å­ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³`,
+                        `Particle simulation of ${atomCount} ${presetParentName} nuclei decaying stochastically into ${presetDaughterName}`,
+                      )
+                }
+              >
+                <defs>
+                  <pattern id="field-grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                    <path d="M 50 0 L 0 0 0 50" className="field-grid-line" />
+                  </pattern>
+                </defs>
+                <rect width="1000" height="520" className="field-background" />
+                <rect width="1000" height="520" fill="url(#field-grid)" />
+                <rect x="40" y="30" width="920" height="460" className="field-orbit" />
+                {particles.map((particle) => {
+                  const particleColor =
+                    simulationMode === "chain"
+                      ? getChainStageColor(
+                          particle.chainStage,
+                          chainStages.length,
+                        )
+                      : particle.phase === "parent"
+                        ? parentColor
+                        : daughterColor;
+                  return (
+                    <g
+                      key={particle.id}
+                      ref={(node) => {
+                        particleNodeRefs.current[particle.id] = node;
+                      }}
+                      className={`particle particle-${particle.phase} ${
+                        simulationMode === "chain" ? "particle-chain" : ""
+                      }`}
+                      transform={`translate(${particle.x * 1000} ${particle.y * 520})`}
+                    >
+                      <circle
+                        className="particle-halo"
+                        fill={particleColor}
+                        r={particle.radius * 3.4}
+                      />
+                      <circle
+                        className="particle-core"
+                        fill={particleColor}
+                        stroke="#fffdf4"
+                        strokeOpacity="0.62"
+                        strokeWidth="1.15"
+                        r={
+                          particle.radius *
+                          (1.22 + Math.sin(particle.pulse) * 0.08)
+                        }
+                      />
+                    </g>
+                  );
+                })}
+                {bursts.map((burst) => {
+                  const distance = (1 - burst.life) * 88;
+                  const x1 = burst.x * 1000;
+                  const y1 = burst.y * 520;
+                  const x2 = x1 + Math.cos(burst.angle) * (distance + 24);
+                  const y2 = y1 + Math.sin(burst.angle) * (distance + 24);
+                  return burst.kind === "gamma" ? (
+                    <g key={burst.id} className="burst-gamma" opacity={burst.life}>
+                      <circle cx={x1} cy={y1} r={18 + distance} />
+                      <circle cx={x1} cy={y1} r={34 + distance * 1.2} />
+                    </g>
+                  ) : (
+                    <line
+                      key={burst.id}
+                      className={`burst-line burst-${burst.kind}`}
+                      x1={x1}
+                      y1={y1}
+                      x2={x2}
+                      y2={y2}
+                      opacity={burst.life}
+                    />
+                  );
+                })}
+              </svg>
+              <div className="field-readout" aria-hidden="true">
+                <NuclideSymbol
+                  nuclide={preset.parentNuclide}
+                  className="nuclide-symbol-field"
+                  language={language}
+                />
+                <small>
+                  {simulationMode === "chain"
+                    ? t(
+                        `${seriesLabel}ãƒ»${chainStages.length}æ®µéš`,
+                        `${seriesLabel} Â· ${chainStages.length} stages`,
+                      )
+                    : presetModeLabel}
+                </small>
+              </div>
+              <span className="field-hint">
+                {t("ç”»é¢ã‚’æŠ¼ã™ã¨æ¤œå‡ºãƒ‘ãƒ«ã‚¹ã‚’è¡¨ç¤º", "Press the field to trigger a detector pulse")}
+              </span>
+            </div>
+          </div>
+
+          <aside className="control-panel" aria-label={t("ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³è¨­å®š", "Simulation settings")}>
+            <div className="control-heading">
+              <span>{t("å®Ÿé¨“æ¡ä»¶", "Experiment settings")}</span>
+              <strong>
+                {simulationMode === "chain" ? seriesLabel : presetParentName}
+              </strong>
+              <small>
+                {simulationMode === "chain"
+                  ? t(
+                      `ä¸»è¦æ ¸ç¨® ${chainStages.length}æ®µéš`,
+                      `${chainStages.length} major stages`,
+                    )
+                  : `${t("åŠæ¸›æœŸ", "Half-life")} ${formatNumber(preset.halfLife, language)} ${localizeUnit(preset.unit, language)}`}
+              </small>
+            </div>
+
+            {simulationMode === "chain" && (
+              <fieldset className="chain-rate-selector">
+                <legend>{t("é€£é–ã®å£Šå¤‰å®šæ•°", "Chain decay constants")}</legend>
+                <div>
+                  <button
+                    type="button"
+                    aria-pressed={chainRateMode === "physical"}
+                    onClick={() => setChainRateMode("physical")}
+                  >
+                    <strong>{t("å®Ÿæ™‚é–“æ¯”", "Physical ratios")}</strong>
+                    <small>{t("æ ¸ç¨®å›ºæœ‰ã®åŠæ¸›æœŸ", "Nuclide-specific half-lives")}</small>
+                  </button>
+                  <button
+                    type="button"
+                    aria-pressed={chainRateMode === "observation"}
+                    onClick={() => setChainRateMode("observation")}
+                  >
+                    <strong>{t("è¦³å¯Ÿç”¨", "Observation")}</strong>
+                    <small>{t("å…¨æ®µéšã‚’å…±é€šå°ºåº¦åŒ–", "Common scale for all stages")}</small>
+                  </button>
+                </div>
+                <p>
+                  {chainRateMode === "physical"
+                    ? t(
+                        "å®Ÿåœ¨ã®åŠæ¸›æœŸæ¯”ã‚’ä¿ã¡ã¾ã™ã€‚çŸ­å¯¿å‘½æ ¸ç¨®ã¯ä¸€ç¬ã§é€šéã™ã‚‹å ´åˆãŒã‚ã‚Šã¾ã™ã€‚",
+                        "Preserves real half-life ratios. Short-lived nuclides may pass almost instantly.",
+                      )
+                    : t(
+                        "ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³è¦³å¯Ÿç”¨ã®éç‰©ç†ãƒ¢ãƒ¼ãƒ‰ã§ã™ã€‚å®Ÿåœ¨ã®åŠæ¸›æœŸæ¯”ã¯ä½¿ç”¨ã—ã¾ã›ã‚“ã€‚",
+                        "A non-physical mode for animation study; real half-life ratios are not used.",
+                      )}
+                </p>
+              </fieldset>
+            )}
+
+            <div className="control-field particle-count-field">
+              <div className="control-field-heading">
+                <label htmlFor="atom-count-input">{t("åŸå­æ ¸ã®æ•°", "Number of nuclei")}</label>
+                <div className="number-input">
+                  <input
+                    id="atom-count-input"
+                    type="number"
+                    min={MIN_ATOM_COUNT}
+                    max={MAX_ATOM_COUNT}
+                    step="1"
+                    inputMode="numeric"
+                    value={atomCountInput}
+                    onChange={(event) => setAtomCountInput(event.target.value)}
+                    onBlur={commitAtomCount}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") event.currentTarget.blur();
+                    }}
+                    aria-describedby="atom-count-help"
+                  />
+                  <span>{t("å€‹", "")}</span>
+                </div>
+              </div>
+              <input
+                type="range"
+                min={MIN_ATOM_COUNT}
+                max={MAX_ATOM_COUNT}
+                step={ATOM_COUNT_STEP}
+                value={atomCount}
+                style={{ accentColor: parentColor }}
+                onChange={(event) =>
+                  updateAtomCount(Number(event.target.value))
+                }
+                aria-label={t("åŸå­æ ¸ã®æ•°", "Number of nuclei")}
+              />
+              <small id="atom-count-help">
+                {t(
+                  `${MIN_ATOM_COUNT}ã€œ${MAX_ATOM_COUNT}å€‹ã€‚æ•°å€¤ã‚’ç›´æ¥å…¥åŠ›ã§ãã¾ã™ã€‚`,
+                  `${MIN_ATOM_COUNT}â€“${MAX_ATOM_COUNT} nuclei. You can enter an exact value.`,
+                )}
+              </small>
+            </div>
+
+            <label className="control-field speed-control">
+              <span>
+                {t("æ™‚é–“å€ç‡", "Time multiplier")}
+                <output>{formatSpeedMultiplier(speed)}</output>
+              </span>
+              <input
+                type="range"
+                min="-15"
+                max="6"
+                step="0.05"
+                value={Math.log10(speed)}
+                style={{ accentColor: parentColor }}
+                onChange={(event) =>
+                  setSpeed(10 ** Number(event.target.value))
+                }
+                aria-label={t("æ™‚é–“å€ç‡ï¼ˆå¯¾æ•°ï¼‰", "Time multiplier, logarithmic scale")}
+                aria-valuetext={formatSpeedMultiplier(speed)}
+              />
+              <div className="log-scale-marks" aria-hidden="true">
+                <span>10â»Â¹âµ</span>
+                <span>10â»Â¹Â²</span>
+                <span>10â»â¹</span>
+                <span>10â»â¶</span>
+                <span>10â»Â³</span>
+                <span>1</span>
+                <span>10Â³</span>
+                <span>10â¶</span>
+              </div>
+              <small>
+                {t(
+                  "10â»Â¹âµÃ—ã€œ10â¶Ã—ã®21æ¡ã‚’é€£ç¶šçš„ã«èª¿æ•´ã—ã¾ã™ã€‚",
+                  "Continuously adjustable across 21 orders of magnitude, from 10â»Â¹âµÃ— to 10â¶Ã—.",
+                )}
+              </small>
+            </label>
+
+            <div
+              className={`time-rate ${
+                simulationMode === "chain" ? "chain-time-rate" : ""
+              }`}
+              aria-live="polite"
+            >
+              <span>{t("TIME SCALE / ç¾å®Ÿæ™‚é–“ã¨ã®å¯¾å¿œ", "TIME SCALE / REAL-TIME EQUIVALENT")}</span>
+              <div>
+                <small>{t("ç¾å®Ÿã®", "real time")}</small>
+                <strong>{t("1ç§’", "1 s")}</strong>
+                <b aria-hidden="true">â†’</b>
+                <small>{t("ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³å†…", "simulation")}</small>
+                <strong>{t(`ç´„${simulationRate}`, `â‰ˆ ${simulationRate}`)}</strong>
+              </div>
+              {simulationMode === "chain" ? (
+                <p>
+                  {chainRateMode === "physical"
+                    ? t(
+                        `${preset.parent}ã®åŠæ¸›æœŸã‚’åŸºæº–ã«ã€ç¾å®Ÿã®1ç§’ã”ã¨ã«å®Ÿæ™‚é–“ãŒç´„${simulationRate}é€²ã¿ã¾ã™ã€‚é€£é–å†…ã®å„æ ¸ç¨®ã‚‚åŒã˜å®Ÿæ™‚é–“ã§è¨ˆç®—ã—ã¾ã™ã€‚`,
+                        `Each real-time second advances about ${simulationRate}. Every nuclide in the chain uses that same physical elapsed time.`,
+                      )
+                    : t(
+                        `ç¾å®Ÿã®1ç§’ã”ã¨ã«ç´„${formatNumber(SIMULATED_HALF_LIVES_PER_SECOND * speed)} TÂ½é€²ã¿ã¾ã™ã€‚å„æ®µéšã¸åŒã˜è¦³å¯Ÿç”¨å£Šå¤‰å®šæ•°ã‚’é©ç”¨ã—ã¾ã™ã€‚`,
+                        `Each real-time second advances about ${formatNumber(SIMULATED_HALF_LIVES_PER_SECOND * speed, language)} TÂ½. The same observation decay constant is applied to every stage.`,
+                      )}
+                </p>
+              ) : (
+                <p>
+                  {t(
+                    `ç¾å®Ÿã®1ç§’ã”ã¨ã«ã€ç¾åœ¨ã®æ ¸ç¨®ã®æ™‚é–“ãŒç´„${simulationRate}é€²ã¿ã¾ã™ã€‚`,
+                    `Each real-time second advances the selected nuclide by about ${simulationRate}.`,
+                  )}
+                </p>
+              )}
+            </div>
+
+            <div className="control-actions">
+              <button
+                type="button"
+                className="primary-action"
+                onClick={() => setPaused((value) => !value)}
+              >
+                {paused ? t("â–¶ å†é–‹", "â–¶ Resume") : t("â…¡ ä¸€æ™‚åœæ­¢", "â…¡ Pause")}
+              </button>
+              <button type="button" onClick={resetSimulation}>â†» {t("ãƒªã‚»ãƒƒãƒˆ", "Reset")}</button>
+            </div>
+
+            <label className="reset-seed">
+              <span>RESET SEED</span>
+              <input
+                type="number"
+                min="1"
+                max={MAX_RESET_SEED}
+                step="1"
+                inputMode="numeric"
+                value={seedInput}
+                onChange={(event) => setSeedInput(event.target.value)}
+                onBlur={commitResetSeed}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") event.currentTarget.blur();
+                }}
+                aria-describedby="reset-seed-help"
+              />
+              <small id="reset-seed-help">
+                {t(
+                  "æ•°å€¤ã‚’å¤‰ãˆã¦Enterã¾ãŸã¯ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’å¤–ã™ã¨ã€ãã®seedã‹ã‚‰å†é–‹ã—ã¾ã™ã€‚é…ç½®ã¨å£Šå¤‰ã‚¤ãƒ™ãƒ³ãƒˆåˆ—ã‚’åˆæœŸåŒ–ã—ã¾ã™ã€‚ç”»é¢ä¸Šã®æ™‚åˆ»ã¯ç«¯æœ«ã”ã¨ã«å¤‰ã‚ã‚Šã¾ã™ã€‚",
+                  "Change the number and press Enter or leave the field to restart from that seed. It initializes the layout and decay-event stream; on-screen timing varies by browser.",
+                )}
+              </small>
+            </label>
+
+            <LabStateTools
+              lab={decayLab}
+              language={language}
+              state={savedDecayState}
+              onRestore={restoreDecayState}
+              restoreOnMount={!requestedRoutePreset}
+            />
+
+            <div className="formula">
+              <span>{t("å£Šå¤‰ã®æ³•å‰‡", "Decay law")}</span>
+              <code>N(t) = Nâ‚€ Â· 2<sup>âˆ’t / TÂ½</sup></code>
+              <small>
+                {t(
+                  "æ™‚é–“ãŒåŠæ¸›æœŸ TÂ½ ã ã‘é€²ã‚€ã”ã¨ã«ã€è¦ªæ ¸ç¨®ã¯åŠåˆ†ã«ãªã‚Šã¾ã™ã€‚",
+                  "After each half-life TÂ½, half of the parent nuclei remain on average.",
+                )}
+              </small>
+            </div>
+          </aside>
+        </div>
+
+        <div
+          className="equation-panel"
+          aria-label={t(`${preset.parent}ã®å£Šå¤‰å¼`, `${presetParentName} decay equation`)}
+        >
+          <div className="equation-heading">
+            <div>
+              <span>DECAY REACTION / REFERENCE</span>
+              <strong>
+                {simulationMode === "chain"
+                  ? t("æœ€åˆã®å£Šå¤‰", "First decay")
+                  : t("å£Šå¤‰å¼", "Decay equation")}
+              </strong>
+            </div>
+            <div className="equation-heading-actions">
+              <small>{presetModeLabel}</small>
+              <button type="button" onClick={copyEquation}>
+                {equationCopied
+                  ? t("ã‚³ãƒ”ãƒ¼ã—ã¾ã—ãŸ", "Copied")
+                  : t("å¼ã‚’ã‚³ãƒ”ãƒ¼", "Copy equation")}
+              </button>
+            </div>
+          </div>
+          <div className="decay-flow">
+            <div className="reaction-species reaction-parent">
+              <span>{t("è¦ªæ ¸ç¨®", "Parent")}</span>
+              <NuclideSymbol
+                nuclide={preset.parentNuclide}
+                className="reaction-symbol"
+                language={language}
+              />
+              <small>{presetParentName}</small>
+            </div>
+            <div className="reaction-arrow" aria-hidden="true">
+              <span>{presetModeLabel}</span>
+              <b>â†’</b>
+            </div>
+            <div className="reaction-species reaction-daughter">
+              <span>{t("å¨˜æ ¸ç¨®", "Daughter")}</span>
+              <NuclideSymbol
+                nuclide={preset.daughterNuclide}
+                className="reaction-symbol"
+                language={language}
+              />
+              <small>{presetDaughterName}</small>
+            </div>
+            <b className="reaction-plus" aria-hidden="true">ï¼‹</b>
+            <div className="reaction-species reaction-emission">
+              <span>{t("æ”¾å‡ºç²’å­", "Emission")}</span>
+              <code>{preset.emissionSymbol}</code>
+              <small>{localizeEmission(preset.emission, language)}</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="data-section" aria-labelledby="observation-title">
+        <div className="section-heading">
+          <div>
+            <p className="section-number">02 / OBSERVATION</p>
+            <h2 id="observation-title">{t("è¦³æ¸¬å€¤ã¨ç†è«–å€¤", "Observation & theory")}</h2>
+          </div>
+          <p>
+            {simulationMode === "chain"
+              ? t(
+                  "åˆæœŸæ ¸ç¨®ãŒç³»åˆ—ã®æ¬¡æ®µéšã¸ç§»ã£ãŸå‰²åˆã‚’ã€ç†è«–çš„ãªæŒ‡æ•°æ¸›è¡°ã¨æ¯”è¼ƒã—ã¾ã™ã€‚",
+                  "Compare the fraction leaving the initial nuclide for later chain stages with theoretical exponential decay.",
+                )
+              : t(
+                  "èµ¤ã„ç‚¹ã¨å®Ÿç·šãŒä»Šå›ã®è©¦è¡Œã€é’ã„ç ´ç·šãŒç†è«–å€¤ã§ã™ã€‚ãƒªã‚»ãƒƒãƒˆã™ã‚‹ãŸã³ã«ã€ç¢ºç‡ã«ã‚ˆã‚‹æºã‚‰ãæ–¹ãŒå¤‰ã‚ã‚Šã¾ã™ã€‚",
+                  "Points and the solid line show this trial; the dashed line is the theoretical curve. Reset to see a new stochastic fluctuation.",
+                )}
+          </p>
+        </div>
+
+        <div className="stats-grid">
+          <article>
+            <span>{t("çµŒéæ™‚é–“", "Elapsed time")}</span>
+            <strong>{formatElapsed(elapsed, preset, language)}</strong>
+            <small>
+              {simulationMode === "chain"
+                ? t(
+                    `${elapsed.toFixed(2)} Ã— ${preset.parent}ã®TÂ½`,
+                    `${elapsed.toFixed(2)} Ã— ${presetParentName} TÂ½`,
+                  )
+                : `${elapsed.toFixed(2)} Ã— TÂ½`}
+            </small>
+          </article>
+          <article>
+            <span>
+              {simulationMode === "chain"
+                ? t("åˆæœŸæ ¸ç¨®ã«æ®‹ã‚‹åŸå­æ ¸", "Nuclei in initial nuclide")
+                : t("æœªå£Šå¤‰ã®åŸå­æ ¸", "Undecayed nuclei")}
+            </span>
+            <strong>{remaining}<small> / {atomCount}</small></strong>
+            <small>{remainingPercent.toFixed(1)}%</small>
+          </article>
+          <article>
+            <span>
+              {simulationMode === "chain"
+                ? t("ç³»åˆ—ã¸ç§»ã£ãŸåŸå­æ ¸", "Nuclei moved into chain")
+                : t("å£Šå¤‰ã—ãŸåŸå­æ ¸", "Decayed nuclei")}
+            </span>
+            <strong>{decayed}</strong>
+            <small>{t("ç†è«–ä¸Šã¯", "Expected")} {Math.round(atomCount - expected)}</small>
+          </article>
+        </div>
+
+        <div className="chart-panel">
+          <div className="chart-meta">
+            <span><i className="observed-line" style={{ backgroundColor: parentColor }} />{t("è¦³æ¸¬å€¤", "Observed")}</span>
+            <span><i className="theory-line" style={{ borderTopColor: daughterColor }} />{t("ç†è«–å€¤", "Theory")}</span>
+            <div className="chart-scale-toggle" role="group" aria-label={t("ã‚°ãƒ©ãƒ•ã®ç›®ç››ã‚Š", "Chart scale")}>
+              <button
+                type="button"
+                aria-pressed={chartScale === "linear"}
+                onClick={() => setChartScale("linear")}
+              >
+                {t("ç·šå½¢", "Linear")}
+              </button>
+              <button
+                type="button"
+                aria-pressed={chartScale === "log"}
+                onClick={() => setChartScale("log")}
+              >
+                {t("å¯¾æ•°", "Log")}
+              </button>
+            </div>
+            <strong>{t("æ­£è¦åŒ–å£Šå¤‰ç‡", "Normalized decay rate")} {activity.toFixed(1)} / TÂ½</strong>
+            <button type="button" className="export-button" onClick={exportHistoryCsv}>
+              {t("CSVã§ä¿å­˜", "Save CSV")}
+            </button>
+          </div>
+          <svg
+            className="decay-chart"
+            viewBox={`0 0 ${chart.width} ${chart.height}`}
+            role="img"
+            aria-labelledby="chart-title chart-description"
+          >
+            <title id="chart-title">
+              {t(
+                `${simulationMode === "chain" ? "åˆæœŸæ ¸ç¨®æ•°" : "æœªå£Šå¤‰åŸå­æ ¸æ•°"}ã®æ™‚é–“å¤‰åŒ–ï¼ˆ${chartScale === "log" ? "å¯¾æ•°" : "ç·šå½¢"}ç›®ç››ã‚Šï¼‰`,
+                `${simulationMode === "chain" ? "Initial-nuclide population" : "Undecayed nuclei"} over time (${chartScale === "log" ? "log" : "linear"} scale)`,
+              )}
+            </title>
+            <desc id="chart-description">
+              {t(
+                `${simulationMode === "chain" ? seriesLabel : preset.parent}ã®è¦³æ¸¬å€¤ã¨æŒ‡æ•°é–¢æ•°ã«ã‚ˆã‚‹ç†è«–å€¤ã‚’${chartScale === "log" ? "å¯¾æ•°" : "ç·šå½¢"}ç›®ç››ã‚Šã§æ¯”è¼ƒã—ãŸã‚°ãƒ©ãƒ•ã§ã™ã€‚`,
+                `Chart comparing observed values for ${simulationMode === "chain" ? seriesLabel : presetParentName} with exponential theory on a ${chartScale === "log" ? "log" : "linear"} scale.`,
+              )}
+            </desc>
+            {chart.yTicks.map((tick) => {
+              return (
+                <g key={tick.label}>
+                  <line
+                    className="chart-grid-line"
+                    x1={chart.left}
+                    x2={chart.width - chart.right}
+                    y1={tick.y}
+                    y2={tick.y}
+                  />
+                  <text x="8" y={tick.y + 4}>{tick.label}</text>
+                </g>
+              );
+            })}
+            {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
+              const x = chart.left + ratio * chart.plotWidth;
+              return (
+                <g key={ratio}>
+                  <line
+                    className="chart-tick"
+                    x1={x}
+                    x2={x}
+                    y1={chart.height - chart.bottom}
+                    y2={chart.height - chart.bottom + 6}
+                  />
+                  <text className="x-tick-label" x={x} y={chart.height - 18}>
+                    {simulationMode === "chain"
+                      ? formatNumber(chart.maxT * ratio * preset.halfLife)
+                      : (chart.maxT * ratio).toFixed(2)}
+                  </text>
+                </g>
+              );
+            })}
+            <line
+              className="chart-axis"
+              x1={chart.left}
+              x2={chart.width - chart.right}
+              y1={chart.height - chart.bottom}
+              y2={chart.height - chart.bottom}
+            />
+            <path
+              className="theory-path"
+              d={chart.theoreticalPath}
+              stroke={daughterColor}
+            />
+            <path
+              className="observed-path"
+              d={chart.observedPath}
+              stroke={parentColor}
+            />
+            {chart.observedPoints.map((point, index) => (
+              <circle
+                className="observed-point"
+                cx={point.x}
+                cy={point.y}
+                fill={parentColor}
+                stroke="#faf8f2"
+                r="2.5"
+                key={`${index}-${point.x}`}
+              />
+            ))}
+            <text className="axis-caption" x={chart.width - chart.right} y={chart.height - 2}>
+              {simulationMode === "chain"
+                ? t(
+                    `çµŒéæ™‚é–“ï¼ˆ${preset.unit} / ${preset.parent}åŸºæº–ï¼‰`,
+                    `Elapsed time (${localizeUnit(preset.unit, language)} / ${presetParentName} basis)`,
+                  )
+                : t("çµŒéæ™‚é–“ï¼ˆåŠæ¸›æœŸ TÂ½ï¼‰", "Elapsed time (half-lives TÂ½)")}
+            </text>
+          </svg>
+        </div>
+      </section>
+
+      <NuclideGenealogy
+        preset={preset}
+        onSelectPreset={selectPreset}
+        language={language}
+      />
+
+      <DetectorLab
+        preset={preset}
+        remaining={remaining}
+        atomCount={atomCount}
+        detectorKey={detectorKey}
+        onDetectorChange={setDetectorKey}
+        shieldKey={shieldKey}
+        onShieldChange={setShieldKey}
+        distance={detectorDistance}
+        onDistanceChange={setDetectorDistance}
+        thickness={shieldThickness}
+        onThicknessChange={setShieldThickness}
+        measurementSeconds={measurementSeconds}
+        onMeasurementSecondsChange={setMeasurementSeconds}
+        language={language}
+      />
+
+      <ModelDisclosure lab={decayLab} language={language} />
+      <SafetyNote lab={decayLab} language={language} />
+
+      <footer>
+        <div className="footer-brand">
+          <strong>PHENOMENA</strong>
+          <span>FOUNDATION v1 / MONTE CARLO DECAY LAB</span>
+        </div>
+        <nav aria-label={t("Shymohnã¨ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã¸ã®ãƒªãƒ³ã‚¯", "Links to Shymohn and this project")}>
+          <a href="https://x.com/Shymohn" target="_blank" rel="noopener noreferrer">
+            @Shymohn on X â†—
+          </a>
+          <a href="https://github.com/shymohn99" target="_blank" rel="noopener noreferrer">
+            GitHub Profile â†—
+          </a>
+          <a
+            href="https://shymohn99.github.io/portfolio/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Shymohn Portfolio â†—
+          </a>
+          <a
+            className="repository-link"
+            href="https://github.com/shymohn99/nuclear-decay-lab"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View Source â†—
+          </a>
+        </nav>
+        <p>{t("Â© 2026 Shymohnã€‚ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢: MIT / æ ¸ç¨®ãƒ‡ãƒ¼ã‚¿: åˆ¥æ¡ä»¶", "Â© 2026 Shymohn. Software: MIT / nuclear data: separate terms.")}</p>
+      </footer>
+      </main>
+    </>
+  );
+}
