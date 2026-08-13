@@ -10,7 +10,7 @@
     "build": "vinext build",
     "build:pages": "node scripts/build-pages.mjs",
     "start": "vinext start",
-    "test": "npm run build && node --test tests/rendered-html.test.mjs",
+    "test": "npm run build && node --test tests/rendered-html.test.mjs && node --import tsx --test tests/nuclear-models.test.ts",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate"
   },
@@ -33,6 +33,7 @@
     "eslint-config-next": "16.2.6",
     "react-server-dom-webpack": "19.2.6",
     "tailwindcss": "4.2.1",
+    "tsx": "4.23.12",
     "typescript": "5.9.3",
     "vinext": "0.0.50",
     "vite": "8.0.13",

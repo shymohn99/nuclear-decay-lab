@@ -1,15 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-
-const siteBasePath =
-  process.env.GITHUB_PAGES === "true" ? "/nuclear-decay-lab" : "";
-const siteOrigin =
-  process.env.GITHUB_PAGES === "true"
-    ? "https://shymohn99.github.io"
-    : "https://nuclear-decay-lab-shymohn.shymohn.chatgpt.site";
-const title = "nuclear-decay-lab | Monte Carlo Nuclear Decay Simulator";
+import { siteBasePath, siteOrigin, socialImagePath } from "./lib/site";
+const title = "Phenomena | Foundation v1";
 const description =
-  "Explore radioactive decay, major decay chains, nuclide relationships, and detector response in an interactive Monte Carlo laboratory.";
+  "Phenomena Foundation v1: interactive, device-first laboratories for making invisible nuclear phenomena tangible.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),
@@ -45,14 +39,14 @@ export const metadata: Metadata = {
     description,
     type: "website",
     url: `${siteBasePath}/`,
-    siteName: "nuclear-decay-lab",
+    siteName: "Phenomena",
     locale: "ja_JP",
     images: [
       {
-        url: `${siteBasePath}/og.png`,
-        width: 1200,
-        height: 630,
-        alt: "nuclear-decay-lab — Monte Carlo nuclear decay simulator",
+        url: socialImagePath,
+        width: 1731,
+        height: 909,
+        alt: "Phenomena Foundation v1 — Nuclear Collection",
       },
     ],
   },
@@ -60,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title,
     description,
-    images: [`${siteBasePath}/og.png`],
+    images: [socialImagePath],
   },
 };
 
