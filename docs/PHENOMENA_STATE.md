@@ -2,9 +2,9 @@
 
 ## Current phase
 
-Foundation v1 is a release candidate. The local implementation, static Pages
-export, and browser review are complete; the next checkpoint is the existing
-GitHub Pages publish workflow on `main`.
+Foundation v1 is publicly released. The same validated source is live through
+GitHub Pages and the existing Phenomena hosted deployment; the next goal is
+data-provenance and full-decay-network work, not more Foundation scope.
 
 ## Baseline and confirmed decisions
 
@@ -72,6 +72,12 @@ GitHub Pages publish workflow on `main`.
   the URL-precedence refinement. A Pages-served browser check confirmed valid
   URL overrides and unknown-URL restoration in Decay, Atlas, Detector, and
   Pulse; the Pulse Lab was visually checked at 320 px without overflow.
+- Public release succeeded on 2026-08-14. GitHub Pages workflow #57 built the
+  final tree successfully; `/index.html` and all four Lab URLs returned the
+  Phenomena release without browser errors. The hosted release is public at
+  `https://nuclear-decay-lab-shymohn.shymohn.chatgpt.site`. The plain Pages
+  root briefly retained a CDN-cached pre-release document, while the fresh
+  index and cache-busted root returned Foundation v1 as expected.
 - The current static split check is nine initial scripts / 645.6 KiB for the
   catalogue and eleven / 765.3 KiB for Decay. The catalogue does not preload
   all Lab chunks. OS reduced-motion emulation was unavailable; CSS and runtime
