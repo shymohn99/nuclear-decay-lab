@@ -218,13 +218,19 @@ export function LabLayout({ lab, language, onLanguageChange, children }: Readonl
       <main id="lab-main" tabIndex={-1}>
         <section className="lab-hero">
           <div className="lab-hero-index"><span>LAB</span><strong>{lab.labNumber}</strong><small>{localize(language, lab.collection)}</small></div>
-          <div>
+          <div className="lab-hero-copy">
             <p className="eyebrow">{localize(language, lab.discipline)}</p>
             <h1>{localize(language, lab.title)}</h1>
             <p className="lab-hero-summary">{localize(language, lab.summary)}</p>
             <p className="lab-hero-description">{localize(language, lab.description)}</p>
           </div>
-          <LabMeta lab={lab} language={language} />
+          <aside className="lab-hero-context">
+            <div className="lab-hero-mode">
+              <span>OBSERVATION MODE</span>
+              <strong>{translate(language, "操作可能な教育モデル", "Interactive teaching model")}</strong>
+            </div>
+            <LabMeta lab={lab} language={language} />
+          </aside>
         </section>
         {children}
         <ModelDisclosure lab={lab} language={language} />

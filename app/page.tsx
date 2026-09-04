@@ -75,18 +75,36 @@ export default function PhenomenaHome() {
 
       <main id="catalog-main" tabIndex={-1}>
         <section className="catalog-hero" aria-labelledby="phenomena-title">
-          <p className="eyebrow">PHENOMENA / FOUNDATION v1</p>
-          <h1 id="phenomena-title">
-            <span>{translate(language, "見えないものを、", "Make the invisible")}</span>
-            <span>{translate(language, "触れて理解する。", "tangible.")}</span>
-          </h1>
-          <p>
-            {translate(
-              language,
-              "Phenomenaは、操作と観測を通して見えない現象を理解するための端末内科学プラットフォームです。Foundation v1は核物理から始まります。",
-              "Phenomena is a device-first scientific platform for understanding invisible phenomena through manipulation and observation. Foundation v1 begins with nuclear physics.",
-            )}
-          </p>
+          <div className="catalog-hero-main">
+            <p className="eyebrow">PHENOMENA / FOUNDATION v1</p>
+            <h1 id="phenomena-title">
+              <span>{translate(language, "見えないものを、", "Make the invisible")}</span>
+              <span>{translate(language, "触れて理解する。", "tangible.")}</span>
+            </h1>
+            <p className="catalog-hero-description">
+              {translate(
+                language,
+                "Phenomenaは、操作と観測を通して見えない現象を理解するための端末内科学プラットフォームです。Foundation v1は核物理から始まります。",
+                "Phenomena is a device-first scientific platform for understanding invisible phenomena through manipulation and observation. Foundation v1 begins with nuclear physics.",
+              )}
+            </p>
+            <div className="catalog-hero-actions">
+              <Link className="catalog-primary-action" href="/labs/decay">
+                {translate(language, "最初の観察を始める", "Begin the first observation")} <span aria-hidden="true">→</span>
+              </Link>
+              <a href="#nuclear-collection">{translate(language, "4つのLabを見る", "Browse all four labs")}</a>
+            </div>
+          </div>
+          <aside className="catalog-hero-index" aria-label={translate(language, "現在のコレクション概要", "Current collection overview")}>
+            <div><span>ACTIVE COLLECTION</span><strong>01 / NUCLEAR</strong></div>
+            <dl>
+              <div><dt>{translate(language, "実験", "Labs")}</dt><dd>04</dd></div>
+              <div><dt>{translate(language, "実行", "Runtime")}</dt><dd>{translate(language, "端末内", "On-device")}</dd></div>
+              <div><dt>{translate(language, "言語", "Languages")}</dt><dd>JA / EN</dd></div>
+              <div><dt>{translate(language, "用途", "Purpose")}</dt><dd>{translate(language, "教育用", "Education")}</dd></div>
+            </dl>
+            <p>{translate(language, "確率、核種、検出、スペクトルを一つの観察経路でつなぎます。", "A connected observation path through probability, nuclides, detection, and spectra.")}</p>
+          </aside>
           <div className="catalog-hero-rule" aria-hidden="true" />
           <div className="catalog-hero-caption">
             <span>01—04 / NUCLEAR COLLECTION</span>

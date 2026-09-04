@@ -2553,17 +2553,31 @@ export default function Home() {
       </header>
 
       <section className="hero-copy" aria-labelledby="page-title">
-        <p className="section-number">01 / SIMULATOR</p>
-        <h1 id="page-title">
-          <span>{t("放射性壊変", "Radioactive Decay")}</span>
-          <span>{t("シミュレーター", "Simulator")}</span>
-        </h1>
-        <p className="hero-description">
-          {t(
-            "個々の原子核がいつ壊変するかは予測できません。ここでは多数の原子核を動かし、確率的な現象から半減期の曲線が現れる様子を観察できます。",
-            "The exact moment a single nucleus decays cannot be predicted. Simulate many nuclei and watch a half-life curve emerge from random events.",
-          )}
-        </p>
+        <div className="decay-hero-index">
+          <span>LAB</span>
+          <strong>01</strong>
+          <small>NUCLEAR COLLECTION</small>
+        </div>
+        <div className="decay-hero-main">
+          <p className="section-number">SIMULATOR / PROBABILITY</p>
+          <h1 id="page-title">
+            <span>{t("放射性壊変", "Radioactive Decay")}</span>
+            <span>{t("シミュレーター", "Simulator")}</span>
+          </h1>
+          <p className="hero-description">
+            {t(
+              "個々の原子核がいつ壊変するかは予測できません。ここでは多数の原子核を動かし、確率的な現象から半減期の曲線が現れる様子を観察できます。",
+              "The exact moment a single nucleus decays cannot be predicted. Simulate many nuclei and watch a half-life curve emerge from random events.",
+            )}
+          </p>
+        </div>
+        <aside className="decay-hero-context" aria-label={t("現在の実験条件", "Current experiment context")}>
+          <div className="decay-hero-mode"><span>OBSERVATION MODE</span><strong>{t("確率的な教育モデル", "Stochastic teaching model")}</strong></div>
+          <dl>
+            <div><dt>{t("現在の核種", "Active nuclide")}</dt><dd>{presetParentName}</dd></div>
+            <div><dt>{t("半減期", "Half-life")}</dt><dd>{formatNumber(preset.halfLife, language)} {localizeUnit(preset.unit, language)}</dd></div>
+          </dl>
+        </aside>
       </section>
 
       <section
