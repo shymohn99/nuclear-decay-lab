@@ -1,9 +1,9 @@
 # ENSDF Atlas import
 
-Atlas Phase 2 introduces a canonical nuclide/state/branch graph before replacing
-the Foundation catalog. The current 992-row bundle remains the production
-source until a generated ENSDF snapshot has passed scientific and
-redistribution review.
+Atlas Phase 2 introduces a canonical nuclide/state/branch graph and a local
+review build of the evaluated map. The current generated Atlas bundle contains
+3,441 chart nuclides, 4,362 states, and 4,409 decay records in 119 Z-shards.
+The four Z=0 neutron-only identities are kept out of the proton-neutron chart.
 
 ## Reproducible local snapshot
 
@@ -27,10 +27,11 @@ recommended citation are documented at
 
 ## Bundling gate
 
-Do not copy the generated snapshot from `work/` into `app/` or `public/`, and do
-not push it, until redistribution terms have been reviewed and a snapshot date,
-checksum, source URL, citation, and applicable notice are committed together.
-The sync script enforces the ignored `work/` destination.
+`npm run atlas:data:build` converts the ignored source snapshot into a compact
+index and per-Z shards for local UI review. Do not push, publish, or release the
+generated `app/generated/ensdf-atlas-index.json` or
+`public/data/ensdf-atlas/` files until redistribution terms have been reviewed.
+The source lock intentionally keeps `allowedDistributionProfiles` empty.
 
 ## Canonical IDs
 
@@ -39,3 +40,8 @@ not NNDC database IDs. This lets a future snapshot replace the current source
 without breaking saved Atlas selections or shared links when NNDC regenerates
 its database IDs.
 
+The current API daughter payload identifies the daughter nuclide but not a
+daughter state. The local Atlas therefore links decay destinations to the
+daughter ground state and discloses this limitation; it does not infer a level.
+Missing half-life or decay records are also not interpreted as stability. Only
+an explicit evaluated `isStable` flag creates a stable state.

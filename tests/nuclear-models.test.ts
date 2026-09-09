@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync, readdirSync } from "node:fs";
 import test from "node:test";
 import {
   DETECTOR_MODELS,
@@ -11,6 +12,7 @@ import {
 } from "../app/lib/nuclear-models.ts";
 import { createSeededRandom, experimentProvenanceRows, readExperimentQuery, toCsv, withExperimentQuery } from "../app/lib/experiment.ts";
 import { getLab } from "../app/lib/labs.ts";
+import { ENSDF_ATLAS_INDEX, canonicalizeAtlasNuclideKey, nuclideIdFromStateId } from "../app/lib/ensdf-atlas.ts";
 import { MAP_RADIONUCLIDES } from "../app/radionuclides.ts";
 import {
   FOUNDATION_NUCLIDE_CATALOG,
@@ -159,6 +161,45 @@ test("canonical nuclide graph validator rejects broken physical identity", () =>
   const catalog = buildLegacyNuclideCatalog(MAP_RADIONUCLIDES.slice(0, 1));
   const broken = { ...catalog, nuclides: [{ ...catalog.nuclides[0], neutronNumber: 99 }, ...catalog.nuclides.slice(1)] };
   assert.match(validateNuclideCatalog(broken).join("\n"), /A != Z \+ N/);
+});
+
+test("ENSDF Atlas index preserves evaluated stable and metastable identities", () => {
+  assert.deepEqual(ENSDF_ATLAS_INDEX.counts, {
+    nuclides: 3441,
+    states: 4362,
+    groundStates: 3441,
+    metastableStates: 921,
+    branches: 4409,
+    stableStates: 243,
+    shards: 119,
+  });
+  assert.equal(new Set(ENSDF_ATLAS_INDEX.nuclides.map((item) => item.id)).size, 3441);
+  const hydrogen = ENSDF_ATLAS_INDEX.nuclides.find((item) => item.id === "z1-a1")!;
+  assert.equal(hydrogen.stable, true);
+  assert.equal(hydrogen.displayMode, "stable");
+  const technetium = ENSDF_ATLAS_INDEX.nuclides.find((item) => item.id === "z43-a99")!;
+  assert.ok(technetium.stateIds.includes("z43-a99:m1"));
+  assert.ok(technetium.metastableCount >= 1);
+});
+
+test("ENSDF Atlas shards retain multiple branches without inferring missing values", () => {
+  const filenames = readdirSync(new URL("../public/data/ensdf-atlas/", import.meta.url)).filter((name) => /^z-\d{3}\.json$/.test(name));
+  assert.equal(filenames.length, 119);
+  const technetium = JSON.parse(readFileSync(new URL("../public/data/ensdf-atlas/z-043.json", import.meta.url), "utf8"));
+  const isomerBranches = technetium.branches.filter((branch: { parentStateId: string }) => branch.parentStateId === "z43-a99:m1");
+  assert.deepEqual(new Set(isomerBranches.map((branch: { displayMode: string }) => branch.displayMode)), new Set(["beta-minus", "isomeric-transition"]));
+  assert.ok(isomerBranches.every((branch: { daughterStateId: string }) => nuclideIdFromStateId(branch.daughterStateId)));
+  assert.ok(isomerBranches.every((branch: { branchingFractionReported: number | null }) => branch.branchingFractionReported === null || (branch.branchingFractionReported >= 0 && branch.branchingFractionReported <= 1)));
+  const hydrogen = JSON.parse(readFileSync(new URL("../public/data/ensdf-atlas/z-001.json", import.meta.url), "utf8"));
+  const ground = hydrogen.states.find((item: { id: string }) => item.id === "z1-a1:g");
+  assert.equal(ground.stability, "stable");
+  assert.equal(hydrogen.branches.some((branch: { parentStateId: string }) => branch.parentStateId === ground.id), false);
+});
+
+test("ENSDF Atlas migrates legacy saved nuclide keys without changing canonical keys", () => {
+  assert.equal(canonicalizeAtlasNuclideKey("Co-60-27"), "z27-a60");
+  assert.equal(canonicalizeAtlasNuclideKey("z43-a99"), "z43-a99");
+  assert.equal(canonicalizeAtlasNuclideKey("unknown"), "unknown");
 });
 
 test("shared CSV provenance keeps a Lab's data and model boundary traceable", () => {

@@ -15,6 +15,10 @@ function verifyPagesOutput() {
     "out/og-phenomena.png",
     "out/data/LICENSE.TXT",
     "out/data/LICENSE.ICRP-07.txt",
+    "out/data/ensdf-atlas/index.json",
+    "out/data/ensdf-atlas/z-001.json",
+    "out/data/ensdf-atlas/z-043.json",
+    "out/data/ensdf-atlas/z-120.json",
     "out/sitemap.xml",
   ];
   for (const file of requiredFiles) {
@@ -42,9 +46,9 @@ function verifyPagesOutput() {
     if (!html.includes(`https://shymohn99.github.io${pagesBasePath}/og-phenomena.png`)) throw new Error(`${slug} is missing its Pages social image.`);
   }
 
-  const atlasHtml = readFileSync("out/labs/atlas/index.html", "utf8");
-  if (!atlasHtml.includes(`href="${pagesBasePath}/data/LICENSE.TXT"`)) {
-    throw new Error("Atlas is missing its base-path-prefixed ICRP LICENSE.TXT link.");
+  const atlasIndex = JSON.parse(readFileSync("out/data/ensdf-atlas/index.json", "utf8"));
+  if (atlasIndex.counts?.nuclides !== 3441 || atlasIndex.counts?.shards !== 119) {
+    throw new Error("Atlas evaluated-data index is incomplete.");
   }
   const legacyDecayHtml = readFileSync("out/decay/index.html", "utf8");
   if (!legacyDecayHtml.includes(`href="${pagesBasePath}/labs/decay/"`)) {

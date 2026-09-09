@@ -13,6 +13,7 @@
     "test": "npm run build && node --test tests/rendered-html.test.mjs && node --import tsx --test tests/nuclear-models.test.ts",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "atlas:data:sync": "node scripts/sync-ensdf-atlas.mjs",
+    "atlas:data:build": "node scripts/build-ensdf-atlas.mjs",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {

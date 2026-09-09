@@ -12,27 +12,39 @@ import {
   type WheelEvent as ReactWheelEvent,
 } from "react";
 import { LabLayout, LabStateTools, usePhenomenaLanguage } from "../../components/PhenomenaShell";
+import {
+  ENSDF_ATLAS_INDEX,
+  canonicalizeAtlasNuclideKey,
+  nuclideIdFromStateId,
+  type EnsdfAtlasBranch,
+  type EnsdfAtlasNuclide,
+  type EnsdfAtlasShard,
+  type EnsdfAtlasState,
+  type EnsdfDisplayMode,
+} from "../../lib/ensdf-atlas";
 import { readExperimentQuery, replaceExperimentQuery, translate } from "../../lib/experiment";
 import { getLab, type Language } from "../../lib/labs";
-import { MAP_RADIONUCLIDES, type MapRadionuclideRecord } from "../../radionuclides";
+import { siteBasePath } from "../../lib/site";
 
-type DecayCode = MapRadionuclideRecord[9];
 type AtlasViewport = { x: number; y: number; width: number; height: number };
-type AtlasState = {
+type SavedAtlasState = {
   selectedKey: string | null;
-  view: "map" | "table";
+  selectedStateId?: string | null;
+  view: "map" | "featured";
   viewport?: AtlasViewport;
-  enabledModes?: DecayCode[];
+  enabledModes?: EnsdfDisplayMode[];
 };
-type MapPoint = { record: MapRadionuclideRecord; key: string; x: number; y: number };
+type MapPoint = { nuclide: EnsdfAtlasNuclide; x: number; y: number };
 
 const atlasLab = getLab("atlas");
 const MAP_WIDTH = 760;
 const MAP_HEIGHT = 530;
 const MIN_VIEW_WIDTH = 190;
 const DEFAULT_VIEWPORT: AtlasViewport = { x: 0, y: 0, width: MAP_WIDTH, height: MAP_HEIGHT };
-const ALL_DECAY_MODES: DecayCode[] = ["alpha", "beta-minus", "beta-plus-ec", "electron-capture", "isomeric-transition"];
-const FEATURED_CODES = new Set(["C-14", "I-131", "Cs-137", "Co-60", "Ra-226", "Rn-222", "U-238"]);
+const ALL_MODES: EnsdfDisplayMode[] = [
+  "stable", "alpha", "beta-minus", "beta-plus-ec", "electron-capture", "isomeric-transition", "other",
+];
+const FEATURED_CODES = new Set(["H-1", "C-14", "Co-60", "Tc-99", "I-131", "Cs-137", "Rn-222", "U-238"]);
 const decayPresetNuclides = new Set([
   "I-131", "C-14", "Co-60", "U-238", "Th-234", "U-234", "Ra-226", "Rn-222", "Po-210",
   "Th-232", "Ra-228", "Ac-228", "Th-228", "Ra-224", "Rn-220", "U-235", "Th-231", "Pa-231",
@@ -40,65 +52,63 @@ const decayPresetNuclides = new Set([
 ]);
 const directlyMappedSources = new Set(["Cs-137", "Co-60", "I-131"]);
 
-function recordKey(record: Pick<MapRadionuclideRecord, 0 | 1 | 2>): string {
-  return `${record[0]}-${record[1]}-${record[2]}`;
+function nuclideLabel(nuclide: Pick<EnsdfAtlasNuclide, "symbol" | "a">): string {
+  return `${nuclide.symbol}-${nuclide.a}`;
 }
 
-function nuclideLabel(symbol: string, mass: number): string { return `${symbol}-${mass}`; }
-
-function normalizeNuclideSearch(value: string): string {
+function normalizeSearch(value: string): string {
   return value.trim().toLowerCase().replace(/[\s_−–—-]+/g, "");
 }
 
-function decayLabel(code: DecayCode, language: Language): string {
-  const labels: Record<DecayCode, [string, string]> = {
+function requestedStateLabel(query: string): string {
+  const match = normalizeSearch(query).match(/m(\d*)$/);
+  if (!match) return "g";
+  return `m${match[1] || "1"}`;
+}
+
+function modeLabel(mode: EnsdfDisplayMode, language: Language): string {
+  const labels: Record<EnsdfDisplayMode, [string, string]> = {
+    stable: ["安定核", "stable"],
     alpha: ["α壊変", "α decay"],
     "beta-minus": ["β⁻壊変", "β⁻ decay"],
-    "beta-plus-ec": ["β⁺壊変 / EC", "β⁺ decay / EC"],
+    "beta-plus-ec": ["β⁺ / EC", "β⁺ / EC"],
     "electron-capture": ["電子捕獲", "electron capture"],
     "isomeric-transition": ["異性体転移", "isomeric transition"],
+    other: ["その他", "other"],
   };
-  return labels[code][language === "ja" ? 0 : 1];
+  return labels[mode][language === "ja" ? 0 : 1];
 }
 
-function halfLifeLabel(value: number, unit: string, language: Language): string {
-  const englishUnits: Record<string, string> = { 秒: "s", 分: "min", 時: "h", 時間: "h", 日: "d", 年: "y" };
-  const digits = value >= 1000
-    ? value.toLocaleString(language === "ja" ? "ja-JP" : "en-US", { maximumFractionDigits: 2 })
-    : value.toLocaleString(language === "ja" ? "ja-JP" : "en-US", { maximumSignificantDigits: 4 });
-  return `${digits} ${language === "ja" ? unit : (englishUnits[unit] ?? unit)}`;
+function halfLifeLabel(state: EnsdfAtlasState, language: Language): string {
+  if (state.stability === "stable") return translate(language, "安定", "stable");
+  if (!state.halfLife) return translate(language, "未収録", "not reported");
+  const value = state.halfLife.value.toLocaleString(language === "ja" ? "ja-JP" : "en-US", { maximumSignificantDigits: 5 });
+  return `${value} ${state.halfLife.unit}`;
 }
 
-function sourceForNuclide(record: MapRadionuclideRecord): "cesium-137" | "cobalt-60" | "iodine-131" {
-  const key = `${record[0]}-${record[1]}`.toLowerCase();
-  if (key === "i-131") return "iodine-131";
-  if (key === "co-60") return "cobalt-60";
-  return "cesium-137";
+function stateLabel(state: EnsdfAtlasState): string {
+  return state.metastable ? state.label : "g";
 }
 
-function recordMatchesSearch(record: MapRadionuclideRecord, query: string): boolean {
-  if (!query) return false;
-  const parentNuclide = normalizeNuclideSearch(nuclideLabel(record[0], record[1]));
-  const daughterNuclide = normalizeNuclideSearch(`${nuclideLabel(record[3], record[4])}${record[6] ? "m" : ""}`);
-  if (parentNuclide === query || daughterNuclide === query) return true;
-  if (/^[a-z]+\d+m?$/.test(query)) return parentNuclide.startsWith(query) || daughterNuclide.startsWith(query);
-  if (/^\d+$/.test(query)) return `${record[1]}`.startsWith(query);
-  const matchesDecay = [record[9], decayLabel(record[9], "ja"), decayLabel(record[9], "en")]
-    .map(normalizeNuclideSearch)
-    .some((term) => term.includes(query));
-  return /^[a-z]+$/.test(query)
-    ? record[0].toLowerCase().startsWith(query) || record[3].toLowerCase().startsWith(query) || matchesDecay
-    : matchesDecay;
+function stateEnergy(state: EnsdfAtlasState, language: Language): string {
+  if (!state.metastable) return translate(language, "基底状態", "ground state");
+  return state.excitationEnergyKeV === null ? translate(language, "励起準位", "excited level") : `${state.excitationEnergyKeV.toLocaleString()} keV`;
 }
 
-function searchMatchRank(record: MapRadionuclideRecord, query: string): number {
-  const parentNuclide = normalizeNuclideSearch(nuclideLabel(record[0], record[1]));
-  const daughterNuclide = normalizeNuclideSearch(`${nuclideLabel(record[3], record[4])}${record[6] ? "m" : ""}`);
-  if (parentNuclide === query) return 0;
-  if (daughterNuclide === query) return 1;
-  if (parentNuclide.startsWith(query)) return 2;
-  if (daughterNuclide.startsWith(query)) return 3;
-  return 4;
+function branchFraction(branch: EnsdfAtlasBranch, language: Language): string {
+  if (branch.branchingFractionReported === null) return translate(language, "比率未収録", "ratio not reported");
+  const percent = branch.branchingFractionReported * 100;
+  return `${percent.toLocaleString(language === "ja" ? "ja-JP" : "en-US", { maximumFractionDigits: 6 })}%`;
+}
+
+function pointForNuclide(nuclide: EnsdfAtlasNuclide): MapPoint {
+  return { nuclide, x: 30 + nuclide.n * 4, y: 500 - nuclide.z * 4 };
+}
+
+function focusedViewport(point: MapPoint): AtlasViewport {
+  const width = 250;
+  const height = width * (MAP_HEIGHT / MAP_WIDTH);
+  return clampViewport({ x: point.x - width / 2, y: point.y - height / 2, width, height });
 }
 
 function clampViewport(candidate: AtlasViewport): AtlasViewport {
@@ -118,117 +128,156 @@ function isViewport(value: unknown): value is AtlasViewport {
   return [item.x, item.y, item.width, item.height].every((part) => typeof part === "number" && Number.isFinite(part));
 }
 
-function pointForRecord(record: MapRadionuclideRecord): MapPoint {
-  const neutrons = record[1] - record[2];
-  return { record, key: recordKey(record), x: 30 + neutrons * 4, y: 500 - record[2] * 4 };
+function matchesSearch(nuclide: EnsdfAtlasNuclide, query: string): boolean {
+  if (!query) return false;
+  const code = normalizeSearch(nuclideLabel(nuclide));
+  if (code === query || code.startsWith(query)) return true;
+  if (query === `${code}m` || (query.startsWith(code) && /^m\d+$/.test(query.slice(code.length)))) return nuclide.metastableCount > 0;
+  if (/^\d+$/.test(query)) return `${nuclide.a}`.startsWith(query);
+  return /^[a-z]+$/.test(query) && (nuclide.symbol.toLowerCase().startsWith(query) || nuclide.name.toLowerCase().startsWith(query));
 }
 
-function focusedViewport(point: MapPoint): AtlasViewport {
-  const width = 250;
-  const height = width * (MAP_HEIGHT / MAP_WIDTH);
-  return clampViewport({ x: point.x - width / 2, y: point.y - height / 2, width, height });
+function searchRank(nuclide: EnsdfAtlasNuclide, query: string): number {
+  const code = normalizeSearch(nuclideLabel(nuclide));
+  if (code === query || query === `${code}m` || query.startsWith(`${code}m`)) return 0;
+  if (code.startsWith(query)) return 1;
+  if (nuclide.symbol.toLowerCase() === query) return 2;
+  return 3;
 }
 
 function PointGlyph({ point, zoom, selected }: { point: MapPoint; zoom: number; selected: boolean }) {
   const size = 5.2 / zoom;
+  const mode = point.nuclide.displayMode;
   const common = { className: "atlas-glyph-shape", vectorEffect: "non-scaling-stroke" as const };
   return (
-    <g className={`atlas-map-node atlas-mode--${point.record[9]}${selected ? " is-selected" : ""}`} transform={`translate(${point.x} ${point.y})`}>
+    <g className={`atlas-map-node atlas-mode--${mode}${selected ? " is-selected" : ""}`} transform={`translate(${point.x} ${point.y})`}>
       {selected ? <circle className="atlas-selected-halo" r={9 / zoom} vectorEffect="non-scaling-stroke" /> : null}
-      {point.record[9] === "alpha" ? <circle {...common} r={size / 2} /> : null}
-      {point.record[9] === "beta-minus" ? <rect {...common} x={-size / 2} y={-size / 2} width={size} height={size} /> : null}
-      {point.record[9] === "beta-plus-ec" ? <rect {...common} x={-size / 2} y={-size / 2} width={size} height={size} transform="rotate(45)" /> : null}
-      {point.record[9] === "electron-capture" ? <path {...common} d={`M 0 ${-size * .62} L ${size * .58} ${size * .42} L ${-size * .58} ${size * .42} Z`} /> : null}
-      {point.record[9] === "isomeric-transition" ? <path {...common} d={`M ${-size * .62} 0 H ${size * .62} M 0 ${-size * .62} V ${size * .62}`} /> : null}
+      {mode === "stable" ? <circle {...common} r={size * .56} /> : null}
+      {mode === "alpha" ? <circle {...common} r={size / 2} /> : null}
+      {mode === "beta-minus" ? <rect {...common} x={-size / 2} y={-size / 2} width={size} height={size} /> : null}
+      {mode === "beta-plus-ec" ? <rect {...common} x={-size / 2} y={-size / 2} width={size} height={size} transform="rotate(45)" /> : null}
+      {mode === "electron-capture" ? <path {...common} d={`M 0 ${-size * .62} L ${size * .58} ${size * .42} L ${-size * .58} ${size * .42} Z`} /> : null}
+      {mode === "isomeric-transition" ? <path {...common} d={`M ${-size * .62} 0 H ${size * .62} M 0 ${-size * .62} V ${size * .62}`} /> : null}
+      {mode === "other" ? <path {...common} d={`M 0 ${-size * .6} L ${size * .52} ${-size * .3} L ${size * .52} ${size * .3} L 0 ${size * .6} L ${-size * .52} ${size * .3} L ${-size * .52} ${-size * .3} Z`} /> : null}
+      {point.nuclide.metastableCount ? <circle className="atlas-isomer-dot" cx={size * .72} cy={-size * .72} r={1.5 / zoom} /> : null}
     </g>
   );
 }
 
 export default function NuclideAtlasPage() {
   const [language, setLanguage] = usePhenomenaLanguage();
-  const routeNuclide = typeof window === "undefined" ? null : readExperimentQuery(window.location.search, "nuclide")?.toLowerCase() ?? null;
-  const requestedRouteRecord = routeNuclide
-    ? MAP_RADIONUCLIDES.find((item) => normalizeNuclideSearch(nuclideLabel(item[0], item[1])) === normalizeNuclideSearch(routeNuclide))
+  const nuclides = ENSDF_ATLAS_INDEX.nuclides;
+  const mapPoints = useMemo(() => nuclides.map(pointForNuclide), [nuclides]);
+  const nuclideIndex = useMemo(() => new Map(nuclides.map((nuclide) => [nuclide.id, nuclide])), [nuclides]);
+  const pointIndex = useMemo(() => new Map(mapPoints.map((point) => [point.nuclide.id, point])), [mapPoints]);
+  const requestedRouteQuery = typeof window === "undefined" ? null : readExperimentQuery(window.location.search, "nuclide");
+  const requestedRouteNormalized = requestedRouteQuery ? normalizeSearch(requestedRouteQuery) : null;
+  const requestedRouteNuclide = requestedRouteNormalized
+    ? nuclides.find((item) => normalizeSearch(nuclideLabel(item)) === requestedRouteNormalized.replace(/m\d*$/, ""))
     : undefined;
-  const mapPoints = useMemo(() => MAP_RADIONUCLIDES.map(pointForRecord), []);
-  const pointIndex = useMemo(() => new Map(mapPoints.map((point) => [point.key, point])), [mapPoints]);
-  const recordIndex = useMemo(() => new Map(MAP_RADIONUCLIDES.map((record) => [recordKey(record), record])), []);
-  const [state, setState] = useState<AtlasState>({ selectedKey: null, view: "map", viewport: DEFAULT_VIEWPORT, enabledModes: ALL_DECAY_MODES });
+  const [state, setState] = useState<SavedAtlasState>({ selectedKey: null, selectedStateId: null, view: "map", viewport: DEFAULT_VIEWPORT, enabledModes: ALL_MODES });
   const [searchQuery, setSearchQuery] = useState("");
   const [candidatePoints, setCandidatePoints] = useState<MapPoint[]>([]);
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
   const [mobileControlsOpen, setMobileControlsOpen] = useState(false);
   const [hasPreviousViewport, setHasPreviousViewport] = useState(false);
+  const [detail, setDetail] = useState<EnsdfAtlasShard | null>(null);
+  const [detailStatus, setDetailStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const svgRef = useRef<SVGSVGElement | null>(null);
   const candidateDialogRef = useRef<HTMLDivElement | null>(null);
   const previousViewportRef = useRef<AtlasViewport | null>(null);
   const pointerPositionsRef = useRef(new Map<number, { x: number; y: number }>());
   const gestureRef = useRef<{ viewport: AtlasViewport; points: Map<number, { x: number; y: number }> } | null>(null);
   const movedRef = useRef(false);
+  const shardCacheRef = useRef(new Map<string, EnsdfAtlasShard>());
 
   const viewport = clampViewport(state.viewport ?? DEFAULT_VIEWPORT);
   const zoom = MAP_WIDTH / viewport.width;
-  const enabledModes = state.enabledModes?.filter((mode): mode is DecayCode => ALL_DECAY_MODES.includes(mode)) ?? ALL_DECAY_MODES;
-  const selected = state.selectedKey ? recordIndex.get(state.selectedKey) : undefined;
-  const selectedPoint = state.selectedKey ? pointIndex.get(state.selectedKey) : undefined;
+  const enabledModes = state.enabledModes?.filter((mode): mode is EnsdfDisplayMode => ALL_MODES.includes(mode)) ?? ALL_MODES;
+  const selected = state.selectedKey ? nuclideIndex.get(state.selectedKey) : undefined;
+  const selectedPoint = selected ? pointIndex.get(selected.id) : undefined;
+  const selectedStates = useMemo(() => selected && detail ? detail.states.filter((item) => item.nuclideId === selected.id).sort((a, b) => a.stateIndex - b.stateIndex) : [], [detail, selected]);
+  const selectedState = selectedStates.find((item) => item.id === state.selectedStateId) ?? selectedStates[0];
+  const selectedBranches = useMemo(() => selectedState && detail ? detail.branches.filter((item) => item.parentStateId === selectedState.id) : [], [detail, selectedState]);
 
   const updateViewport = useCallback((next: AtlasViewport, remember = true) => {
-    if (remember) setHasPreviousViewport(true);
     setState((current) => {
-      const currentViewport = clampViewport(current.viewport ?? DEFAULT_VIEWPORT);
-      if (remember) previousViewportRef.current = currentViewport;
+      if (remember) previousViewportRef.current = clampViewport(current.viewport ?? DEFAULT_VIEWPORT);
       return { ...current, viewport: clampViewport(next) };
     });
+    if (remember) setHasPreviousViewport(true);
   }, []);
 
-  const centerRecord = useCallback((record: MapRadionuclideRecord, updateUrl = true) => {
-    const point = pointForRecord(record);
+  const centerNuclide = useCallback((nuclide: EnsdfAtlasNuclide, stateLabelRequest = "g", updateUrl = true) => {
+    const point = pointForNuclide(nuclide);
+    const wantedState = stateLabelRequest === "g" ? `${nuclide.id}:g` : `${nuclide.id}:${stateLabelRequest}`;
     setHasPreviousViewport(true);
     setState((current) => {
       previousViewportRef.current = clampViewport(current.viewport ?? DEFAULT_VIEWPORT);
-      const modes = current.enabledModes ?? ALL_DECAY_MODES;
+      const modes = current.enabledModes ?? ALL_MODES;
       return {
         ...current,
-        selectedKey: point.key,
+        selectedKey: nuclide.id,
+        selectedStateId: nuclide.stateIds.includes(wantedState) ? wantedState : nuclide.stateIds[0],
         view: "map",
         viewport: focusedViewport(point),
-        enabledModes: modes.includes(record[9]) ? modes : [...modes, record[9]],
+        enabledModes: modes.includes(nuclide.displayMode) ? modes : [...modes, nuclide.displayMode],
       };
     });
-    setSearchQuery(nuclideLabel(record[0], record[1]));
+    const suffix = stateLabelRequest === "g" ? "" : stateLabelRequest;
+    setSearchQuery(`${nuclideLabel(nuclide)}${suffix}`);
     setCandidatePoints([]);
-    if (updateUrl) replaceExperimentQuery("nuclide", nuclideLabel(record[0], record[1]));
+    if (updateUrl) replaceExperimentQuery("nuclide", `${nuclideLabel(nuclide)}${suffix}`);
   }, []);
 
-  const restoreState = useCallback((next: AtlasState) => {
+  const restoreState = useCallback((next: SavedAtlasState) => {
     if (!next || typeof next !== "object") return;
-    const selectedKey = typeof next.selectedKey === "string" && recordIndex.has(next.selectedKey) ? next.selectedKey : null;
-    const restoredModes = Array.isArray(next.enabledModes)
-      ? next.enabledModes.filter((mode): mode is DecayCode => ALL_DECAY_MODES.includes(mode))
-      : ALL_DECAY_MODES;
-    const restoredRecord = selectedKey ? recordIndex.get(selectedKey) : undefined;
+    let selectedKey = typeof next.selectedKey === "string" ? canonicalizeAtlasNuclideKey(next.selectedKey) : null;
+    if (!selectedKey || !nuclideIndex.has(selectedKey)) selectedKey = null;
+    const restoredModes = Array.isArray(next.enabledModes) ? next.enabledModes.filter((mode): mode is EnsdfDisplayMode => ALL_MODES.includes(mode)) : ALL_MODES;
+    const selectedNuclide = selectedKey ? nuclideIndex.get(selectedKey) : undefined;
+    const selectedStateId = selectedNuclide && typeof next.selectedStateId === "string" && selectedNuclide.stateIds.includes(next.selectedStateId)
+      ? next.selectedStateId : selectedNuclide?.stateIds[0] ?? null;
     setState({
       selectedKey,
-      view: next.view === "table" ? "table" : "map",
+      selectedStateId,
+      view: next.view === "featured" || (next.view as string) === "table" ? "featured" : "map",
       viewport: isViewport(next.viewport) ? clampViewport(next.viewport) : DEFAULT_VIEWPORT,
       enabledModes: restoredModes,
     });
-    setSearchQuery(restoredRecord ? nuclideLabel(restoredRecord[0], restoredRecord[1]) : "");
+    setSearchQuery(selectedNuclide ? `${nuclideLabel(selectedNuclide)}${selectedStateId?.split(":")[1] === "g" ? "" : selectedStateId?.split(":")[1] ?? ""}` : "");
     previousViewportRef.current = null;
     setHasPreviousViewport(false);
-  }, [recordIndex]);
+  }, [nuclideIndex]);
 
   useEffect(() => {
-    if (!requestedRouteRecord || state.selectedKey === recordKey(requestedRouteRecord)) return;
-    const timer = window.setTimeout(() => centerRecord(requestedRouteRecord, false), 0);
+    if (!requestedRouteQuery || !requestedRouteNuclide) return;
+    const timer = window.setTimeout(() => centerNuclide(requestedRouteNuclide, requestedStateLabel(requestedRouteQuery), false), 0);
     return () => window.clearTimeout(timer);
-  }, [centerRecord, requestedRouteRecord, state.selectedKey]);
+  }, [centerNuclide, requestedRouteNuclide, requestedRouteQuery]);
 
   useEffect(() => {
-    if (candidatePoints.length) candidateDialogRef.current?.focus();
-  }, [candidatePoints.length]);
+    if (!selected) {
+      const timer = window.setTimeout(() => { setDetail(null); setDetailStatus("idle"); }, 0);
+      return () => window.clearTimeout(timer);
+    }
+    const cached = shardCacheRef.current.get(selected.detailShard);
+    if (cached) {
+      const timer = window.setTimeout(() => { setDetail(cached); setDetailStatus("ready"); }, 0);
+      return () => window.clearTimeout(timer);
+    }
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => { setDetail(null); setDetailStatus("loading"); }, 0);
+    fetch(`${siteBasePath}${selected.detailShard}`, { signal: controller.signal })
+      .then((response) => { if (!response.ok) throw new Error(`${response.status}`); return response.json() as Promise<EnsdfAtlasShard>; })
+      .then((shard) => { shardCacheRef.current.set(selected.detailShard, shard); setDetail(shard); setDetailStatus("ready"); })
+      .catch((error: unknown) => { if ((error as { name?: string }).name !== "AbortError") setDetailStatus("error"); });
+    return () => { window.clearTimeout(timer); controller.abort(); };
+  }, [selected]);
 
-  const filteredPoints = useMemo(() => mapPoints.filter((point) => enabledModes.includes(point.record[9])), [enabledModes, mapPoints]);
+  useEffect(() => { if (candidatePoints.length) candidateDialogRef.current?.focus(); }, [candidatePoints.length]);
+
+  const filteredPoints = useMemo(() => mapPoints.filter((point) => enabledModes.includes(point.nuclide.displayMode)), [enabledModes, mapPoints]);
   const densityCells = useMemo(() => {
     const cells = new Map<string, { x: number; y: number; count: number }>();
     for (const point of filteredPoints) {
@@ -242,36 +291,38 @@ export default function NuclideAtlasPage() {
     const maximum = Math.max(1, ...values.map((cell) => cell.count));
     return values.map((cell) => ({ ...cell, intensity: cell.count / maximum }));
   }, [filteredPoints]);
-  const featured = useMemo(() => MAP_RADIONUCLIDES.filter((record) => FEATURED_CODES.has(`${record[0]}-${record[1]}`)), []);
-  const normalizedSearchQuery = normalizeNuclideSearch(searchQuery);
-  const searchMatches = useMemo(() => normalizedSearchQuery
-    ? MAP_RADIONUCLIDES
-      .filter((record) => recordMatchesSearch(record, normalizedSearchQuery))
-      .sort((a, b) => searchMatchRank(a, normalizedSearchQuery) - searchMatchRank(b, normalizedSearchQuery))
-    : [], [normalizedSearchQuery]);
-  const visibleCandidates = normalizedSearchQuery ? searchMatches.slice(0, 12) : featured;
-
+  const featured = useMemo(() => nuclides.filter((item) => FEATURED_CODES.has(nuclideLabel(item))), [nuclides]);
+  const normalizedSearch = normalizeSearch(searchQuery);
+  const searchMatches = useMemo(() => normalizedSearch ? nuclides.filter((item) => matchesSearch(item, normalizedSearch)).sort((a, b) => searchRank(a, normalizedSearch) - searchRank(b, normalizedSearch)) : [], [normalizedSearch, nuclides]);
+  const visibleCandidates = normalizedSearch ? searchMatches.slice(0, 12) : featured;
   const labelPoints = useMemo(() => {
-    if (zoom < 1.7) return mapPoints.filter((point) => FEATURED_CODES.has(`${point.record[0]}-${point.record[1]}`));
-    if (zoom < 2.7) return mapPoints.filter((point) => FEATURED_CODES.has(`${point.record[0]}-${point.record[1]}`) || point.key === state.selectedKey);
-    return filteredPoints.filter((point) => point.x >= viewport.x && point.x <= viewport.x + viewport.width && point.y >= viewport.y && point.y <= viewport.y + viewport.height);
-  }, [filteredPoints, mapPoints, state.selectedKey, viewport.height, viewport.width, viewport.x, viewport.y, zoom]);
+    if (zoom < 1.7) return mapPoints.filter((point) => FEATURED_CODES.has(nuclideLabel(point.nuclide)));
+    if (zoom < 2.7) return mapPoints.filter((point) => FEATURED_CODES.has(nuclideLabel(point.nuclide)) || point.nuclide.id === state.selectedKey);
+    const occupied = new Set<string>();
+    return filteredPoints
+      .filter((point) => point.x >= viewport.x && point.x <= viewport.x + viewport.width && point.y >= viewport.y && point.y <= viewport.y + viewport.height)
+      .sort((a, b) => Number(b.nuclide.id === state.selectedKey) - Number(a.nuclide.id === state.selectedKey) || a.nuclide.z - b.nuclide.z || a.nuclide.n - b.nuclide.n)
+      .filter((point) => {
+        const cell = `${Math.floor(point.x / 25)}-${Math.floor(point.y / 13)}`;
+        if (occupied.has(cell)) return false;
+        occupied.add(cell);
+        return true;
+      });
+  }, [filteredPoints, mapPoints, state.selectedKey, viewport, zoom]);
 
   const zoomMap = useCallback((factor: number, focusX = .5, focusY = .5) => {
     const current = clampViewport(state.viewport ?? DEFAULT_VIEWPORT);
-    const nextWidth = current.width * factor;
-    const nextHeight = nextWidth * (MAP_HEIGHT / MAP_WIDTH);
+    const width = current.width * factor;
+    const height = width * (MAP_HEIGHT / MAP_WIDTH);
     const worldX = current.x + current.width * focusX;
     const worldY = current.y + current.height * focusY;
-    updateViewport({ x: worldX - nextWidth * focusX, y: worldY - nextHeight * focusY, width: nextWidth, height: nextHeight });
+    updateViewport({ x: worldX - width * focusX, y: worldY - height * focusY, width, height });
   }, [state.viewport, updateViewport]);
 
-  const resetMap = useCallback(() => updateViewport(DEFAULT_VIEWPORT), [updateViewport]);
   const restorePreviousView = useCallback(() => {
     const previous = previousViewportRef.current;
     if (!previous) return;
-    const current = viewport;
-    previousViewportRef.current = current;
+    previousViewportRef.current = viewport;
     updateViewport(previous, false);
   }, [updateViewport, viewport]);
 
@@ -290,18 +341,14 @@ export default function NuclideAtlasPage() {
   const nearestPoints = useCallback((clientX: number, clientY: number, limit = 12) => {
     const world = worldFromClient(clientX, clientY);
     if (!world) return [];
-    return filteredPoints
-      .map((point) => ({ point, distance: Math.hypot(point.x - world.x, point.y - world.y) }))
-      .filter((item) => item.distance <= world.radius)
-      .sort((a, b) => a.distance - b.distance)
-      .slice(0, limit)
-      .map((item) => item.point);
+    return filteredPoints.map((point) => ({ point, distance: Math.hypot(point.x - world.x, point.y - world.y) }))
+      .filter((item) => item.distance <= world.radius).sort((a, b) => a.distance - b.distance).slice(0, limit).map((item) => item.point);
   }, [filteredPoints, worldFromClient]);
 
   const handleMapClick = (event: ReactPointerEvent<SVGSVGElement>) => {
     if (movedRef.current) { movedRef.current = false; return; }
     const candidates = nearestPoints(event.clientX, event.clientY);
-    if (candidates.length === 1) centerRecord(candidates[0].record);
+    if (candidates.length === 1) centerNuclide(candidates[0].nuclide);
     else if (candidates.length > 1) setCandidatePoints(candidates);
     else {
       const world = worldFromClient(event.clientX, event.clientY);
@@ -320,11 +367,7 @@ export default function NuclideAtlasPage() {
 
   const handlePointerMove = (event: ReactPointerEvent<SVGSVGElement>) => {
     const pointers = pointerPositionsRef.current;
-    if (!pointers.has(event.pointerId)) {
-      const nearest = nearestPoints(event.clientX, event.clientY, 1)[0]?.key ?? null;
-      setHoveredKey((current) => current === nearest ? current : nearest);
-      return;
-    }
+    if (!pointers.has(event.pointerId)) { setHoveredKey(nearestPoints(event.clientX, event.clientY, 1)[0]?.nuclide.id ?? null); return; }
     const previousPointer = pointers.get(event.pointerId)!;
     if (Math.hypot(event.clientX - previousPointer.x, event.clientY - previousPointer.y) > 2) movedRef.current = true;
     pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
@@ -351,8 +394,7 @@ export default function NuclideAtlasPage() {
   const finishPointer = (event: ReactPointerEvent<SVGSVGElement>) => {
     pointerPositionsRef.current.delete(event.pointerId);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-    if (!pointerPositionsRef.current.size) gestureRef.current = null;
-    else gestureRef.current = { viewport: clampViewport(state.viewport ?? DEFAULT_VIEWPORT), points: new Map(pointerPositionsRef.current) };
+    gestureRef.current = pointerPositionsRef.current.size ? { viewport: clampViewport(state.viewport ?? DEFAULT_VIEWPORT), points: new Map(pointerPositionsRef.current) } : null;
   };
 
   const handleMapWheel = (event: ReactWheelEvent<SVGSVGElement>) => {
@@ -366,7 +408,7 @@ export default function NuclideAtlasPage() {
     const stepY = viewport.height * .09;
     if (event.key === "+" || event.key === "=") zoomMap(1 / 1.3);
     else if (event.key === "-") zoomMap(1.3);
-    else if (event.key === "0") resetMap();
+    else if (event.key === "0") updateViewport(DEFAULT_VIEWPORT);
     else if (event.key === "ArrowLeft") updateViewport({ ...viewport, x: viewport.x - stepX });
     else if (event.key === "ArrowRight") updateViewport({ ...viewport, x: viewport.x + stepX });
     else if (event.key === "ArrowUp") updateViewport({ ...viewport, y: viewport.y - stepY });
@@ -375,65 +417,51 @@ export default function NuclideAtlasPage() {
     event.preventDefault();
   };
 
-  const toggleMode = (mode: DecayCode) => {
+  const toggleMode = (mode: EnsdfDisplayMode) => {
     setState((current) => {
-      const modes = current.enabledModes ?? ALL_DECAY_MODES;
+      const modes = current.enabledModes ?? ALL_MODES;
       return { ...current, enabledModes: modes.includes(mode) ? modes.filter((item) => item !== mode) : [...modes, mode] };
     });
     setCandidatePoints([]);
   };
 
-  const parents = selected ? MAP_RADIONUCLIDES.filter((record) => record[3] === selected[0] && record[4] === selected[1] && record[5] === selected[2]).slice(0, 4) : [];
-  const daughterKey = selected ? `${selected[3]}-${selected[4]}-${selected[5]}` : "";
-  const daughter = selected ? MAP_RADIONUCLIDES.find((record) => recordKey(record) === daughterKey) : undefined;
-  const selectedCode = selected ? `${selected[0]}-${selected[1]}` : null;
-  const source = selected ? sourceForNuclide(selected) : null;
-  const hasDecayPreset = Boolean(selectedCode && decayPresetNuclides.has(selectedCode));
-  const hasMappedSource = Boolean(selectedCode && directlyMappedSources.has(selectedCode));
+  const jumpToDaughter = (branch: EnsdfAtlasBranch) => {
+    const daughter = nuclideIndex.get(nuclideIdFromStateId(branch.daughterStateId));
+    if (daughter) centerNuclide(daughter, branch.daughterStateId.split(":")[1] ?? "g");
+  };
+
   const hoveredPoint = hoveredKey ? pointIndex.get(hoveredKey) : undefined;
+  const selectedCode = selected ? nuclideLabel(selected) : null;
+  const hasDecayPreset = Boolean(selectedCode && decayPresetNuclides.has(selectedCode) && selectedState?.stability !== "stable");
+  const hasMappedSource = Boolean(selectedCode && directlyMappedSources.has(selectedCode));
+  const source = selectedCode === "I-131" ? "iodine-131" : selectedCode === "Co-60" ? "cobalt-60" : "cesium-137";
 
   return (
     <LabLayout lab={atlasLab} language={language} onLanguageChange={setLanguage}>
       <section className="atlas-workbench" aria-labelledby="atlas-workbench-title">
         <div className="section-heading atlas-heading">
           <div><p className="eyebrow">OVERVIEW / LOCATE / TRACE</p><h2 id="atlas-workbench-title">{translate(language, "核種地図", "Nuclide map")}</h2></div>
-          <p>{translate(language, "全体像から入り、拡大して核種を選びます。", "Start with the whole field, then zoom to a nuclide.")}</p>
+          <p>{translate(language, "全体像から入り、拡大して状態と分岐をたどります。", "Start with the whole field, then zoom into states and branches.")}</p>
+        </div>
+        <div className="atlas-data-strip" aria-label={translate(language, "地図データ概要", "Atlas data summary")}>
+          <strong>ENSDF</strong><span>{ENSDF_ATLAS_INDEX.counts.nuclides.toLocaleString()} {translate(language, "核種", "nuclides")}</span><span>{ENSDF_ATLAS_INDEX.counts.metastableStates.toLocaleString()} {translate(language, "準安定状態", "metastable states")}</span><span>{ENSDF_ATLAS_INDEX.counts.branches.toLocaleString()} {translate(language, "壊変レコード", "decay records")}</span>
         </div>
         <div className="atlas-grid atlas-explorer-grid">
           {state.view === "map" ? (
             <figure className="atlas-map-figure atlas-explorer">
               <div className="atlas-map-toolbar">
                 <div className="atlas-zoom-controls" role="group" aria-label={translate(language, "地図の拡大操作", "Map zoom controls")}>
-                  <button type="button" onClick={() => zoomMap(1 / 1.35)} aria-label={translate(language, "拡大", "Zoom in")}>＋</button>
-                  <output aria-live="polite">{Math.round(zoom * 100)}%</output>
-                  <button type="button" onClick={() => zoomMap(1.35)} aria-label={translate(language, "縮小", "Zoom out")}>−</button>
-                  <button type="button" onClick={restorePreviousView} disabled={!hasPreviousViewport} aria-label={translate(language, "直前の表示", "Previous view")}>↶</button>
-                  <button type="button" onClick={resetMap}>{translate(language, "全体", "Overview")}</button>
+                  <button type="button" onClick={() => zoomMap(1 / 1.35)} aria-label={translate(language, "拡大", "Zoom in")}>＋</button><output aria-live="polite">{Math.round(zoom * 100)}%</output><button type="button" onClick={() => zoomMap(1.35)} aria-label={translate(language, "縮小", "Zoom out")}>−</button><button type="button" onClick={restorePreviousView} disabled={!hasPreviousViewport} aria-label={translate(language, "直前の表示", "Previous view")}>↶</button><button type="button" onClick={() => updateViewport(DEFAULT_VIEWPORT)}>{translate(language, "全体", "Overview")}</button>
                 </div>
                 <span className="atlas-map-level">{zoom < 1.7 ? translate(language, "密度表示", "Density") : translate(language, "核種表示", "Nuclides")}</span>
               </div>
-              <div className="atlas-mode-legend" role="group" aria-label={translate(language, "表示する壊変形式", "Visible decay modes")}>
-                {ALL_DECAY_MODES.map((mode) => <button type="button" key={mode} className={`atlas-mode-filter atlas-mode--${mode}`} aria-pressed={enabledModes.includes(mode)} onClick={() => toggleMode(mode)}><i aria-hidden="true" />{decayLabel(mode, language)}</button>)}
+              <div className="atlas-mode-legend" role="group" aria-label={translate(language, "表示する種類", "Visible categories")}>
+                {ALL_MODES.map((mode) => <button type="button" key={mode} className={`atlas-mode-filter atlas-mode--${mode}`} aria-pressed={enabledModes.includes(mode)} onClick={() => toggleMode(mode)}><i aria-hidden="true" />{modeLabel(mode, language)}</button>)}
               </div>
               <div className="atlas-map-stage">
-                <svg
-                  ref={svgRef}
-                  className="atlas-map"
-                  viewBox={`${viewport.x} ${viewport.y} ${viewport.width} ${viewport.height}`}
-                  role="group"
-                  tabIndex={0}
-                  aria-labelledby="atlas-map-title atlas-map-desc"
-                  onWheel={handleMapWheel}
-                  onPointerDown={handlePointerDown}
-                  onPointerMove={handlePointerMove}
-                  onPointerUp={finishPointer}
-                  onPointerCancel={finishPointer}
-                  onPointerLeave={() => setHoveredKey(null)}
-                  onClick={handleMapClick}
-                  onKeyDown={handleMapKeyDown}
-                >
+                <svg ref={svgRef} className="atlas-map" viewBox={`${viewport.x} ${viewport.y} ${viewport.width} ${viewport.height}`} role="group" tabIndex={0} aria-labelledby="atlas-map-title atlas-map-desc" onWheel={handleMapWheel} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={finishPointer} onPointerCancel={finishPointer} onPointerLeave={() => setHoveredKey(null)} onClick={handleMapClick} onKeyDown={handleMapKeyDown}>
                   <title id="atlas-map-title">{translate(language, "ズーム可能な核種地図", "Zoomable nuclide map")}</title>
-                  <desc id="atlas-map-desc">{translate(language, "横軸は中性子数N、縦軸は陽子数Zです。ドラッグで移動、ホイールまたはボタンで拡大できます。核種の選択は地図または検索結果から行えます。", "Neutron number N is horizontal and proton number Z is vertical. Drag to pan and use the wheel or buttons to zoom. Select a nuclide from the map or search results.")}</desc>
+                  <desc id="atlas-map-desc">{translate(language, "横軸は中性子数N、縦軸は陽子数Z。ドラッグで移動、ホイールまたはボタンで拡大します。", "Neutron number N is horizontal and proton number Z is vertical. Drag to pan and use the wheel or buttons to zoom.")}</desc>
                   <rect className="atlas-map-background" x="0" y="0" width={MAP_WIDTH} height={MAP_HEIGHT} />
                   <g className="atlas-grid-lines" aria-hidden="true">
                     {[0, 20, 40, 60, 80, 100, 120, 140, 160].map((value) => <g key={`n-${value}`}><line x1={30 + value * 4} x2={30 + value * 4} y1="25" y2="500" /><text x={30 + value * 4} y="518" textAnchor="middle" style={{ fontSize: `${9 / zoom}px` }}>{value}</text></g>)}
@@ -443,72 +471,47 @@ export default function NuclideAtlasPage() {
                   <path d="M55 469 C160 448 254 396 336 312 S540 154 710 74" className="atlas-stability-band" />
                   <path d="M55 476 C164 455 262 403 344 322 S546 166 710 86" className="atlas-stability-line" />
                   {zoom < 1.9 ? <g className="atlas-density-layer" aria-hidden="true">{densityCells.map((cell) => <rect key={`${cell.x}-${cell.y}`} x={cell.x} y={cell.y} width="17" height="17" style={{ opacity: .1 + cell.intensity * .62 }} />)}</g> : null}
-                  {zoom >= 1.45 ? <g className="atlas-points-layer" aria-hidden="true">{filteredPoints.map((point) => <PointGlyph key={point.key} point={point} zoom={zoom} selected={point.key === state.selectedKey} />)}</g> : null}
+                  {zoom >= 1.45 ? <g className="atlas-points-layer" aria-hidden="true">{filteredPoints.map((point) => <PointGlyph key={point.nuclide.id} point={point} zoom={zoom} selected={point.nuclide.id === state.selectedKey} />)}</g> : null}
                   {selectedPoint && zoom < 1.45 ? <g className="atlas-overview-selection" aria-hidden="true"><circle cx={selectedPoint.x} cy={selectedPoint.y} r={7 / zoom} /><line x1={selectedPoint.x - 13 / zoom} x2={selectedPoint.x + 13 / zoom} y1={selectedPoint.y} y2={selectedPoint.y} /><line x1={selectedPoint.x} x2={selectedPoint.x} y1={selectedPoint.y - 13 / zoom} y2={selectedPoint.y + 13 / zoom} /></g> : null}
-                  <g className="atlas-progressive-labels" aria-hidden="true">{labelPoints.map((point) => <text key={point.key} x={point.x + 6 / zoom} y={point.y - 5 / zoom} style={{ fontSize: `${9 / zoom}px` }}>{zoom >= 2.7 ? nuclideLabel(point.record[0], point.record[1]) : point.record[0]}</text>)}</g>
-                  <text className="atlas-axis-title" x={720} y={518} style={{ fontSize: `${10 / zoom}px` }}>N →</text>
-                  <text className="atlas-axis-title" x={8} y={30} style={{ fontSize: `${10 / zoom}px` }}>Z</text>
+                  <g className="atlas-progressive-labels" aria-hidden="true">{labelPoints.map((point) => <text key={point.nuclide.id} x={point.x + 6 / zoom} y={point.y - 5 / zoom} style={{ fontSize: `${9 / zoom}px` }}>{zoom >= 2.7 ? nuclideLabel(point.nuclide) : point.nuclide.symbol}</text>)}</g>
+                  <text className="atlas-axis-title" x={720} y={518} style={{ fontSize: `${10 / zoom}px` }}>N →</text><text className="atlas-axis-title" x={8} y={30} style={{ fontSize: `${10 / zoom}px` }}>Z</text>
                 </svg>
-                {hoveredPoint && !candidatePoints.length ? <div className="atlas-map-tooltip" role="status"><strong>{nuclideLabel(hoveredPoint.record[0], hoveredPoint.record[1])}</strong><span>{decayLabel(hoveredPoint.record[9], language)}</span></div> : null}
-                {candidatePoints.length ? <div ref={candidateDialogRef} className="atlas-map-candidates" role="dialog" tabIndex={-1} aria-label={translate(language, "近くの核種", "Nearby nuclides")} onKeyDown={(event) => { if (event.key === "Escape") { setCandidatePoints([]); svgRef.current?.focus(); } }}>
-                  <div><strong>{translate(language, "近くの核種", "Nearby nuclides")}</strong><button type="button" onClick={() => { setCandidatePoints([]); svgRef.current?.focus(); }} aria-label={translate(language, "閉じる", "Close")}>×</button></div>
-                  <ul>{candidatePoints.map((point) => <li key={point.key}><button type="button" onClick={() => centerRecord(point.record)}><strong>{nuclideLabel(point.record[0], point.record[1])}</strong><span>{decayLabel(point.record[9], language)}</span></button></li>)}</ul>
-                </div> : null}
+                {hoveredPoint && !candidatePoints.length ? <div className="atlas-map-tooltip" role="status"><strong>{nuclideLabel(hoveredPoint.nuclide)}</strong><span>{modeLabel(hoveredPoint.nuclide.displayMode, language)}{hoveredPoint.nuclide.metastableCount ? ` · +${hoveredPoint.nuclide.metastableCount}m` : ""}</span></div> : null}
+                {candidatePoints.length ? <div ref={candidateDialogRef} className="atlas-map-candidates" role="dialog" tabIndex={-1} aria-label={translate(language, "近くの核種", "Nearby nuclides")} onKeyDown={(event) => { if (event.key === "Escape") { setCandidatePoints([]); svgRef.current?.focus(); } }}><div><strong>{translate(language, "近くの核種", "Nearby nuclides")}</strong><button type="button" onClick={() => { setCandidatePoints([]); svgRef.current?.focus(); }} aria-label={translate(language, "閉じる", "Close")}>×</button></div><ul>{candidatePoints.map((point) => <li key={point.nuclide.id}><button type="button" onClick={() => centerNuclide(point.nuclide)}><strong>{nuclideLabel(point.nuclide)}</strong><span>{modeLabel(point.nuclide.displayMode, language)}</span></button></li>)}</ul></div> : null}
               </div>
-              <figcaption>
-                {selected ? <><strong>{nuclideLabel(selected[0], selected[1])}</strong> · Z {selected[2]} / N {selected[1] - selected[2]}</> : <><strong>{translate(language, "全体表示", "Overview")}</strong> · {filteredPoints.length.toLocaleString()} / {MAP_RADIONUCLIDES.length.toLocaleString()} {translate(language, "核種", "nuclides")}</>}
-                <span>{translate(language, "ドラッグで移動 · ホイールで拡大 · 矢印キーでも移動", "Drag to pan · Wheel to zoom · Arrow keys to pan")}</span>
-              </figcaption>
+              <figcaption>{selected ? <><strong>{nuclideLabel(selected)}</strong> · Z {selected.z} / N {selected.n}</> : <><strong>{translate(language, "全体表示", "Overview")}</strong> · {filteredPoints.length.toLocaleString()} / {nuclides.length.toLocaleString()} {translate(language, "核種", "nuclides")}</>}<span>{translate(language, "ドラッグで移動 · ホイールで拡大 · 矢印キーでも移動", "Drag to pan · Wheel to zoom · Arrow keys to pan")}</span></figcaption>
             </figure>
           ) : (
-            <div className="atlas-featured-list" role="group" aria-label={translate(language, "代表核種", "Featured nuclides")}>{featured.map((record) => <button type="button" key={recordKey(record)} aria-pressed={recordKey(record) === state.selectedKey} onClick={() => centerRecord(record)}><strong>{nuclideLabel(record[0], record[1])}</strong><span>{decayLabel(record[9], language)} → {nuclideLabel(record[3], record[4])}</span></button>)}</div>
+            <div className="atlas-featured-list" role="group" aria-label={translate(language, "代表核種", "Featured nuclides")}>{featured.map((nuclide) => <button type="button" key={nuclide.id} aria-pressed={nuclide.id === state.selectedKey} onClick={() => centerNuclide(nuclide)}><strong>{nuclideLabel(nuclide)}</strong><span>{modeLabel(nuclide.displayMode, language)} · {nuclide.stateCount} {translate(language, "状態", "states")}</span></button>)}</div>
           )}
 
           <aside className={`atlas-controls${mobileControlsOpen ? " is-open" : ""}`} aria-label={translate(language, "地図の操作", "Map controls")}>
-            <button className="atlas-mobile-controls-toggle" type="button" aria-expanded={mobileControlsOpen} onClick={() => setMobileControlsOpen((open) => !open)}><span>{selected ? nuclideLabel(selected[0], selected[1]) : translate(language, "核種を探す", "Find a nuclide")}</span><b>{mobileControlsOpen ? "−" : "+"}</b></button>
+            <button className="atlas-mobile-controls-toggle" type="button" aria-expanded={mobileControlsOpen} onClick={() => setMobileControlsOpen((open) => !open)}><span>{selected ? nuclideLabel(selected) : translate(language, "核種を探す", "Find a nuclide")}</span><b>{mobileControlsOpen ? "−" : "+"}</b></button>
             <div className="atlas-controls-body">
-              <div className="atlas-search">
-                <label htmlFor="atlas-nuclide-search">{translate(language, "核種を検索", "Find a nuclide")}</label>
-                <form onSubmit={(event) => { event.preventDefault(); if (searchMatches[0]) centerRecord(searchMatches[0]); }}>
-                  <input id="atlas-nuclide-search" type="search" value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Co-60 / U-238" autoComplete="off" aria-describedby="atlas-search-status" />
-                  <button type="submit" disabled={!searchMatches.length}>{translate(language, "開く", "Open")}</button>
-                </form>
-                <p id="atlas-search-status" className="atlas-search-status" aria-live="polite">{normalizedSearchQuery ? translate(language, `${searchMatches.length.toLocaleString()}件。Enterで開く`, `${searchMatches.length.toLocaleString()} match${searchMatches.length === 1 ? "" : "es"}. Press Enter to open.`) : translate(language, "代表核種から選ぶ", "Choose a featured nuclide")}</p>
-              </div>
-              <div className="atlas-search-results" role="group" aria-label={translate(language, "検索結果", "Nuclide search results")}>{visibleCandidates.length ? visibleCandidates.map((record) => <button type="button" key={recordKey(record)} aria-pressed={recordKey(record) === state.selectedKey} onClick={() => centerRecord(record)}><strong>{nuclideLabel(record[0], record[1])}</strong><span>{decayLabel(record[9], language)} → {nuclideLabel(record[3], record[4])}</span></button>) : <p className="atlas-no-results">{translate(language, "一致する核種がありません。", "No matching nuclide.")}</p>}</div>
-              {normalizedSearchQuery && searchMatches.length > visibleCandidates.length ? <p className="atlas-results-limit">{translate(language, `先頭${visibleCandidates.length}件`, `First ${visibleCandidates.length} shown`)}</p> : null}
-              <div className="atlas-view-toggle" role="group" aria-label={translate(language, "Atlasの表示", "Atlas view")}>
-                <button type="button" aria-pressed={state.view === "map"} onClick={() => setState((current) => ({ ...current, view: "map" }))}>{translate(language, "地図", "Map")}</button>
-                <button type="button" aria-pressed={state.view === "table"} onClick={() => setState((current) => ({ ...current, view: "table" }))}>{translate(language, "代表核種", "Featured")}</button>
-              </div>
-              <LabStateTools lab={atlasLab} language={language} state={state} onRestore={restoreState} restoreOnMount={!requestedRouteRecord} />
-              <p className="atlas-count">{MAP_RADIONUCLIDES.length.toLocaleString()} {translate(language, "件の主分岐レコード", "principal-branch records")}</p>
+              <div className="atlas-search"><label htmlFor="atlas-nuclide-search">{translate(language, "核種を検索", "Find a nuclide")}</label><form onSubmit={(event) => { event.preventDefault(); if (searchMatches[0]) centerNuclide(searchMatches[0], requestedStateLabel(searchQuery)); }}><input id="atlas-nuclide-search" type="search" value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Tc-99m / I-131" autoComplete="off" aria-describedby="atlas-search-status" /><button type="submit" disabled={!searchMatches.length}>{translate(language, "開く", "Open")}</button></form><p id="atlas-search-status" className="atlas-search-status" aria-live="polite">{normalizedSearch ? translate(language, `${searchMatches.length.toLocaleString()}件。Enterで開く`, `${searchMatches.length.toLocaleString()} match${searchMatches.length === 1 ? "" : "es"}. Press Enter to open.`) : translate(language, "代表核種から選ぶ", "Choose a featured nuclide")}</p></div>
+              <div className="atlas-search-results" role="group" aria-label={translate(language, "検索結果", "Nuclide search results")}>{visibleCandidates.length ? visibleCandidates.map((nuclide) => <button type="button" key={nuclide.id} aria-pressed={nuclide.id === state.selectedKey} onClick={() => centerNuclide(nuclide, requestedStateLabel(searchQuery))}><strong>{nuclideLabel(nuclide)}{normalizedSearch.startsWith(`${normalizeSearch(nuclideLabel(nuclide))}m`) ? requestedStateLabel(searchQuery) : ""}</strong><span>{modeLabel(nuclide.displayMode, language)} · {nuclide.stateCount} {translate(language, "状態", "states")} · {nuclide.branchCount} {translate(language, "分岐", "branches")}</span></button>) : <p className="atlas-no-results">{translate(language, "一致する核種がありません。", "No matching nuclide.")}</p>}</div>
+              {normalizedSearch && searchMatches.length > visibleCandidates.length ? <p className="atlas-results-limit">{translate(language, `先頭${visibleCandidates.length}件`, `First ${visibleCandidates.length} shown`)}</p> : null}
+              <div className="atlas-view-toggle" role="group" aria-label={translate(language, "Atlasの表示", "Atlas view")}><button type="button" aria-pressed={state.view === "map"} onClick={() => setState((current) => ({ ...current, view: "map" }))}>{translate(language, "地図", "Map")}</button><button type="button" aria-pressed={state.view === "featured"} onClick={() => setState((current) => ({ ...current, view: "featured" }))}>{translate(language, "代表核種", "Featured")}</button></div>
+              <LabStateTools lab={atlasLab} language={language} state={state} onRestore={restoreState} restoreOnMount={!requestedRouteNuclide} />
+              <p className="atlas-count">ENSDF · {ENSDF_ATLAS_INDEX.source.dataGeneratedAt.slice(0, 10)}</p>
             </div>
           </aside>
         </div>
       </section>
 
       <section className="atlas-inspector atlas-genealogy" aria-labelledby="atlas-inspector-title">
-        <div className="section-heading"><div><p className="eyebrow">NUCLIDE / GENEALOGY</p><h2 id="atlas-inspector-title">{selected ? nuclideLabel(selected[0], selected[1]) : translate(language, "核種を選択", "Select a nuclide")}</h2></div><p>{selected ? translate(language, "選択核種の壊変を追う", "Trace the selected decay.") : translate(language, "検索または地図から観察を始めます。", "Begin from search or the map.")}</p></div>
-        {selected ? <>
-          <div className="atlas-inspector-grid atlas-trace">
-            <article className="nuclide-card current"><span>{translate(language, "親核種", "PARENT")}</span><strong>{nuclideLabel(selected[0], selected[1])}</strong><p>Z {selected[2]} / N {selected[1] - selected[2]}</p><small>T½ {halfLifeLabel(selected[7], selected[8], language)}</small></article>
-            <div className="nuclide-arrow"><span>{decayLabel(selected[9], language)}</span><b aria-hidden="true">→</b><small>{(selected[10] * 100).toFixed(selected[10] < .9995 ? 2 : 0)}%</small></div>
-            {daughter ? <button className="nuclide-card daughter" type="button" onClick={() => centerRecord(daughter)}><span>{translate(language, "代表的な娘核種", "DAUGHTER")}</span><strong>{nuclideLabel(selected[3], selected[4])}{selected[6] ? "m" : ""}</strong><p>Z {selected[5]} / N {selected[4] - selected[5]}</p><small>{translate(language, "クリックして追跡", "Click to trace")}</small></button> : <article className="nuclide-card"><span>{translate(language, "代表的な娘核種", "DAUGHTER")}</span><strong>{nuclideLabel(selected[3], selected[4])}{selected[6] ? "m" : ""}</strong><p>Z {selected[5]} / N {selected[4] - selected[5]}</p><small>{translate(language, "この表では終端", "catalog endpoint")}</small></article>}
-          </div>
-          <div className="atlas-parents"><h3>{translate(language, "近傍の祖先", "Nearby ancestors")}</h3>{parents.length ? <ul>{parents.map((record) => <li key={recordKey(record)}><button type="button" onClick={() => centerRecord(record)}>{nuclideLabel(record[0], record[1])}</button><span>{decayLabel(record[9], language)} → {nuclideLabel(selected[0], selected[1])}</span></li>)}</ul> : <p>{translate(language, "この主分岐カタログには近傍の祖先がありません。", "No nearby parent is present in this principal-branch catalog.")}</p>}</div>
-        </> : <div className="atlas-empty-selection"><span aria-hidden="true">⌖</span><p>{translate(language, "代表核種を選ぶか、地図を拡大して核種を探してください。", "Choose a featured nuclide or zoom the map to explore.")}</p></div>}
+        <div className="section-heading"><div><p className="eyebrow">NUCLIDE / STATE / BRANCH</p><h2 id="atlas-inspector-title">{selected ? nuclideLabel(selected) : translate(language, "核種を選択", "Select a nuclide")}</h2></div><p>{selected ? translate(language, "状態を選び、壊変先をたどります。", "Choose a state, then trace its decay.") : translate(language, "検索または地図から観察を始めます。", "Begin from search or the map.")}</p></div>
+        {!selected ? <div className="atlas-empty-selection"><span aria-hidden="true">⌖</span><p>{translate(language, "代表核種を選ぶか、地図を拡大して核種を探してください。", "Choose a featured nuclide or zoom the map to explore.")}</p></div> : null}
+        {selected && detailStatus === "loading" ? <p className="atlas-detail-status" role="status">{translate(language, "状態データを読み込み中…", "Loading state data…")}</p> : null}
+        {selected && detailStatus === "error" ? <p className="atlas-detail-status is-error" role="alert">{translate(language, "状態データを読み込めませんでした。", "State data could not be loaded.")}</p> : null}
+        {selected && selectedState ? <>
+          <div className="atlas-state-selector" role="group" aria-label={translate(language, "核状態", "Nuclear state")}>{selectedStates.map((item) => <button type="button" key={item.id} aria-pressed={item.id === selectedState.id} onClick={() => { setState((current) => ({ ...current, selectedStateId: item.id })); replaceExperimentQuery("nuclide", `${nuclideLabel(selected)}${item.label === "g" ? "" : item.label}`); }}><strong>{stateLabel(item)}</strong><span>{stateEnergy(item, language)}</span></button>)}</div>
+          <div className="atlas-state-summary"><article className="nuclide-card current"><span>{translate(language, "選択中", "SELECTED")}</span><strong>{nuclideLabel(selected)}{selectedState.label === "g" ? "" : selectedState.label}</strong><p>Z {selected.z} / N {selected.n}</p><small>T½ {halfLifeLabel(selectedState, language)}</small></article><dl className="atlas-state-metrics"><div><dt>{translate(language, "状態", "State")}</dt><dd>{stateEnergy(selectedState, language)}</dd></div><div><dt>Jπ</dt><dd>{selectedState.spinParity ?? "—"}</dd></div><div><dt>{translate(language, "収録分岐", "Recorded branches")}</dt><dd>{selectedBranches.length}</dd></div><div><dt>{translate(language, "流入記録", "Incoming records")}</dt><dd>{selected.incomingCount}</dd></div></dl></div>
+          {selectedState.stability === "stable" ? <div className="atlas-stable-panel"><span aria-hidden="true">◎</span><div><strong>{translate(language, "安定核", "Stable nuclide")}</strong><p>{translate(language, "ENSDFで安定と評価されています。壊変経路は表示しません。", "Evaluated as stable in ENSDF. No decay path is shown.")}</p></div></div> : <div className="atlas-branch-panel"><div className="atlas-branch-heading"><h3>{translate(language, "収録された壊変", "Recorded decays")}</h3><span>{selectedBranches.length}</span></div>{selectedBranches.length ? <ol className="atlas-branch-list">{selectedBranches.slice(0, 12).map((branch) => { const daughter = nuclideIndex.get(nuclideIdFromStateId(branch.daughterStateId)); return <li key={branch.id}><span className={`atlas-branch-mode atlas-mode--${branch.displayMode}`}>{modeLabel(branch.displayMode, language)}</span><b aria-hidden="true">→</b>{daughter ? <button type="button" onClick={() => jumpToDaughter(branch)}><strong>{nuclideLabel(daughter)}{branch.daughterStateId.endsWith(":g") ? "" : branch.daughterStateId.split(":")[1]}</strong><span>{branchFraction(branch, language)}</span></button> : <span>—</span>}</li>; })}</ol> : <p>{translate(language, "この状態には壊変レコードがありません。安定とは限りません。", "No decay record is attached to this state; this does not imply stability.")}</p>}{selectedBranches.length > 12 ? <small>{translate(language, `先頭12件を表示（全${selectedBranches.length}件）`, `Showing 12 of ${selectedBranches.length}`)}</small> : null}</div>}
+        </> : null}
       </section>
 
-      <section className="related-labs atlas-handoffs" aria-labelledby="related-labs-title">
-        <div><p className="eyebrow">NEXT WINDOW</p><h2 id="related-labs-title">{translate(language, "次の観察", "Continue observing")}</h2></div>
-        <div className="related-lab-links">
-          <Link href={hasDecayPreset && selectedCode ? `/labs/decay?nuclide=${encodeURIComponent(selectedCode)}` : "/labs/decay"}>Decay Lab <span>{hasDecayPreset ? translate(language, "この核種で壊変を観察", "observe this nuclide") : translate(language, "壊変モデルを開く", "open the decay model")}</span></Link>
-          <Link href={hasMappedSource && source ? `/labs/detector?source=${source}` : "/labs/detector"}>Detector Lab <span>{hasMappedSource ? translate(language, "応答を比較", "compare response") : translate(language, "検出器を比較", "compare detectors")}</span></Link>
-          <Link href={hasMappedSource && source ? `/labs/pulse?source=${source}` : "/labs/pulse"}>Pulse Lab <span>{hasMappedSource ? translate(language, "波形を観察", "inspect the waveform") : translate(language, "パルスモデルを開く", "open the pulse model")}</span></Link>
-          <Link href="/about#atlas">About <span>{translate(language, "モデルと制約を見る", "inspect model and limits")}</span></Link>
-        </div>
-      </section>
+      <section className="related-labs atlas-handoffs" aria-labelledby="related-labs-title"><div><p className="eyebrow">NEXT WINDOW</p><h2 id="related-labs-title">{translate(language, "次の観察", "Continue observing")}</h2></div><div className="related-lab-links"><Link href={hasDecayPreset && selectedCode ? `/labs/decay?nuclide=${encodeURIComponent(selectedCode)}` : "/labs/decay"}>Decay Lab <span>{hasDecayPreset ? translate(language, "この核種で壊変を観察", "observe this nuclide") : translate(language, "壊変モデルを開く", "open the decay model")}</span></Link><Link href={hasMappedSource ? `/labs/detector?source=${source}` : "/labs/detector"}>Detector Lab <span>{hasMappedSource ? translate(language, "応答を比較", "compare response") : translate(language, "検出器を比較", "compare detectors")}</span></Link><Link href={hasMappedSource ? `/labs/pulse?source=${source}` : "/labs/pulse"}>Pulse Lab <span>{hasMappedSource ? translate(language, "波形を観察", "inspect the waveform") : translate(language, "パルスモデルを開く", "open the pulse model")}</span></Link><Link href="/about#atlas">About <span>{translate(language, "モデルと制約を見る", "inspect model and limits")}</span></Link></div></section>
     </LabLayout>
   );
 }

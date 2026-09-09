@@ -79,6 +79,20 @@ export const NUDAT_FOOTPRINT_DATASET: DatasetReference = {
   license: "Citation and provenance notes in DATA_PROVENANCE.md.",
 };
 
+export const ENSDF_ATLAS_DATASET: DatasetReference = {
+  id: "nndc-ensdf-atlas",
+  version: "ENSDF API snapshot 2026-08-10",
+  display: { ja: "ENSDF 評価済み核構造データ", en: "ENSDF evaluated nuclear structure data" },
+  role: {
+    ja: "核種、核状態、評価済み壊変レコードによるAtlas地図",
+    en: "Atlas map of nuclides, nuclear states, and evaluated decay records",
+  },
+  source: "National Nuclear Data Center ENSDF public beta API snapshot.",
+  license: "Local evaluation only while redistribution terms are under review. See ENSDF_IMPORT.md.",
+  sourceHref: "https://www.nndc.bnl.gov/ensdf-api/",
+  licenseHref: "https://www.nndc.bnl.gov/nudat3/guide/#terms",
+};
+
 export const TEACHING_MODEL_DATASET: DatasetReference = {
   id: "phenomena-teaching-models",
   version: "Foundation v1",
@@ -151,22 +165,22 @@ export const LAB_REGISTRY = [
     title: { ja: "Nuclide Atlas", en: "Nuclide Atlas" },
     summary: { ja: "陽子数と中性子数の地図から系譜をたどる", en: "Navigate genealogy from a proton–neutron map" },
     description: {
-      ja: "核種地図、代表的な娘核種、近傍の祖先を一つの実験ビューにまとめ、関連するLabへ移動できます。",
-      en: "Bring a nuclide map, representative daughters, nearby ancestors, and links to related Labs into one experiment view.",
+      ja: "核種地図から基底・準安定状態を選び、評価済みの壊変先をたどって関連Labへ移動できます。",
+      en: "Choose ground or metastable states on the nuclide map, trace evaluated decay destinations, and continue to related Labs.",
     },
     status: "foundation",
-    datasets: [NUCLEAR_DATASET, NUDAT_FOOTPRINT_DATASET],
-    assumptions: [{ ja: "各核種はカタログの最大支持分岐一つで表示します。", en: "Each nuclide is shown with one highest-supported catalog branch." }],
-    constraints: [{ ja: "これは完全な壊変図式でも、最新の核種データベースでもありません。", en: "This is neither a complete decay scheme nor a current nuclide database." }],
+    datasets: [ENSDF_ATLAS_DATASET],
+    assumptions: [{ ja: "地図上は核種ごとに一点を置き、基底状態の安定性または代表的な壊変形式で色分けします。", en: "The map places one point per nuclide and colors it by evaluated ground-state stability or a representative decay mode." }],
+    constraints: [{ ja: "APIの娘核種データには状態指定がないため、壊変先は基底状態として表示します。分岐比未収録は推定せず、レベル図式や放射線放出を再構成しません。", en: "Because the API daughter payload does not identify a state, destinations are shown as ground states. Missing branching ratios are not inferred, and level or emission schemes are not reconstructed." }],
     languages: ["ja", "en"],
     variables: [
       { id: "selected-nuclide", label: { ja: "選択核種", en: "Selected nuclide" }, unit: { ja: "核種", en: "nuclide" }, kind: "parameter" },
-      { id: "principal-daughter", label: { ja: "代表的な娘核種", en: "Representative daughter" }, unit: { ja: "核種", en: "nuclide" }, kind: "observation" },
-      { id: "branch-fraction", label: { ja: "カタログ分岐比", en: "Catalog branch fraction" }, unit: { ja: "%", en: "%" }, kind: "observation" },
+      { id: "selected-state", label: { ja: "選択状態", en: "Selected state" }, unit: { ja: "g / mN", en: "g / mN" }, kind: "parameter" },
+      { id: "decay-destinations", label: { ja: "収録壊変先", en: "Recorded decay destinations" }, unit: { ja: "核種", en: "nuclides" }, kind: "observation" },
     ],
     stateKey: "atlas-v1",
-    citations: ["Bundled catalog: ICRP-107 / AME2020 / Nubase2020 via radioactivedecay 0.6.1."],
-    licenses: ["MIT software license; separate ICRP-07 data terms."],
+    citations: ["National Nuclear Data Center, ENSDF public beta API, data release generated 2026-08-10."],
+    licenses: ["MIT software; ENSDF snapshot remains local-only pending redistribution review."],
     safety: commonSafety,
   },
   {

@@ -28,9 +28,15 @@
         "nuclides": 3445,
         "adoptedGroundStates": 3420,
         "stableGroundStates": 243,
-        "decays": 4410
+        "decays": 4410,
+        "atlasChartNuclides": 3441,
+        "atlasStates": 4362,
+        "atlasMetastableStates": 921,
+        "atlasBranches": 4409,
+        "atlasShards": 119
       },
       "dataSha256": "06403777de2d192e4b25af5c4ded918c07163f29d2f04ed49381a993ebd3a2bd",
+      "atlasIndexSha256": "cf9ed757a369063ba122c03b7847431a36a523870ba1140e8660bb4270011fb5",
       "sourceHref": "https://www.nndc.bnl.gov/ensdf-api/",
       "termsHref": "https://www.nndc.bnl.gov/nudat3/guide/#terms",
       "allowedDistributionProfiles": []
