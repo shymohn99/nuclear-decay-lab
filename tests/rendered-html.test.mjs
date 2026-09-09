@@ -38,7 +38,7 @@ test("server-renders the visual-first four-Lab index", async () => {
 test("server-renders every Foundation Lab route and migration route", async () => {
   const routes = [
     ["/labs/decay", /particle-svg/, /SIMULATOR/, /<title>Decay Lab \| Phenomena<\/title>/],
-    ["/labs/atlas", /MAP \/ SELECTION/, /atlas-nuclide-search/, /<title>Nuclide Atlas \| Phenomena<\/title>/],
+    ["/labs/atlas", /OVERVIEW \/ LOCATE \/ TRACE/, /atlas-nuclide-search/, /<title>Nuclide Atlas \| Phenomena<\/title>/],
     ["/labs/detector", /RELATIVE EXPECTATION/, /GM/, /<title>Detector Lab \| Phenomena<\/title>/],
     ["/labs/pulse", /EVENT STREAM/, /Pulse Lab/, /<title>Pulse Lab \| Phenomena<\/title>/],
     ["/decay", /Decay Lab has moved/, /Open Decay Lab/, /<title>Decay Lab \| Phenomena<\/title>/],
@@ -189,13 +189,21 @@ test("ships a typed registry, common state primitives, and bounded science model
   assert.match(legacyDecay, /window\.location\.hash/);
   assert.match(atlas, /normalizeNuclideSearch/);
   assert.match(atlas, /matchesDecay/);
+  assert.match(atlas, /searchMatchRank/);
+  assert.match(atlas, /if \(parentNuclide === query\) return 0/);
   assert.match(atlas, /atlas-nuclide-search/);
   assert.match(atlas, /atlas-search-results" role="group"/);
   assert.match(atlas, /searchMatches\.slice\(0, 12\)/);
   assert.match(atlas, /onKeyDown/);
-  assert.match(atlas, /atlas-map-points/);
-  assert.match(atlas, /atlas-map-points" aria-hidden="true"/);
-  assert.match(atlas, /tabIndex=\{-1\}/);
+  assert.match(atlas, /selectedKey: null/);
+  assert.match(atlas, /atlas-density-layer/);
+  assert.match(atlas, /atlas-zoom-controls/);
+  assert.match(atlas, /atlas-mode-filter/);
+  assert.match(atlas, /atlas-map-candidates/);
+  assert.match(atlas, /event\.key === "Escape"/);
+  assert.match(atlas, /onWheel=\{handleMapWheel\}/);
+  assert.match(atlas, /onPointerMove=\{handlePointerMove\}/);
+  assert.doesNotMatch(atlas, /atlas-map-points/);
   assert.match(atlas, /className="nuclide-card daughter"/);
   assert.match(atlas, /\/labs\/pulse\?source=/);
   assert.match(atlas, /\/about#atlas/);
