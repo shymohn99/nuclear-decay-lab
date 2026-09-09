@@ -2548,6 +2548,7 @@ export default function Home() {
             <Link href="/labs/atlas">02 / Atlas</Link>
             <Link href="/labs/detector">03 / Detector</Link>
             <Link href="/labs/pulse">04 / Pulse</Link>
+            <Link href="/about#decay">{t("モデルを確認", "Inspect model")} <span aria-hidden="true">↗</span></Link>
           </nav>
         </div>
       </header>

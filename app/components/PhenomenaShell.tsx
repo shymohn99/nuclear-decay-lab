@@ -89,6 +89,7 @@ export function PhenomenaHeader({ language, onLanguageChange, currentLab }: Read
               {lab.labNumber} / {localize(language, lab.title)}
             </Link>
           ))}
+          {currentLab ? <Link href={`/about#${currentLab.id}`}>{translate(language, "モデルを確認", "Inspect model")} <span aria-hidden="true">↗</span></Link> : null}
         </nav>
         <LanguageToggle language={language} onChange={onLanguageChange} />
       </div>
