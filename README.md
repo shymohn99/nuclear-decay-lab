@@ -57,5 +57,6 @@ npm run build:pages
 - [Architecture](docs/ARCHITECTURE.md)
 - [Lab authoring](docs/LAB_AUTHORING.md)
 - [Data provenance](docs/DATA_PROVENANCE.md)
+- [ENSDF Atlas import](docs/ENSDF_IMPORT.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Current state](docs/PHENOMENA_STATE.md)

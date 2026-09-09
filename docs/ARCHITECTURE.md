@@ -46,6 +46,8 @@ measurement configuration or inferred result.
 
 - `app/lib/labs.ts` is the typed manifest registry. Every Lab declares its identity, collection, data, assumptions, constraints, variables/units, state key, citations, licenses, languages, and safety boundary.
 - `app/lib/experiment.ts` supplies browser-local, versioned state envelopes; seeded PRNG; safe CSV cells; common provenance rows; and CSV download.
+- `app/lib/nuclide-catalog.ts` is the source-neutral nuclide/state/branch graph. It currently imports the 992-row Foundation tuple and proves a lossless compatibility projection before Atlas adopts a reviewed ENSDF snapshot.
+- `scripts/sync-ensdf-atlas.mjs` creates a checksum-locked, local-only ENSDF snapshot under ignored `work/`; `data/nuclear/sources.lock.json` records the reviewed release without distributing its payload.
 - `app/lib/nuclear-models.ts` contains pure decay, detector-response, and Pulse generation functions. It is deliberately not a generic physics framework.
 - `app/components/PhenomenaShell.tsx` provides the shared bilingual shell, language persistence, reduced-motion preference hook, metadata, safety note, inspectable model disclosure, and save/clear controls.
 

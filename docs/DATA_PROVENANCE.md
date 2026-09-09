@@ -12,6 +12,11 @@ The repository software is MIT licensed. The bundled nuclide records are not aut
 | Detector teaching model | Foundation v1 | Detector Lab | Author-defined relative coefficients for distance, transmission, detector response, and background. Not calibration data; no activity, dose, geometry, dead time, scattering, or source-specific response. |
 | Pulse teaching model | Foundation v1 | Pulse Lab | Synthetic seeded events. Representative energy anchors: Cs-137 662 keV, Co-60 1173/1332 keV, I-131 364 keV. They are rounded educational anchors, not a licensed identification library or spectrum database. |
 
+Atlas Phase 2 adds a canonical nuclide/state/branch schema and a reproducible
+NNDC ENSDF API sync. The reviewed local snapshot is locked in
+`data/nuclear/sources.lock.json`, while its 7.8 MB payload remains below ignored
+`work/ensdf/` and is not shipped. See `ENSDF_IMPORT.md` for the bundling gate.
+
 The original catalog header identifies its upstream derivation. AME/Nubase citation material is referenced through the upstream `radioactivedecay` project, but this repository does not bundle a source extraction script, an AMDC license file, a snapshot date, or a checksum. Before redistribution beyond the existing terms—or any commercial use—obtain and record those items or replace the dataset.
 
 ## Model assumptions

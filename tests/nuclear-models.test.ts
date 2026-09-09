@@ -13,6 +13,14 @@ import { createSeededRandom, experimentProvenanceRows, readExperimentQuery, toCs
 import { getLab } from "../app/lib/labs.ts";
 import { MAP_RADIONUCLIDES } from "../app/radionuclides.ts";
 import {
+  FOUNDATION_NUCLIDE_CATALOG,
+  buildLegacyNuclideCatalog,
+  catalogNuclideId,
+  catalogStateId,
+  projectLegacyNuclideRecords,
+  validateNuclideCatalog,
+} from "../app/lib/nuclide-catalog.ts";
+import {
   DECAY_BRANCHING_SCHEMES,
   DECAY_BRANCHING_VERSION,
   resolveDecayBranchingScheme,
@@ -127,6 +135,30 @@ test("bundled nuclide catalog has unique parents and representative Foundation r
     MAP_RADIONUCLIDES.find((record) => record[0] === "Co" && record[1] === 60),
     ["Co", 60, 27, "Ni", 60, 28, false, 5.2713, "年", "beta-minus", 1],
   );
+});
+
+test("canonical nuclide graph preserves the Foundation catalog without claiming completeness", () => {
+  const catalog = FOUNDATION_NUCLIDE_CATALOG;
+  assert.equal(catalog.source.scope, "ground-state-parent-principal-branch");
+  assert.equal(catalog.branches.length, MAP_RADIONUCLIDES.length);
+  assert.deepEqual(projectLegacyNuclideRecords(catalog), MAP_RADIONUCLIDES);
+  assert.deepEqual(validateNuclideCatalog(catalog), []);
+  assert.ok(catalog.nuclides.length >= MAP_RADIONUCLIDES.length);
+  assert.equal(new Set(catalog.nuclides.map((nuclide) => nuclide.id)).size, catalog.nuclides.length);
+  const cobaltId = catalogNuclideId(27, 60);
+  const cobaltState = catalog.states.find((state) => state.id === catalogStateId(cobaltId));
+  assert.equal(cobaltState?.halfLife?.value, 5.2713);
+  assert.equal(cobaltState?.halfLife?.unit, "年");
+  assert.ok(Math.abs((cobaltState?.halfLife?.seconds ?? 0) - 166_349_576.88) < 0.01);
+  const cobaltBranch = catalog.branches.find((branch) => branch.parentStateId === cobaltState?.id);
+  assert.equal(cobaltBranch?.daughterStateId, catalogStateId(catalogNuclideId(28, 60)));
+  assert.equal(cobaltBranch?.mode, "beta-minus");
+});
+
+test("canonical nuclide graph validator rejects broken physical identity", () => {
+  const catalog = buildLegacyNuclideCatalog(MAP_RADIONUCLIDES.slice(0, 1));
+  const broken = { ...catalog, nuclides: [{ ...catalog.nuclides[0], neutronNumber: 99 }, ...catalog.nuclides.slice(1)] };
+  assert.match(validateNuclideCatalog(broken).join("\n"), /A != Z \+ N/);
 });
 
 test("shared CSV provenance keeps a Lab's data and model boundary traceable", () => {

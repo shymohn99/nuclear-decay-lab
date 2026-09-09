@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "foundation-radionuclide-catalog",
+      "status": "bundled-restricted",
+      "version": "radioactivedecay 0.6.1-derived",
+      "scope": "ground-state-parent-principal-branch",
+      "recordCounts": {
+        "principalBranches": 992
+      },
+      "noticePaths": [
+        "public/data/LICENSE.TXT",
+        "public/data/LICENSE.ICRP-07.txt"
+      ],
+      "allowedDistributionProfiles": [
+        "education-research-non-commercial-with-notice"
+      ]
+    },
+    {
+      "id": "nndc-ensdf-api-preview",
+      "status": "local-review-only",
+      "apiVersion": "Open Beta",
+      "schemaVersion": "1.0.0",
+      "dataGeneratedAt": "2026-08-10T15:57:13Z",
+      "retrievedAt": "2026-09-09T18:14:18.050Z",
+      "recordCounts": {
+        "nuclides": 3445,
+        "adoptedGroundStates": 3420,
+        "stableGroundStates": 243,
+        "decays": 4410
+      },
+      "dataSha256": "06403777de2d192e4b25af5c4ded918c07163f29d2f04ed49381a993ebd3a2bd",
+      "sourceHref": "https://www.nndc.bnl.gov/ensdf-api/",
+      "termsHref": "https://www.nndc.bnl.gov/nudat3/guide/#terms",
+      "allowedDistributionProfiles": []
+    }
+  ]
+}

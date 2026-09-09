@@ -72,11 +72,12 @@ test("server-renders every Foundation Lab route and migration route", async () =
 });
 
 test("ships a typed registry, common state primitives, and bounded science models", async () => {
-  const [registry, shell, experiment, models, home, about, legacyDecay, decay, atlas, detector, pulse, layout, site, pagesBuild, css, readme, authoring, provenance, stateDocument, sitemap, dataLicense] = await Promise.all([
+  const [registry, shell, experiment, models, catalog, home, about, legacyDecay, decay, atlas, detector, pulse, layout, site, pagesBuild, ensdfSync, css, readme, architecture, authoring, provenance, ensdfImport, sourceLock, stateDocument, sitemap, dataLicense] = await Promise.all([
     readFile(new URL("../app/lib/labs.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/PhenomenaShell.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/lib/experiment.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/lib/nuclear-models.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/lib/nuclide-catalog.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/about/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/decay/page.tsx", import.meta.url), "utf8"),
@@ -87,10 +88,14 @@ test("ships a typed registry, common state primitives, and bounded science model
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/lib/site.ts", import.meta.url), "utf8"),
     readFile(new URL("../scripts/build-pages.mjs", import.meta.url), "utf8"),
+    readFile(new URL("../scripts/sync-ensdf-atlas.mjs", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../README.md", import.meta.url), "utf8"),
+    readFile(new URL("../docs/ARCHITECTURE.md", import.meta.url), "utf8"),
     readFile(new URL("../docs/LAB_AUTHORING.md", import.meta.url), "utf8"),
     readFile(new URL("../docs/DATA_PROVENANCE.md", import.meta.url), "utf8"),
+    readFile(new URL("../docs/ENSDF_IMPORT.md", import.meta.url), "utf8"),
+    readFile(new URL("../data/nuclear/sources.lock.json", import.meta.url), "utf8"),
     readFile(new URL("../docs/PHENOMENA_STATE.md", import.meta.url), "utf8"),
     readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8"),
     readFile(new URL("../public/data/LICENSE.TXT", import.meta.url), "utf8"),
@@ -147,6 +152,17 @@ test("ships a typed registry, common state primitives, and bounded science model
   assert.match(about, /大学教育のためのモデルです。/);
   assert.match(about, /放射線安全、被ばく線量/);
   assert.match(models, /computeDetectorResponse/);
+  assert.match(catalog, /ground-state-parent-principal-branch/);
+  assert.match(catalog, /catalogNuclideId/);
+  assert.match(catalog, /validateNuclideCatalog/);
+  assert.match(ensdfSync, /dataGeneratedAt/);
+  assert.match(ensdfSync, /review-required-before-bundling/);
+  assert.match(ensdfSync, /inside the ignored work\//);
+  assert.match(ensdfImport, /Do not copy the generated snapshot/);
+  assert.match(architecture, /source-neutral nuclide\/state\/branch graph/);
+  assert.match(sourceLock, /"status": "local-review-only"/);
+  assert.match(sourceLock, /"decays": 4410/);
+  assert.match(sourceLock, /"allowedDistributionProfiles": \[\]/);
   assert.match(models, /generatePulseRun/);
   assert.match(models, /binPulseEvents/);
   assert.match(models, /Uniform background is intentional/);
