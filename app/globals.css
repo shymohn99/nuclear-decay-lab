@@ -4765,6 +4765,415 @@ summary:focus-visible {
   }
 }
 
+/* Phase 2 / Decay: a focused instrument view ---------------------------- */
+.lab-shell:has(.field-play-toggle) {
+  --decay-accent: #d8663e;
+  --decay-accent-dark: #a9492f;
+  background:
+    linear-gradient(90deg, transparent calc(50% - .5px), rgba(23, 24, 21, .055) 50%, transparent calc(50% + .5px)),
+    #ecece5;
+}
+
+.lab-shell:has(.field-play-toggle) .hero-copy {
+  padding-top: clamp(27px, 4vw, 54px);
+  padding-bottom: clamp(22px, 3vw, 36px);
+  border-bottom: 1px solid var(--ink);
+}
+
+.lab-shell:has(.field-play-toggle) .hero-copy h1 {
+  font-weight: 640;
+  letter-spacing: -.075em;
+}
+
+.lab-shell:has(.field-play-toggle) .hero-description {
+  max-width: 560px;
+  color: #4c554f;
+  font-size: 13px;
+}
+
+.lab-shell:has(.field-play-toggle) .decay-hero-context {
+  border-color: var(--ink);
+  border-top: 3px solid var(--decay-accent);
+  box-shadow: 6px 6px 0 rgba(24, 32, 29, .1);
+}
+
+.lab-shell:has(.field-play-toggle) .simulator {
+  border-top: 0;
+  box-shadow: 8px 8px 0 rgba(24, 32, 29, .11);
+}
+
+.lab-shell:has(.field-play-toggle) .simulation-mode-bar {
+  padding: 10px 18px;
+  background: #e2e3dc;
+  border-bottom-color: var(--line-strong);
+}
+
+.lab-shell:has(.field-play-toggle) .simulation-mode-toggle {
+  border-color: var(--ink);
+}
+
+.lab-shell:has(.field-play-toggle) .simulation-mode-toggle button[aria-pressed="true"] {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.lab-shell:has(.field-play-toggle) .simulator-grid {
+  grid-template-columns: minmax(0, 1.7fr) minmax(290px, .72fr);
+  min-height: 600px;
+}
+
+.lab-shell:has(.field-play-toggle) .visual-panel {
+  background: var(--field);
+}
+
+.lab-shell:has(.field-play-toggle) .visual-toolbar {
+  min-height: 76px;
+  padding-inline: clamp(15px, 2.2vw, 28px);
+  border-bottom-color: #4a554d;
+}
+
+.lab-shell:has(.field-play-toggle) .particle-field,
+.lab-shell:has(.field-play-toggle) .particle-svg {
+  min-height: clamp(500px, 58vw, 670px);
+}
+
+.lab-shell:has(.field-play-toggle) .particle-svg {
+  cursor: crosshair;
+}
+
+.lab-shell:has(.field-play-toggle) .field-readout {
+  top: 22px;
+  left: 25px;
+  width: auto;
+  height: auto;
+  min-width: 82px;
+  min-height: 68px;
+  padding: 9px 13px;
+  border-radius: 2px;
+  border-color: #738077;
+  background: rgba(16, 25, 22, .88);
+  transform: none;
+}
+
+.lab-shell:has(.field-play-toggle) .field-readout > span {
+  font-size: 19px;
+}
+
+.field-play-toggle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 4;
+  display: grid;
+  width: clamp(118px, 15vw, 168px);
+  height: clamp(118px, 15vw, 168px);
+  place-content: center;
+  gap: 8px;
+  color: #101916;
+  border: 1px solid #ffb18d;
+  border-radius: 50%;
+  background: var(--decay-accent);
+  box-shadow: 0 0 0 10px rgba(216, 102, 62, .16), 0 16px 30px rgba(0, 0, 0, .25);
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: background-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.field-play-toggle:hover,
+.field-play-toggle:focus-visible {
+  background: #f07a50;
+  box-shadow: 0 0 0 14px rgba(216, 102, 62, .2), 0 18px 34px rgba(0, 0, 0, .3);
+  transform: translate(-50%, -50%) scale(1.035);
+}
+
+.field-play-toggle span {
+  font-family: var(--mono);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  line-height: .8;
+}
+
+.field-play-toggle small {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.lab-shell:has(.field-play-toggle) .field-hint {
+  right: 18px;
+  bottom: 16px;
+  color: #aab5ac;
+}
+
+.lab-shell:has(.field-play-toggle) .control-panel {
+  gap: 15px;
+  padding: clamp(18px, 2.2vw, 28px);
+  background: #e1e2db;
+  border-left: 3px solid var(--decay-accent);
+}
+
+.lab-shell:has(.field-play-toggle) .control-heading {
+  gap: 5px;
+  padding-bottom: 13px;
+}
+
+.lab-shell:has(.field-play-toggle) .control-heading span,
+.lab-shell:has(.field-play-toggle) .control-heading small,
+.lab-shell:has(.field-play-toggle) .control-field > label,
+.lab-shell:has(.field-play-toggle) .control-field-heading > label {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.lab-shell:has(.field-play-toggle) .control-heading strong {
+  font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+  letter-spacing: -.04em;
+}
+
+.nuclide-control {
+  display: grid;
+  gap: 8px;
+}
+
+.nuclide-control select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 34px 0 12px;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper-soft);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.nuclide-control small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.lab-shell:has(.field-play-toggle) .control-field input[type="range"] {
+  accent-color: var(--decay-accent);
+}
+
+.lab-shell:has(.field-play-toggle) .control-actions {
+  display: none;
+}
+
+.lab-shell:has(.field-play-toggle) .advanced-details {
+  margin-top: 1px;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.advanced-details summary {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .06em;
+  list-style: none;
+  text-transform: uppercase;
+}
+
+.advanced-details summary::-webkit-details-marker { display: none; }
+.advanced-details summary::after { content: "+"; color: var(--decay-accent-dark); font-size: 16px; }
+.advanced-details[open] summary::after { content: "−"; }
+.advanced-details summary:focus-visible { outline: 3px solid #1c6b73; outline-offset: 3px; }
+
+.advanced-details-body {
+  display: grid;
+  gap: 17px;
+  padding: 4px 0 18px;
+}
+
+.advanced-details .reset-seed {
+  display: grid;
+  gap: 7px;
+  padding: 0;
+  border: 0;
+}
+
+.advanced-details .reset-seed > span {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: .09em;
+}
+
+.advanced-details .reset-seed input {
+  width: 100%;
+  min-height: 36px;
+  padding: 0 9px;
+  border: 1px solid var(--line-strong);
+  background: var(--paper-soft);
+}
+
+.advanced-details small,
+.advanced-details .formula small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.advanced-details .lab-state-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.advanced-details .lab-state-tools button {
+  min-height: 34px;
+  padding-inline: 9px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 9px;
+}
+
+.advanced-details .lab-state-tools button:hover { border-color: var(--decay-accent-dark); background: rgba(216, 102, 62, .1); }
+.advanced-details .formula { margin-top: 0; padding-top: 14px; border-top: 1px solid var(--line); }
+
+.decay-handoffs {
+  display: grid;
+  grid-template-columns: minmax(200px, .65fr) minmax(0, 1.35fr);
+  gap: clamp(24px, 5vw, 72px);
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(46px, 7vw, 78px) 0;
+  border-bottom: 1px solid var(--ink);
+}
+
+.decay-handoffs-heading > span,
+.decay-handoffs-heading h2 {
+  font-family: var(--mono);
+}
+
+.decay-handoffs-heading > span {
+  color: var(--decay-accent-dark);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: .13em;
+}
+
+.decay-handoffs-heading h2 {
+  margin: 8px 0 10px;
+  font-size: clamp(1.7rem, 3vw, 2.55rem);
+  letter-spacing: -.07em;
+  line-height: 1;
+}
+
+.decay-handoffs-heading p {
+  max-width: 290px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.decay-handoff-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--ink);
+  border-left: 1px solid var(--ink);
+}
+
+.decay-handoff-card {
+  position: relative;
+  display: grid;
+  min-height: 164px;
+  align-content: start;
+  gap: 9px;
+  padding: 19px;
+  color: var(--ink);
+  border-right: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  text-decoration: none;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.decay-handoff-card--atlas { border-top: 3px solid #477b82; }
+.decay-handoff-card--detector { border-top: 3px solid #8d6838; }
+.decay-handoff-card > span { color: var(--muted); font-family: var(--mono); font-size: 9px; font-weight: 750; letter-spacing: .1em; }
+.decay-handoff-card strong { max-width: 220px; font-size: 17px; line-height: 1.25; }
+.decay-handoff-card small { max-width: 250px; color: var(--muted); font-size: 11px; line-height: 1.55; }
+.decay-handoff-card b { position: absolute; right: 18px; bottom: 16px; color: var(--decay-accent-dark); font-family: var(--mono); font-size: 18px; font-weight: 400; }
+.decay-handoff-card:hover,
+.decay-handoff-card:focus-visible { color: var(--paper-soft); background: var(--ink); }
+.decay-handoff-card:hover small,
+.decay-handoff-card:focus-visible small,
+.decay-handoff-card:hover > span,
+.decay-handoff-card:focus-visible > span { color: #c5d0c7; }
+
+.decay-boundary {
+  display: grid;
+  grid-template-columns: minmax(170px, .52fr) minmax(0, 1.4fr) auto;
+  gap: 18px 32px;
+  align-items: center;
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 22px 0 26px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.decay-boundary > div { display: grid; gap: 6px; }
+.decay-boundary > div > span { color: var(--decay-accent-dark); font-family: var(--mono); font-size: 9px; font-weight: 750; letter-spacing: .12em; }
+.decay-boundary > div > strong { font-size: 15px; }
+.decay-boundary p { max-width: 580px; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.65; }
+.decay-boundary a { display: inline-flex; min-height: 38px; align-items: center; padding: 0 11px; color: var(--ink); border: 1px solid var(--ink); font-family: var(--mono); font-size: 9px; font-weight: 750; text-decoration: none; white-space: nowrap; }
+.decay-boundary a:hover,
+.decay-boundary a:focus-visible { color: var(--paper-soft); background: var(--ink); }
+
+@media (max-width: 840px) {
+  .lab-shell:has(.field-play-toggle) .simulator-grid { grid-template-columns: 1fr; }
+  .lab-shell:has(.field-play-toggle) .control-panel { border-top: 3px solid var(--decay-accent); border-left: 0; }
+  .decay-handoffs { grid-template-columns: 1fr; gap: 24px; }
+  .decay-handoffs-heading p { max-width: 560px; }
+  .decay-boundary { grid-template-columns: minmax(160px, .55fr) minmax(0, 1fr); }
+  .decay-boundary a { grid-column: 2; justify-self: start; }
+}
+
+@media (max-width: 560px) {
+  .lab-shell:has(.field-play-toggle) .simulator-grid { min-height: 0; }
+  .lab-shell:has(.field-play-toggle) .particle-field,
+  .lab-shell:has(.field-play-toggle) .particle-svg { min-height: 420px; }
+  .lab-shell:has(.field-play-toggle) .field-readout { top: 14px; left: 14px; }
+  .field-play-toggle { width: 112px; height: 112px; }
+  .lab-shell:has(.field-play-toggle) .field-hint { right: 12px; bottom: 12px; max-width: 150px; line-height: 1.35; text-align: right; }
+  .decay-handoffs { width: calc(100% - 24px); padding: 42px 0; }
+  .decay-handoff-grid { grid-template-columns: 1fr; }
+  .decay-handoff-card { min-height: 138px; }
+  .decay-boundary { grid-template-columns: 1fr; width: calc(100% - 24px); gap: 11px; }
+  .decay-boundary a { grid-column: auto; justify-self: start; }
+}
+
+@media (max-width: 340px) {
+  .lab-shell:has(.field-play-toggle) .visual-toolbar { padding: 14px 12px; }
+  .lab-shell:has(.field-play-toggle) .legend { gap: 8px 11px; font-size: 10px; }
+  .field-play-toggle { width: 96px; height: 96px; box-shadow: 0 0 0 7px rgba(216, 102, 62, .15), 0 12px 22px rgba(0, 0, 0, .22); }
+  .field-play-toggle span { font-size: 1.75rem; }
+  .field-play-toggle small { font-size: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field-play-toggle,
+  .decay-handoff-card { transition: none; }
+}
+
 /* Phase 1: visual-first collection index and model notebook -----------------
  * Deliberately scoped to the new home/about roots so the working Lab
  * instruments retain their established geometry during the staged redesign.

@@ -54,6 +54,18 @@ test("server-renders every Foundation Lab route and migration route", async () =
     const labSlug = pathname.match(/^\/labs\/([^/]+)$/)?.[1];
     if (labSlug) assert.match(html, new RegExp(`href="/about#${labSlug}"`), pathname);
   }
+
+  const decayResponse = await render("/labs/decay");
+  const decayHtml = await decayResponse.text();
+  assert.match(decayHtml, /field-play-toggle/);
+  assert.match(decayHtml, /primary-nuclide-select/);
+  assert.match(decayHtml, /<details class="advanced-details">/);
+  assert.match(decayHtml, /decay-handoff-card--atlas/);
+  assert.match(decayHtml, /decay-handoff-card--detector/);
+  assert.match(decayHtml, /href="\/about#decay"/);
+  assert.doesNotMatch(decayHtml, /nuclide-map-stage/);
+  assert.doesNotMatch(decayHtml, /genealogy-panel/);
+  assert.doesNotMatch(decayHtml, /detector-section/);
 });
 
 test("ships a typed registry, common state primitives, and bounded science models", async () => {
@@ -135,20 +147,23 @@ test("ships a typed registry, common state primitives, and bounded science model
   assert.match(models, /generatePulseRun/);
   assert.match(models, /binPulseEvents/);
   assert.match(models, /Uniform background is intentional/);
-  assert.match(decay, /RELATIVE DETECTOR MODEL/);
-  assert.match(decay, /RELATIVE RESPONSE/);
   assert.match(decay, /Lab navigation/);
   assert.match(decay, /01 \/ Decay/);
   assert.match(decay, /skip-link/);
-  assert.match(decay, /Known nuclides: NNDC NuDat/);
+  assert.match(decay, /field-play-toggle/);
+  assert.match(decay, /aria-pressed=\{!paused\}/);
+  assert.match(decay, /primary-nuclide-select/);
+  assert.match(decay, /advanced-details/);
+  assert.match(decay, /decay-handoff-card--atlas/);
+  assert.match(decay, /encodeURIComponent\(handoffNuclide\)/);
+  assert.match(decay, /decay-handoff-card--detector/);
+  assert.match(decay, /\/about#decay/);
   assert.match(decay, /Display limit — decay continues/);
   assert.match(decay, /at display limit/);
   assert.match(decay, /chain-track-instructions/);
   assert.match(decay, /tabIndex=\{0\}/);
   assert.match(decay, /handleChainTrackKeyDown/);
   assert.doesNotMatch(decay, /reached stable/);
-  assert.match(decay, /opens in a new tab/);
-  assert.match(decay, /Software: MIT/);
   assert.doesNotMatch(decay, /all rights reserved/);
   assert.match(decay, /routeNuclide/);
   assert.match(decay, /requestedRoutePreset/);
@@ -213,6 +228,11 @@ test("ships a typed registry, common state primitives, and bounded science model
   assert.match(css, /\.chain-track:focus-visible/);
   assert.match(css, /\.reset-seed/);
   assert.match(css, /\.reset-seed input/);
+  assert.match(css, /\.lab-shell:has\(\.field-play-toggle\)/);
+  assert.match(css, /\.field-play-toggle/);
+  assert.match(css, /\.advanced-details/);
+  assert.match(css, /\.decay-handoff-grid/);
+  assert.match(css, /\.decay-boundary/);
   assert.match(css, /\.pulse-spectrum/);
   assert.match(readme, /Phenomena Foundation v1/);
   assert.match(authoring, /createLabMetadata/);

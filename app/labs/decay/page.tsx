@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LabStateTools, ModelDisclosure, SafetyNote, usePhenomenaLanguage, useReducedMotion } from "../../components/PhenomenaShell";
+import { LabStateTools, usePhenomenaLanguage, useReducedMotion } from "../../components/PhenomenaShell";
 import { createSeededRandom, downloadCsv, experimentProvenanceRows, readExperimentQuery, replaceExperimentQuery } from "../../lib/experiment";
 import { decayProbability, theoreticalPopulation } from "../../lib/nuclear-models";
 import { getLab, type Language } from "../../lib/labs";
@@ -1475,6 +1475,8 @@ function NuclideMapExplorer({
   );
 }
 
+// Kept temporarily while Atlas absorbs the legacy genealogy implementation.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function NuclideGenealogy({
   preset,
   onSelectPreset,
@@ -1617,6 +1619,8 @@ function NuclideGenealogy({
   );
 }
 
+// Kept temporarily while Detector Lab absorbs the legacy response implementation.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function DetectorLab({
   preset,
   remaining,
@@ -2491,6 +2495,16 @@ export default function Home() {
     };
   }, [atomCount, chartScale, elapsed, history, remaining]);
 
+  const handoffNuclide = `${preset.parentNuclide.element.replace("ᵐ", "")}-${preset.parentNuclide.massNumber}`;
+  const detectorSource =
+    handoffNuclide === "Cs-137"
+      ? "cesium-137"
+      : handoffNuclide === "Co-60"
+        ? "cobalt-60"
+        : handoffNuclide === "I-131"
+          ? "iodine-131"
+          : null;
+
   return (
     <>
       <script
@@ -2587,7 +2601,8 @@ export default function Home() {
         tabIndex={-1}
         aria-label={t("放射性壊変シミュレーター", "Radioactive decay simulator")}
       >
-        <div className="nuclide-catalog">
+        {/* The full catalog/map now lives in Atlas; keep the legacy branch inert so saved/query contracts remain untouched. */}
+        {false && <div className="nuclide-catalog">
           <div className="catalog-heading">
             <div>
               <span>NUCLIDE CATALOG</span>
@@ -2709,7 +2724,7 @@ export default function Home() {
               language={language}
             />
           )}
-        </div>
+        </div>}
 
         <div className="simulation-mode-bar">
           <div
@@ -3007,6 +3022,16 @@ export default function Home() {
               <span className="field-hint">
                 {t("画面を押すと検出パルスを表示", "Press the field to trigger a detector pulse")}
               </span>
+              <button
+                type="button"
+                className="field-play-toggle"
+                aria-pressed={!paused}
+                aria-label={paused ? t("シミュレーションを再開", "Resume simulation") : t("シミュレーションを一時停止", "Pause simulation")}
+                onClick={() => setPaused((value) => !value)}
+              >
+                <span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span>
+                <small>{paused ? t("再開", "Resume") : t("一時停止", "Pause")}</small>
+              </button>
             </div>
           </div>
 
@@ -3022,8 +3047,27 @@ export default function Home() {
                       `主要核種 ${chainStages.length}段階`,
                       `${chainStages.length} major stages`,
                     )
-                  : `${t("半減期", "Half-life")} ${formatNumber(preset.halfLife, language)} ${localizeUnit(preset.unit, language)}`}
-              </small>
+                : `${t("半減期", "Half-life")} ${formatNumber(preset.halfLife, language)} ${localizeUnit(preset.unit, language)}`}
+            </small>
+            </div>
+
+            <div className="control-field nuclide-control">
+              <label htmlFor="primary-nuclide-select">{t("核種", "Nuclide")}</label>
+              <select
+                id="primary-nuclide-select"
+                value={presetKey}
+                onChange={(event) => {
+                  const nextPreset = PRESETS.find((item) => item.key === event.target.value);
+                  if (nextPreset) selectPreset(nextPreset);
+                }}
+              >
+                {PRESETS.map((item) => (
+                  <option value={item.key} key={item.key}>
+                    {localizeNuclideName(item.parent, item.parentNuclide, language)} · {localizeModeLabel(item.modeLabel, language)}
+                  </option>
+                ))}
+              </select>
+              <small>{t("選択した核種の確率過程を観察します。", "Observe the stochastic process for the selected nuclide.")}</small>
             </div>
 
             {simulationMode === "chain" && (
@@ -3186,48 +3230,53 @@ export default function Home() {
               <button type="button" onClick={resetSimulation}>↻ {t("リセット", "Reset")}</button>
             </div>
 
-            <label className="reset-seed">
-              <span>RESET SEED</span>
-              <input
-                type="number"
-                min="1"
-                max={MAX_RESET_SEED}
-                step="1"
-                inputMode="numeric"
-                value={seedInput}
-                onChange={(event) => setSeedInput(event.target.value)}
-                onBlur={commitResetSeed}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") event.currentTarget.blur();
-                }}
-                aria-describedby="reset-seed-help"
-              />
-              <small id="reset-seed-help">
-                {t(
-                  "数値を変えてEnterまたはフォーカスを外すと、そのseedから再開します。配置と壊変イベント列を初期化します。画面上の時刻は端末ごとに変わります。",
-                  "Change the number and press Enter or leave the field to restart from that seed. It initializes the layout and decay-event stream; on-screen timing varies by browser.",
-                )}
-              </small>
-            </label>
+            <details className="advanced-details">
+              <summary>{t("詳細設定と再現性", "Advanced settings & reproducibility")}</summary>
+              <div className="advanced-details-body">
+                <label className="reset-seed">
+                  <span>RESET SEED</span>
+                  <input
+                    type="number"
+                    min="1"
+                    max={MAX_RESET_SEED}
+                    step="1"
+                    inputMode="numeric"
+                    value={seedInput}
+                    onChange={(event) => setSeedInput(event.target.value)}
+                    onBlur={commitResetSeed}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") event.currentTarget.blur();
+                    }}
+                    aria-describedby="reset-seed-help"
+                  />
+                  <small id="reset-seed-help">
+                    {t(
+                      "数値を変えてEnterまたはフォーカスを外すと、そのseedから再開します。配置と壊変イベント列を初期化します。画面上の時刻は端末ごとに変わります。",
+                      "Change the number and press Enter or leave the field to restart from that seed. It initializes the layout and decay-event stream; on-screen timing varies by browser.",
+                    )}
+                  </small>
+                </label>
 
-            <LabStateTools
-              lab={decayLab}
-              language={language}
-              state={savedDecayState}
-              onRestore={restoreDecayState}
-              restoreOnMount={!requestedRoutePreset}
-            />
+                <LabStateTools
+                  lab={decayLab}
+                  language={language}
+                  state={savedDecayState}
+                  onRestore={restoreDecayState}
+                  restoreOnMount={!requestedRoutePreset}
+                />
 
-            <div className="formula">
-              <span>{t("壊変の法則", "Decay law")}</span>
-              <code>N(t) = N₀ · 2<sup>−t / T½</sup></code>
-              <small>
-                {t(
-                  "時間が半減期 T½ だけ進むごとに、親核種は半分になります。",
-                  "After each half-life T½, half of the parent nuclei remain on average.",
-                )}
-              </small>
-            </div>
+                <div className="formula">
+                  <span>{t("壊変の法則", "Decay law")}</span>
+                  <code>N(t) = N₀ · 2<sup>−t / T½</sup></code>
+                  <small>
+                    {t(
+                      "時間が半減期 T½ だけ進むごとに、親核種は半分になります。",
+                      "After each half-life T½, half of the parent nuclei remain on average.",
+                    )}
+                  </small>
+                </div>
+              </div>
+            </details>
           </aside>
         </div>
 
@@ -3454,31 +3503,41 @@ export default function Home() {
         </div>
       </section>
 
-      <NuclideGenealogy
-        preset={preset}
-        onSelectPreset={selectPreset}
-        language={language}
-      />
+      <section className="decay-handoffs" aria-labelledby="handoff-title">
+        <div className="decay-handoffs-heading">
+          <span>CONTINUE THE INSTRUMENT</span>
+          <h2 id="handoff-title">{t("次の観察へ", "Continue the investigation")}</h2>
+          <p>{t("壊変の確率過程と理論曲線を確認したら、専門のラボへ進めます。", "After the stochastic process and theory curve, continue into the dedicated labs.")}</p>
+        </div>
+        <div className="decay-handoff-grid">
+          <Link className="decay-handoff-card decay-handoff-card--atlas" href={`/labs/atlas?nuclide=${encodeURIComponent(handoffNuclide)}`}>
+            <span>02 / ATLAS</span>
+            <strong>{t("核種マップと系譜", "Nuclide atlas & genealogy")}</strong>
+            <small>{t("既知核種の位置と壊変系列を探索する", "Explore nuclide positions and decay lineages")}</small>
+            <b aria-hidden="true">↗</b>
+          </Link>
+          <Link className="decay-handoff-card decay-handoff-card--detector" href={detectorSource ? `/labs/detector?source=${detectorSource}` : "/labs/detector"}>
+            <span>03 / DETECTOR</span>
+            <strong>{t("検出器の応答", "Detector response")}</strong>
+            <small>{t("遮蔽と検出器で観測信号を比較する", "Compare observed signals across detectors and shielding")}</small>
+            <b aria-hidden="true">↗</b>
+          </Link>
+        </div>
+      </section>
 
-      <DetectorLab
-        preset={preset}
-        remaining={remaining}
-        atomCount={atomCount}
-        detectorKey={detectorKey}
-        onDetectorChange={setDetectorKey}
-        shieldKey={shieldKey}
-        onShieldChange={setShieldKey}
-        distance={detectorDistance}
-        onDistanceChange={setDetectorDistance}
-        thickness={shieldThickness}
-        onThicknessChange={setShieldThickness}
-        measurementSeconds={measurementSeconds}
-        onMeasurementSecondsChange={setMeasurementSeconds}
-        language={language}
-      />
-
-      <ModelDisclosure lab={decayLab} language={language} />
-      <SafetyNote lab={decayLab} language={language} />
+      <section className="decay-boundary" aria-label={t("モデルの境界", "Model boundary")}>
+        <div>
+          <span>MODEL BOUNDARY</span>
+          <strong>{t("観察用モデル", "Teaching model")}</strong>
+        </div>
+        <p>
+          {t(
+            "このラボは確率的な壊変と理論曲線の関係に集中します。核種データ、前提、出典、安全上の注意はモデルノートで確認できます。",
+            "This lab focuses on stochastic decay and its theory curve. Review the model notebook for data sources, assumptions, and safety notes.",
+          )}
+        </p>
+        <Link href="/about#decay">{t("モデルノートを開く", "Open model notebook")} ↗</Link>
+      </section>
 
       <footer>
         <div className="footer-brand">
