@@ -2,44 +2,102 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { LabMeta, LanguageToggle, SafetyNote, usePhenomenaLanguage } from "./components/PhenomenaShell";
+import { useEffect, useState, type CSSProperties, type PointerEvent } from "react";
+import { LanguageToggle, usePhenomenaLanguage } from "./components/PhenomenaShell";
 import { translate } from "./lib/experiment";
-import { LAB_REGISTRY, labPath, localize } from "./lib/labs";
+import { LAB_REGISTRY, labPath, localize, type LabId } from "./lib/labs";
 
-const co60Journey = [
-  {
-    number: "01",
-    lab: "Nuclide Atlas",
-    href: "/labs/atlas?nuclide=Co-60",
-    ja: "地図の中に置く",
-    en: "Locate it on the map",
+const labCardCopy: Record<LabId, {
+  purpose: { ja: string; en: string };
+  time: string;
+  readout: { ja: string; en: string };
+}> = {
+  decay: {
+    purpose: { ja: "一つずつのランダムな壊変から、指数曲線が現れる。", en: "Watch an exponential curve emerge from individual random decays." },
+    time: "3 MIN",
+    readout: { ja: "粒子を走らせ、理論曲線と比べる", en: "Run particles and compare them with theory" },
   },
-  {
-    number: "02",
-    lab: "Decay Lab",
-    href: "/labs/decay?nuclide=Co-60",
-    ja: "確率的に壊変させる",
-    en: "Let it decay stochastically",
+  atlas: {
+    purpose: { ja: "陽子数と中性子数の地図から、核種のつながりをたどる。", en: "Trace nuclide relationships on a proton–neutron map." },
+    time: "4 MIN",
+    readout: { ja: "核種を選び、親核種と娘核種を追う", en: "Select a nuclide and follow its family" },
   },
-  {
-    number: "03",
-    lab: "Detector Lab",
-    href: "/labs/detector?source=cobalt-60",
-    ja: "距離と遮蔽を変える",
-    en: "Change distance and shielding",
+  detector: {
+    purpose: { ja: "距離・遮蔽・検出器で、応答がどう変わるか比べる。", en: "Compare how distance, shielding, and detector type change response." },
+    time: "3 MIN",
+    readout: { ja: "仮想装置の条件を動かして比較する", en: "Change a virtual instrument and compare" },
   },
-  {
-    number: "04",
-    lab: "Pulse Lab",
-    href: "/labs/pulse?source=cobalt-60",
-    ja: "パルスを積み上げる",
-    en: "Accumulate pulses",
+  pulse: {
+    purpose: { ja: "一つずつの検出イベントを積み、スペクトルを形づくる。", en: "Accumulate detection events into a spectrum." },
+    time: "4 MIN",
+    readout: { ja: "パルスを集め、構造が育つ様子を見る", en: "Collect pulses and watch structure grow" },
   },
-] as const;
+};
+
+function LabPreview({ id }: Readonly<{ id: LabId }>) {
+  if (id === "decay") {
+    return (
+      <div className="lab-preview lab-preview--decay" aria-hidden="true">
+        <div className="preview-grid" />
+        {Array.from({ length: 18 }, (_, index) => (
+          <span className="preview-dot" key={index} style={{ "--dot-index": index } as CSSProperties} />
+        ))}
+        <svg viewBox="0 0 240 100" preserveAspectRatio="none">
+          <path className="preview-curve-guide" d="M4 8 C48 50 96 76 236 92" />
+          <path className="preview-curve" d="M4 8 C48 50 96 76 236 92" />
+        </svg>
+      </div>
+    );
+  }
+
+  if (id === "atlas") {
+    return (
+      <div className="lab-preview lab-preview--atlas" aria-hidden="true">
+        <div className="preview-grid" />
+        <svg viewBox="0 0 240 120" preserveAspectRatio="none">
+          <path className="preview-atlas-band" d="M8 105 C54 102 67 69 111 70 C154 70 166 28 232 15" />
+          <path className="preview-atlas-route" d="M52 91 L77 78 L101 78 L126 62 L151 62 L175 45" />
+        </svg>
+        {["a", "b", "c", "d", "e", "f"].map((key, index) => (
+          <span className={`preview-dot preview-dot--${key}`} key={key} style={{ "--dot-index": index } as CSSProperties} />
+        ))}
+        <span className="preview-atlas-cursor" />
+      </div>
+    );
+  }
+
+  if (id === "detector") {
+    return (
+      <div className="lab-preview lab-preview--detector" aria-hidden="true">
+        <div className="preview-grid" />
+        <span className="preview-source"><i /></span>
+        <span className="preview-wave preview-wave--one" />
+        <span className="preview-wave preview-wave--two" />
+        <span className="preview-wave preview-wave--three" />
+        <span className="preview-shield" />
+        <span className="preview-detector"><i /><i /><i /><i /></span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="lab-preview lab-preview--pulse" aria-hidden="true">
+      <div className="preview-grid" />
+      <svg className="preview-pulse-line" viewBox="0 0 240 68" preserveAspectRatio="none">
+        <path d="M0 56 L31 56 L35 50 L39 56 L70 56 L75 12 L80 56 L113 56 L119 32 L125 56 L155 56 L159 43 L164 56 L240 56" />
+      </svg>
+      <div className="preview-spectrum">
+        {[3, 5, 8, 11, 15, 21, 32, 48, 68, 82, 61, 38, 25, 18, 14, 11, 9, 8, 7, 6, 8, 15, 30, 57, 76, 49, 24, 13, 8, 5].map((height, index) => (
+          <i className="preview-bar" key={index} style={{ "--bar-height": `${height}%`, "--bar-index": index } as CSSProperties} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function PhenomenaHome() {
   const [language, setLanguage] = usePhenomenaLanguage();
+  const [activeLab, setActiveLab] = useState<LabId | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -52,9 +110,15 @@ export default function PhenomenaHome() {
     if (legacyTarget) router.replace(`${legacyTarget}${window.location.search}`);
   }, [router]);
 
+  const activateFromPointer = (event: PointerEvent<HTMLElement>, id: LabId) => {
+    if (event.pointerType === "mouse" || event.pointerType === "pen" || event.pointerType === "touch") {
+      setActiveLab(id);
+    }
+  };
+
   return (
-    <div className="phenomena-app phenomena-home">
-      <a className="skip-link" href="#catalog-main">{translate(language, "本文へ移動", "Skip to main content")}</a>
+    <div className="phenomena-app phenomena-home home-index">
+      <a className="skip-link" href="#labs">{translate(language, "Labを選ぶ", "Skip to labs")}</a>
       <header className="phenomena-header">
         <Link className="phenomena-wordmark" href="/" aria-label="Phenomena home">
           <span>PHENOMENA</span>
@@ -62,114 +126,104 @@ export default function PhenomenaHome() {
         </Link>
         <div className="phenomena-current-lab">
           <span>FOUNDATION v1</span>
-          <strong>{translate(language, "Labカタログ", "Lab catalogue")}</strong>
+          <strong>{translate(language, "4つの観察装置", "Four instruments")}</strong>
         </div>
         <div className="phenomena-header-actions">
-          <nav className="phenomena-nav" aria-label={translate(language, "カタログ内ナビゲーション", "Catalogue navigation")}>
-            <a href="#nuclear-collection">{translate(language, "Nuclear Collection", "Nuclear Collection")}</a>
-            <a href="#about">{translate(language, "方針", "Principles")}</a>
+          <nav className="phenomena-nav" aria-label={translate(language, "ページ内ナビゲーション", "Page navigation")}>
+            <a href="#labs">04 LABS</a>
+            <Link href="/about">{translate(language, "ABOUT / モデル", "ABOUT / MODELS")}</Link>
           </nav>
           <LanguageToggle language={language} onChange={setLanguage} />
         </div>
       </header>
 
-      <main id="catalog-main" tabIndex={-1}>
-        <section className="catalog-hero" aria-labelledby="phenomena-title">
-          <div className="catalog-hero-main">
-            <p className="eyebrow">PHENOMENA / FOUNDATION v1</p>
-            <h1 id="phenomena-title">
-              <span>{translate(language, "見えないものを、", "Make the invisible")}</span>
-              <span>{translate(language, "触れて理解する。", "tangible.")}</span>
+      <main>
+        <section className="home-hero" aria-labelledby="home-title">
+          <div className="home-hero__copy">
+            <p className="eyebrow">NUCLEAR COLLECTION / 01—04</p>
+            <h1 id="home-title">
+              <span>{translate(language, "核の世界を、", "See the nuclear world.")}</span>
+              <span>{translate(language, "動かして見る。", "Move it. Measure it.")}</span>
             </h1>
-            <p className="catalog-hero-description">
-              {translate(
-                language,
-                "Phenomenaは、操作と観測を通して見えない現象を理解するための端末内科学プラットフォームです。Foundation v1は核物理から始まります。",
-                "Phenomena is a device-first scientific platform for understanding invisible phenomena through manipulation and observation. Foundation v1 begins with nuclear physics.",
-              )}
-            </p>
-            <div className="catalog-hero-actions">
-              <Link className="catalog-primary-action" href="/labs/decay">
-                {translate(language, "最初の観察を始める", "Begin the first observation")} <span aria-hidden="true">→</span>
-              </Link>
-              <a href="#nuclear-collection">{translate(language, "4つのLabを見る", "Browse all four labs")}</a>
+            <p>{translate(language, "地図、壊変、検出、パルス。四つの装置から観察を始めます。", "Map, decay, detection, and pulses—start with any of four instruments.")}</p>
+          </div>
+          <div className="home-hero__status" aria-label={translate(language, "コレクション概要", "Collection status")}>
+            <span>COLLECTION 01</span>
+            <strong>NUCLEAR / ACTIVE</strong>
+            <div><i aria-hidden="true" /> 04 LABS · JA / EN · ON DEVICE</div>
+          </div>
+          <a className="home-hero__index" href="#labs">
+            <span>{translate(language, "装置を選ぶ", "Choose an instrument")}</span>
+            <b aria-hidden="true">↓</b>
+          </a>
+        </section>
+
+        <section className="home-labs" id="labs" aria-labelledby="labs-title">
+          <div className="home-section-heading">
+            <div>
+              <p className="eyebrow">SELECT A LAB</p>
+              <h2 id="labs-title">{translate(language, "何を観察しますか？", "What will you observe?")}</h2>
             </div>
+            <p>{translate(language, "カードに触れると装置が反応します。", "Hover, focus, or tap to wake an instrument.")}</p>
           </div>
-          <aside className="catalog-hero-index" aria-label={translate(language, "現在のコレクション概要", "Current collection overview")}>
-            <div><span>ACTIVE COLLECTION</span><strong>01 / NUCLEAR</strong></div>
-            <dl>
-              <div><dt>{translate(language, "実験", "Labs")}</dt><dd>04</dd></div>
-              <div><dt>{translate(language, "実行", "Runtime")}</dt><dd>{translate(language, "端末内", "On-device")}</dd></div>
-              <div><dt>{translate(language, "言語", "Languages")}</dt><dd>JA / EN</dd></div>
-              <div><dt>{translate(language, "用途", "Purpose")}</dt><dd>{translate(language, "教育用", "Education")}</dd></div>
-            </dl>
-            <p>{translate(language, "確率、核種、検出、スペクトルを一つの観察経路でつなぎます。", "A connected observation path through probability, nuclides, detection, and spectra.")}</p>
-          </aside>
-          <div className="catalog-hero-rule" aria-hidden="true" />
-          <div className="catalog-hero-caption">
-            <span>01—04 / NUCLEAR COLLECTION</span>
-            <span>{translate(language, "読んでからではなく、動かしてから。", "Operate first. Read second.")}</span>
-          </div>
-        </section>
 
-        <section className="guided-route" aria-labelledby="guided-route-title">
-          <div className="guided-route-intro">
-            <p className="eyebrow">A FIRST PASS / CO-60</p>
-            <h2 id="guided-route-title">{translate(language, "一つの核種を、四つの窓で。", "One nuclide, four windows.")}</h2>
-            <p>{translate(language, "Co-60を共通の出発点にして、地図、壊変、検出、パルスのつながりを短い観察の流れでたどれます。", "Use Co-60 as a shared starting point and trace a short path through map, decay, detection, and pulses.")}</p>
+          <div className="home-lab-grid">
+            {LAB_REGISTRY.map((lab) => {
+              const copy = labCardCopy[lab.id];
+              const isActive = activeLab === lab.id;
+              return (
+                <article
+                  className={`home-lab-card home-lab-card--${lab.id}${isActive ? " is-active" : ""}`}
+                  key={lab.id}
+                  onPointerEnter={(event) => activateFromPointer(event, lab.id)}
+                  onPointerDown={(event) => activateFromPointer(event, lab.id)}
+                  onFocusCapture={() => setActiveLab(lab.id)}
+                >
+                  <div className="home-lab-card__head">
+                    <span>LAB {lab.labNumber}</span>
+                    <span>{localize(language, lab.discipline)}</span>
+                  </div>
+                  <figure className="home-lab-card__preview">
+                    <LabPreview id={lab.id} />
+                    <figcaption className="home-lab-card__readout">
+                      <i aria-hidden="true" />
+                      {translate(language, copy.readout.ja, copy.readout.en)}
+                    </figcaption>
+                    <button
+                      className="home-lab-card__preview-trigger"
+                      type="button"
+                      aria-label={`${localize(language, lab.title)} — ${translate(language, "プレビューを起動", "Wake preview")}`}
+                      onFocus={() => setActiveLab(lab.id)}
+                      onClick={() => setActiveLab(lab.id)}
+                    />
+                  </figure>
+                  <div className="home-lab-card__body">
+                    <h3>{localize(language, lab.title)}</h3>
+                    <p>{translate(language, copy.purpose.ja, copy.purpose.en)}</p>
+                    <div className="home-lab-card__time">
+                      <span>{translate(language, "観察時間", "OBSERVATION")}</span>
+                      <strong>{copy.time}</strong>
+                    </div>
+                  </div>
+                  <Link
+                    className="home-lab-card__action"
+                    href={labPath(lab)}
+                    aria-label={`${localize(language, lab.title)} — ${translate(language, "Labを開く", "Open lab")}`}
+                  >
+                    <span>{translate(language, "Labを開く", "OPEN LAB")}</span>
+                    <b aria-hidden="true">↗</b>
+                  </Link>
+                </article>
+              );
+            })}
           </div>
-          <ol className="guided-route-steps">
-            {co60Journey.map((step) => (
-              <li key={step.number}>
-                <span>{step.number}</span>
-                <Link href={step.href}>
-                  <small>{step.lab}</small>
-                  <strong>{translate(language, step.ja, step.en)}</strong>
-                  <b aria-hidden="true">→</b>
-                </Link>
-              </li>
-            ))}
-          </ol>
         </section>
-
-        <section className="catalog-section" id="nuclear-collection" aria-labelledby="collection-title">
-          <div className="section-heading catalog-section-heading">
-            <div><p className="eyebrow">COLLECTION 01</p><h2 id="collection-title">Nuclear Collection</h2></div>
-            <p>{translate(language, "壊変、地図、検出、パルス。四つの窓から同じ核の世界を観察します。", "Decay, atlas, detection, and pulses: four windows onto the same nuclear world.")}</p>
-          </div>
-          <div className="lab-catalog-grid">
-            {LAB_REGISTRY.map((lab) => (
-              <article className="lab-catalog-card" key={lab.id}>
-                <div className="lab-card-top"><span>LAB {lab.labNumber}</span><span>{localize(language, lab.discipline)}</span></div>
-                <div className="lab-card-body">
-                  <p className="lab-card-kicker">{localize(language, lab.collection)}</p>
-                  <h3><Link href={labPath(lab)}>{localize(language, lab.title)} →</Link></h3>
-                  <p>{localize(language, lab.description)}</p>
-                </div>
-                <LabMeta lab={lab} language={language} />
-                <Link className="lab-card-open" href={labPath(lab)}>{translate(language, "Labを開く", "Open lab")} <span aria-hidden="true">→</span></Link>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="principles-section" id="about" aria-labelledby="principles-title">
-          <div><p className="eyebrow">THE INSTRUMENT</p><h2 id="principles-title">Make the invisible tangible.</h2></div>
-          <div className="principles-copy">
-            <p>{translate(language, "説明を積み重ねる代わりに、状態を変え、結果を観察し、仮定へ戻れる実験器具をつくります。", "Instead of stacking explanations, we build instruments that let you change a state, observe a result, and return to the assumptions.")}</p>
-            <div className="principle-list">
-              <article><span>01</span><strong>{translate(language, "端末内で動く", "Runs locally")}</strong><p>{translate(language, "主要な実験は外部AIや有料APIに依存しません。", "Core experiments do not depend on external AI or paid APIs.")}</p></article>
-              <article><span>02</span><strong>{translate(language, "仮定を見せる", "Shows assumptions")}</strong><p>{translate(language, "モデル、簡略化、出典、ライセンスを各Labのメタデータとして追跡できます。", "Models, simplifications, sources, and licenses remain traceable in each Lab's metadata.")}</p></article>
-              <article><span>03</span><strong>{translate(language, "用途の境界を守る", "Keeps boundaries")}</strong><p>{translate(language, "安全、医療、線量、規制、研究級の意思決定を目的にしません。", "The product is not intended for safety, medical, dose, regulatory, or research-grade decisions.")}</p></article>
-            </div>
-          </div>
-        </section>
-        <SafetyNote lab={LAB_REGISTRY[0]} language={language} />
       </main>
+
       <footer className="phenomena-footer">
         <div><strong>PHENOMENA</strong><span>FOUNDATION v1 / 2026</span></div>
-        <p>{translate(language, "Nuclear Collectionから始まる、見えない現象のカタログ。", "A catalogue of invisible phenomena, beginning with the Nuclear Collection.")}</p>
-        <a href="https://github.com/shymohn99/nuclear-decay-lab" target="_blank" rel="noreferrer">{translate(language, "ソースを見る", "View source")} <span aria-hidden="true">→</span><span className="visually-hidden">{translate(language, "（新しいタブで開きます）", " (opens in a new tab)")}</span></a>
+        <p>{translate(language, "式、出典、仮定、安全上の境界はAboutに集約しています。", "Equations, sources, assumptions, and safety boundaries live in About.")}</p>
+        <Link href="/about">{translate(language, "モデルを確認", "Inspect the models")} <span aria-hidden="true">→</span></Link>
       </footer>
     </div>
   );

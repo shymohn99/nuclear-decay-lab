@@ -13,7 +13,7 @@ async function render(pathname = "/") {
   );
 }
 
-test("server-renders the Phenomena catalogue", async () => {
+test("server-renders the visual-first four-Lab index", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -22,18 +22,17 @@ test("server-renders the Phenomena catalogue", async () => {
   assert.match(html, /<title>Phenomena \| Foundation v1<\/title>/i);
   assert.match(html, /PHENOMENA/);
   assert.match(html, /Make the invisible tangible/i);
-  assert.match(html, /Nuclear Collection/);
-  assert.match(html, /A FIRST PASS \/ CO-60/);
-  assert.match(html, /\/labs\/atlas\?nuclide=Co-60/);
-  assert.match(html, /\/labs\/decay\?nuclide=Co-60/);
-  assert.match(html, /\/labs\/detector\?source=cobalt-60/);
-  assert.match(html, /\/labs\/pulse\?source=cobalt-60/);
+  assert.match(html, /SELECT A LAB/);
+  assert.match(html, /何を観察しますか？/);
+  assert.match(html, /href="\/about"/);
   for (const slug of ["decay", "atlas", "detector", "pulse"]) {
     assert.match(html, new RegExp(`/labs/${slug}`));
+    assert.match(html, new RegExp(`home-lab-card--${slug}`));
   }
+  assert.equal(html.match(/class="home-lab-card home-lab-card--/g)?.length, 4);
   assert.match(html, /LAB <!-- -->01/);
   assert.match(html, /LAB <!-- -->04/);
-  assert.match(html, /教育用の概念モデルです/);
+  assert.doesNotMatch(html, /放射線安全、被ばく線量/);
 });
 
 test("server-renders every Foundation Lab route and migration route", async () => {
@@ -43,6 +42,7 @@ test("server-renders every Foundation Lab route and migration route", async () =
     ["/labs/detector", /RELATIVE EXPECTATION/, /GM/, /<title>Detector Lab \| Phenomena<\/title>/],
     ["/labs/pulse", /EVENT STREAM/, /Pulse Lab/, /<title>Pulse Lab \| Phenomena<\/title>/],
     ["/decay", /Decay Lab has moved/, /Open Decay Lab/, /<title>Decay Lab \| Phenomena<\/title>/],
+    ["/about", /MODEL INDEX/, /大学教育のためのモデルです。/, /<title>About the models \| Phenomena<\/title>/],
   ];
   for (const [pathname, first, second, title] of routes) {
     const response = await render(pathname);
@@ -51,16 +51,19 @@ test("server-renders every Foundation Lab route and migration route", async () =
     assert.match(html, first, pathname);
     assert.match(html, second, pathname);
     if (title) assert.match(html, title, pathname);
+    const labSlug = pathname.match(/^\/labs\/([^/]+)$/)?.[1];
+    if (labSlug) assert.match(html, new RegExp(`href="/about#${labSlug}"`), pathname);
   }
 });
 
 test("ships a typed registry, common state primitives, and bounded science models", async () => {
-  const [registry, shell, experiment, models, home, legacyDecay, decay, atlas, detector, pulse, layout, site, pagesBuild, css, readme, authoring, provenance, stateDocument, sitemap, dataLicense] = await Promise.all([
+  const [registry, shell, experiment, models, home, about, legacyDecay, decay, atlas, detector, pulse, layout, site, pagesBuild, css, readme, authoring, provenance, stateDocument, sitemap, dataLicense] = await Promise.all([
     readFile(new URL("../app/lib/labs.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/PhenomenaShell.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/lib/experiment.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/lib/nuclear-models.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/about/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/decay/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/labs/decay/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/labs/atlas/page.tsx", import.meta.url), "utf8"),
@@ -104,7 +107,30 @@ test("ships a typed registry, common state primitives, and bounded science model
   assert.match(home, /"#genealogy": "\/labs\/atlas"/);
   assert.match(home, /\$\{legacyTarget\}\$\{window\.location\.search\}/);
   assert.match(home, /skip-link/);
-  assert.match(home, /opens in a new tab/);
+  assert.match(home, /home-lab-grid/);
+  for (const id of ["decay", "atlas", "detector", "pulse"]) {
+    assert.match(home, new RegExp(`lab-preview--${id}`));
+  }
+  assert.match(home, /onPointerEnter/);
+  assert.match(home, /onPointerDown/);
+  assert.match(home, /onFocusCapture/);
+  assert.match(home, /home-lab-card__preview-trigger/);
+  assert.match(home, /Wake preview/);
+  assert.doesNotMatch(home, /openFromCard/);
+  assert.doesNotMatch(home, /event\.preventDefault\(\)/);
+  assert.match(home, /href="\/about"/);
+  assert.doesNotMatch(home, /SafetyNote/);
+  assert.doesNotMatch(home, /principles-section/);
+  assert.match(about, /id=\{lab\.id\}/);
+  assert.match(about, /modelNotes/);
+  assert.match(about, /about-formula/);
+  assert.match(about, /lab\.assumptions/);
+  assert.match(about, /lab\.constraints/);
+  assert.match(about, /lab\.datasets/);
+  assert.match(about, /\.\.\.lab\.citations, \.\.\.lab\.licenses/);
+  assert.doesNotMatch(about, /<b aria-hidden="true">↓<\/b>/);
+  assert.match(about, /大学教育のためのモデルです。/);
+  assert.match(about, /放射線安全、被ばく線量/);
   assert.match(models, /computeDetectorResponse/);
   assert.match(models, /generatePulseRun/);
   assert.match(models, /binPulseEvents/);
@@ -178,6 +204,10 @@ test("ships a typed registry, common state primitives, and bounded science model
   assert.match(css, /\.header-links \{ flex: 1 0 100%; order: 2;/);
   assert.match(css, /@media \(max-width: 340px\)/);
   assert.match(css, /\.phenomena-header/);
+  assert.match(css, /--lab-decay-text: #a64221/);
+  assert.match(css, /--lab-detector-text: #536918/);
+  assert.match(css, /\.home-lab-card__preview-trigger/);
+  assert.match(css, /@media \(min-width: 921px\)/);
   assert.match(css, /\.chain-stage\.is-display-limit/);
   assert.match(css, /DISPLAY LIMIT/);
   assert.match(css, /\.chain-track:focus-visible/);
