@@ -193,6 +193,12 @@ test("ships a typed registry, common state primitives, and bounded science model
   assert.match(atlas, /atlas-search-results" role="group"/);
   assert.match(atlas, /searchMatches\.slice\(0, 12\)/);
   assert.match(atlas, /onKeyDown/);
+  assert.match(atlas, /atlas-map-points/);
+  assert.match(atlas, /atlas-map-points" aria-hidden="true"/);
+  assert.match(atlas, /tabIndex=\{-1\}/);
+  assert.match(atlas, /className="nuclide-card daughter"/);
+  assert.match(atlas, /\/labs\/pulse\?source=/);
+  assert.match(atlas, /\/about#atlas/);
   assert.doesNotMatch(atlas, /atlas-nuclide-select/);
   for (const lab of [atlas, detector, pulse, decay]) assert.match(lab, /replaceExperimentQuery/);
   for (const lab of [atlas, detector, pulse, decay]) assert.match(lab, /requestedRoute/);
