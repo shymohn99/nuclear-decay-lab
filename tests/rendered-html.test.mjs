@@ -59,6 +59,9 @@ test("server-renders every Foundation Lab route and migration route", async () =
   const decayHtml = await decayResponse.text();
   assert.match(decayHtml, /field-play-toggle/);
   assert.match(decayHtml, /primary-nuclide-select/);
+  assert.match(decayHtml, /model-mode-bar/);
+  assert.match(decayHtml, /LEARN/);
+  assert.match(decayHtml, /PHYSICS/);
   assert.match(decayHtml, /<details class="advanced-details">/);
   assert.match(decayHtml, /decay-handoff-card--atlas/);
   assert.match(decayHtml, /decay-handoff-card--detector/);
@@ -169,6 +172,12 @@ test("ships a typed registry, common state primitives, and bounded science model
   assert.match(decay, /requestedRoutePreset/);
   assert.match(decay, /decayRandomRef/);
   assert.match(decay, /interactionRandomRef/);
+  assert.match(decay, /modelMode/);
+  assert.match(decay, /effectiveModelMode/);
+  assert.match(decay, /sampleDecayBranch/);
+  assert.match(decay, /branchOutcomeId/);
+  assert.match(decay, /DECAY_BRANCHING_VERSION/);
+  assert.match(decay, /branch-outcomes/);
   assert.match(decay, /RESET SEED/);
   assert.match(decay, /commitResetSeed/);
   assert.match(decay, /MAX_RESET_SEED/);

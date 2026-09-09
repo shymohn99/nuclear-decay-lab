@@ -85,8 +85,10 @@ data-provenance and full-decay-network work, not more Foundation scope.
 
 ## Known scientific and product limits
 
-- Decay series are milestone sequences, not complete branch networks; frame
-  timing can affect exact visual playback.
+- Decay Physics mode now samples curated outcome splits for I-131, Cs-137,
+  and Co-60. I-131 and Cs-137 retain grouped remainders; these splits are not
+  full nuclear-level or gamma schemes. Decay series remain milestone sequences,
+  not complete branch networks, and frame timing can affect exact visual playback.
 - Atlas exposes one principal branch per parent, not a current authoritative
   nuclide database.
 - ICRP-derived data retain notice/non-commercial constraints, and AME/Nubase

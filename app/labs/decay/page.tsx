@@ -6,6 +6,12 @@ import { createSeededRandom, downloadCsv, experimentProvenanceRows, readExperime
 import { decayProbability, theoreticalPopulation } from "../../lib/nuclear-models";
 import { getLab, type Language } from "../../lib/labs";
 import {
+  DECAY_BRANCHING_VERSION,
+  resolveDecayBranchingScheme,
+  sampleDecayBranch,
+  type DecayModelMode,
+} from "../../lib/decay-branching";
+import {
   useCallback,
   useEffect,
   useMemo,
@@ -58,6 +64,7 @@ type Particle = {
   vx: number;
   vy: number;
   phase: "parent" | "daughter";
+  branchOutcomeId?: string;
   chainStage: number;
   pulse: number;
   radius: number;
@@ -83,6 +90,8 @@ type DecaySavedState = Readonly<{
   presetKey: string;
   seriesKey: DecaySeries;
   simulationMode: SimulationMode;
+  /** Optional keeps saved state backward-compatible with pre-Physics snapshots. */
+  modelMode?: DecayModelMode;
   chainRateMode: ChainRateMode;
   atomCount: number;
   speed: number;
@@ -988,7 +997,8 @@ const DEFAULT_DECAY_STATE: DecaySavedState = {
   presetKey: PRESETS[0].key,
   seriesKey: "independent",
   simulationMode: "single",
-  chainRateMode: "physical",
+  modelMode: "learn",
+  chainRateMode: "observation",
   atomCount: 160,
   speed: 1,
   chartScale: "linear",
@@ -1928,8 +1938,9 @@ export default function Home() {
   const [seriesKey, setSeriesKey] = useState<DecaySeries>("independent");
   const [simulationMode, setSimulationMode] =
     useState<SimulationMode>("single");
+  const [modelMode, setModelMode] = useState<DecayModelMode>("learn");
   const [chainRateMode, setChainRateMode] =
-    useState<ChainRateMode>("physical");
+    useState<ChainRateMode>("observation");
   const [catalogView, setCatalogView] = useState<CatalogView>("table");
   const [atomCount, setAtomCount] = useState(160);
   const [atomCountInput, setAtomCountInput] = useState("160");
@@ -1961,6 +1972,10 @@ export default function Home() {
       setSeriesKey(requestedRoutePreset.series);
       setPresetKey(requestedRoutePreset.key);
       setSimulationMode("single");
+      if (!resolveDecayBranchingScheme(`${requestedRoutePreset.parentNuclide.element}-${requestedRoutePreset.parentNuclide.massNumber}`)) {
+        setModelMode("learn");
+        setChainRateMode("observation");
+      }
     }, 0);
     return () => {
       window.clearTimeout(queryTimer);
@@ -1975,6 +1990,14 @@ export default function Home() {
     () => PRESETS.find((item) => item.key === presetKey) ?? PRESETS[0],
     [presetKey],
   );
+  const branchingScheme = useMemo(
+    () => resolveDecayBranchingScheme(`${preset.parentNuclide.element}-${preset.parentNuclide.massNumber}`),
+    [preset.parentNuclide.element, preset.parentNuclide.massNumber],
+  );
+  const physicsAvailable = simulationMode === "chain" || Boolean(branchingScheme);
+  const effectiveModelMode: DecayModelMode =
+    modelMode === "physics" && physicsAvailable ? "physics" : "learn";
+
   const seriesPresets = useMemo(
     () =>
       CORE_PRESETS.filter(
@@ -1998,6 +2021,16 @@ export default function Home() {
     }
     return counts;
   }, [chainStages.length, particles]);
+  const branchOutcomeCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const outcome of branchingScheme?.outcomes ?? []) counts.set(outcome.id, 0);
+    for (const particle of particles) {
+      if (particle.branchOutcomeId) {
+        counts.set(particle.branchOutcomeId, (counts.get(particle.branchOutcomeId) ?? 0) + 1);
+      }
+    }
+    return counts;
+  }, [branchingScheme, particles]);
   const seriesLabel =
     (() => {
       const series = SERIES_OPTIONS.find((item) => item.key === seriesKey);
@@ -2036,6 +2069,8 @@ export default function Home() {
   const selectSeries = useCallback((nextSeries: DecaySeries) => {
     const firstPreset = PRESETS.find((item) => item.series === nextSeries);
     setSeriesKey(nextSeries);
+    setModelMode("learn");
+    setChainRateMode("observation");
     if (nextSeries === "independent") setSimulationMode("single");
     if (firstPreset) {
       setPresetKey(firstPreset.key);
@@ -2047,6 +2082,10 @@ export default function Home() {
     setSeriesKey(item.series);
     setPresetKey(item.key);
     setSimulationMode("single");
+    if (!resolveDecayBranchingScheme(`${item.parentNuclide.element}-${item.parentNuclide.massNumber}`)) {
+      setModelMode("learn");
+      setChainRateMode("observation");
+    }
     replaceExperimentQuery("nuclide", `${item.parentNuclide.element}-${item.parentNuclide.massNumber}`);
   }, []);
 
@@ -2099,6 +2138,7 @@ export default function Home() {
     presetKey,
     seriesKey,
     simulationMode,
+    modelMode,
     chainRateMode,
     atomCount,
     speed,
@@ -2116,6 +2156,7 @@ export default function Home() {
     detectorDistance,
     detectorKey,
     measurementSeconds,
+    modelMode,
     presetKey,
     seriesKey,
     shieldKey,
@@ -2139,19 +2180,34 @@ export default function Home() {
       ? next.shieldKey
       : DEFAULT_DECAY_STATE.shieldKey;
     const nextChartScale = next.chartScale === "log" ? "log" : "linear";
-    const nextChainRate = next.chainRateMode === "observation" ? "observation" : "physical";
+    // Older snapshots did not have modelMode. Preserve their chain-rate intent;
+    // snapshots from the current schema use the explicit model mode instead.
+    const restoredModelMode: DecayModelMode = next.modelMode === "physics"
+      ? "physics"
+      : next.modelMode === "learn"
+        ? "learn"
+        : next.chainRateMode === "physical"
+          ? "physics"
+          : "learn";
     const nextSimulationMode = restoredPreset.series === "independent" || next.simulationMode !== "chain"
       ? "single"
       : "chain";
+    const restoredPhysicsAvailable = nextSimulationMode === "chain" || Boolean(resolveDecayBranchingScheme(`${restoredPreset.parentNuclide.element}-${restoredPreset.parentNuclide.massNumber}`));
+    const nextModelMode: DecayModelMode = restoredModelMode === "physics" && restoredPhysicsAvailable
+      ? "physics"
+      : "learn";
+    const nextChainRate = nextModelMode === "physics" ? "physical" : "observation";
 
     suppressNextSimulationResetRef.current =
       nextAtomCount !== atomCount ||
       restoredPreset.key !== presetKey ||
       nextSimulationMode !== simulationMode ||
-      nextChainRate !== chainRateMode;
+      nextChainRate !== chainRateMode ||
+      nextModelMode !== modelMode;
     setPresetKey(restoredPreset.key);
     setSeriesKey(restoredPreset.series);
     setSimulationMode(nextSimulationMode);
+    setModelMode(nextModelMode);
     setChainRateMode(nextChainRate);
     setAtomCount(nextAtomCount);
     setAtomCountInput(String(nextAtomCount));
@@ -2167,7 +2223,7 @@ export default function Home() {
     setResetSeed(nextResetSeed);
     setSeedInput(String(nextResetSeed));
     initializeSimulation(nextAtomCount, nextResetSeed);
-  }, [atomCount, chainRateMode, initializeSimulation, presetKey, simulationMode]);
+  }, [atomCount, chainRateMode, initializeSimulation, modelMode, presetKey, simulationMode]);
 
   useEffect(() => {
     if (suppressNextSimulationResetRef.current) {
@@ -2180,7 +2236,7 @@ export default function Home() {
       return;
     }
     resetSimulation();
-  }, [atomCount, chainRateMode, initializeSimulation, presetKey, resetSimulation, simulationMode]);
+  }, [atomCount, chainRateMode, initializeSimulation, modelMode, presetKey, resetSimulation, simulationMode]);
 
   useEffect(() => {
     let frameId = 0;
@@ -2274,13 +2330,25 @@ export default function Home() {
           decayRandomRef.current() < transitionProbability
         ) {
           particle.phase = "daughter";
+          if (effectiveModelMode === "physics" && branchingScheme) {
+            // Consume a second deterministic draw only for the daughter branch.
+            // Gamma cascades remain metadata on the scheme and never become a
+            // second daughter transition.
+            particle.branchOutcomeId = sampleDecayBranch(
+              branchingScheme,
+              decayRandomRef.current(),
+            ).id;
+          }
           burstsRef.current.push({
             id: burstIdRef.current++,
             x: particle.x,
             y: particle.y,
             life: 1,
             angle: decayRandomRef.current() * Math.PI * 2,
-            kind: preset.mode,
+            kind:
+              effectiveModelMode === "physics" && branchingScheme?.decay === "beta-minus"
+                ? "beta"
+                : preset.mode,
           });
         }
       }
@@ -2330,6 +2398,8 @@ export default function Home() {
   }, [
     chainRateMode,
     chainStages,
+    branchingScheme,
+    effectiveModelMode,
     paused,
     preset.halfLife,
     preset.mode,
@@ -2375,6 +2445,17 @@ export default function Home() {
     downloadCsv(`${preset.key}-decay-observation.csv`, [
       ...experimentProvenanceRows(decayLab),
       ["model", "Phenomena Foundation v1 decay model"],
+      ["model_mode", effectiveModelMode],
+      ["branching_model_version", DECAY_BRANCHING_VERSION],
+      ["branching_scheme", branchingScheme?.id ?? "unsupported"],
+      [
+        "branch_outcomes",
+        branchingScheme
+          ? branchingScheme.outcomes
+              .map((outcome) => `${outcome.id}:${branchOutcomeCounts.get(outcome.id) ?? 0}/${outcome.probability}`)
+              .join(" | ")
+          : "none",
+      ],
       ["parent_nuclide", `${preset.parentNuclide.element}-${preset.parentNuclide.massNumber}`],
       ["simulation_mode", simulationMode],
       ["chain_rate_mode", chainRateMode],
@@ -2393,7 +2474,7 @@ export default function Home() {
           ],
       ...rows,
     ]);
-  }, [atomCount, chainRateMode, language, preset, resetSeed, simulationMode]);
+  }, [atomCount, branchOutcomeCounts, branchingScheme, chainRateMode, effectiveModelMode, language, preset, resetSeed, simulationMode]);
 
   const expected = theoreticalPopulation(atomCount, elapsed);
   const decayed = atomCount - remaining;
@@ -2587,7 +2668,7 @@ export default function Home() {
           </p>
         </div>
         <aside className="decay-hero-context" aria-label={t("現在の実験条件", "Current experiment context")}>
-          <div className="decay-hero-mode"><span>OBSERVATION MODE</span><strong>{t("確率的な教育モデル", "Stochastic teaching model")}</strong></div>
+          <div className="decay-hero-mode"><span>{effectiveModelMode === "physics" ? "PHYSICS MODE" : "LEARN MODE"}</span><strong>{effectiveModelMode === "physics" ? simulationMode === "chain" ? t("固有半減期比モデル", "Nuclide-specific timing") : t("分岐を含む物理モデル", "Curated branching model") : t("確率的な教育モデル", "Stochastic teaching model")}</strong></div>
           <dl>
             <div><dt>{t("現在の核種", "Active nuclide")}</dt><dd>{presetParentName}</dd></div>
             <div><dt>{t("半減期", "Half-life")}</dt><dd>{formatNumber(preset.halfLife, language)} {localizeUnit(preset.unit, language)}</dd></div>
@@ -2735,7 +2816,13 @@ export default function Home() {
             <button
               type="button"
               aria-pressed={simulationMode === "single"}
-              onClick={() => setSimulationMode("single")}
+              onClick={() => {
+                setSimulationMode("single");
+                if (!branchingScheme) {
+                  setModelMode("learn");
+                  setChainRateMode("observation");
+                }
+              }}
             >
               {t("単独壊変", "Single decay")}
             </button>
@@ -2760,6 +2847,54 @@ export default function Home() {
                     `Tracking the major nuclides in the ${seriesLabel}.`,
                   )
                 : t("単独核種の壊変を観察しています。", "Observing a single nuclide decay.")}
+          </p>
+        </div>
+
+        <div className="model-mode-bar" role="group" aria-label={t("モデルモード", "Model mode")}>
+          <div className="model-mode-copy">
+            <span>{t("壊変モデル", "DECAY MODEL")}</span>
+            <strong>{effectiveModelMode === "physics" ? "PHYSICS" : "LEARN"}</strong>
+          </div>
+          <div className="model-mode-toggle">
+            <button
+              type="button"
+              aria-pressed={effectiveModelMode === "learn"}
+              onClick={() => {
+                setModelMode("learn");
+                setChainRateMode("observation");
+              }}
+            >
+              <strong>LEARN</strong>
+              <small>{t("共通の観察尺度", "Observation scale")}</small>
+            </button>
+            <button
+              type="button"
+              aria-pressed={effectiveModelMode === "physics"}
+              disabled={!physicsAvailable}
+              title={!physicsAvailable ? t("この核種はPhysicsモデル未対応です", "Physics model is not available for this nuclide") : undefined}
+              onClick={() => {
+                if (!physicsAvailable) return;
+                setModelMode("physics");
+                setChainRateMode("physical");
+              }}
+            >
+              <strong>PHYSICS</strong>
+              <small>{simulationMode === "chain" ? t("核種固有の半減期比", "Nuclide half-life ratios") : t("実際の半減期 + 分岐", "Half-life + branches")}</small>
+            </button>
+          </div>
+          <p>
+            {effectiveModelMode === "physics"
+              ? t(
+                  simulationMode === "chain"
+                    ? "系列固有の半減期比で進みます。表示は主要段階に限定されます。"
+                    : "対応する3核種では、壊変ごとに分岐を抽選します。",
+                  simulationMode === "chain"
+                    ? "Uses nuclide-specific half-life ratios; only major stages are shown."
+                    : "For the three curated nuclides, each decay samples an outcome branch.",
+                )
+              : branchingScheme
+                ? t("指数曲線を学ぶ観察モデルです。分岐抽選は行いません。", "Learn the exponential curve; branch sampling is off.")
+                : t("この核種のPhysics分岐は未収録のため、Learnを使用します。", "Physics branches are not curated for this nuclide; Learn is used.")}
           </p>
         </div>
 
@@ -2810,6 +2945,38 @@ export default function Home() {
                 <span><i className="legend-emission" />{t("放出反応", "Emission")}</span>
               </div>
             </div>
+
+            {simulationMode === "single" && branchingScheme && effectiveModelMode === "physics" ? (
+              <section className="branch-outcomes" aria-labelledby="branch-outcomes-title">
+                <div className="branch-outcomes-heading">
+                  <span>CURATED BRANCHES</span>
+                  <strong id="branch-outcomes-title">{t("今回の分岐結果", "Sampled branch outcomes")}</strong>
+                </div>
+                <div className="branch-outcome-list">
+                  {branchingScheme.outcomes.map((outcome) => {
+                    const count = branchOutcomeCounts.get(outcome.id) ?? 0;
+                    const denominator = Math.max(1, decayed);
+                    const observedPercent = (count / denominator) * 100;
+                    const outcomeLabel = language === "ja" ? outcome.label.ja : outcome.label.en;
+                    return (
+                      <div className="branch-outcome" key={outcome.id}>
+                        <div className="branch-outcome-label">
+                          <span>{outcomeLabel}</span>
+                          <strong>{count} / {decayed}</strong>
+                        </div>
+                        <div className="branch-outcome-track" role="progressbar" aria-label={`${outcomeLabel} ${outcome.probability * 100}%`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={observedPercent}>
+                          <span style={{ width: `${Math.min(100, observedPercent)}%` }} />
+                        </div>
+                        <small>{(outcome.probability * 100).toFixed(2)}% {t("想定", "expected")}</small>
+                      </div>
+                    );
+                  })}
+                </div>
+                {branchingScheme.emissionMetadata.gammaCascade ? (
+                  <p className="branch-outcome-note">{t("γカスケードは娘核種とは別の放出メタデータです。", "The γ cascade is emission metadata, separate from the daughter outcome.")}</p>
+                ) : null}
+              </section>
+            ) : null}
 
             {simulationMode === "chain" && (
               <div className="chain-progress">
@@ -3069,41 +3236,6 @@ export default function Home() {
               </select>
               <small>{t("選択した核種の確率過程を観察します。", "Observe the stochastic process for the selected nuclide.")}</small>
             </div>
-
-            {simulationMode === "chain" && (
-              <fieldset className="chain-rate-selector">
-                <legend>{t("連鎖の壊変定数", "Chain decay constants")}</legend>
-                <div>
-                  <button
-                    type="button"
-                    aria-pressed={chainRateMode === "physical"}
-                    onClick={() => setChainRateMode("physical")}
-                  >
-                    <strong>{t("実時間比", "Physical ratios")}</strong>
-                    <small>{t("核種固有の半減期", "Nuclide-specific half-lives")}</small>
-                  </button>
-                  <button
-                    type="button"
-                    aria-pressed={chainRateMode === "observation"}
-                    onClick={() => setChainRateMode("observation")}
-                  >
-                    <strong>{t("観察用", "Observation")}</strong>
-                    <small>{t("全段階を共通尺度化", "Common scale for all stages")}</small>
-                  </button>
-                </div>
-                <p>
-                  {chainRateMode === "physical"
-                    ? t(
-                        "実在の半減期比を保ちます。短寿命核種は一瞬で通過する場合があります。",
-                        "Preserves real half-life ratios. Short-lived nuclides may pass almost instantly.",
-                      )
-                    : t(
-                        "アニメーション観察用の非物理モードです。実在の半減期比は使用しません。",
-                        "A non-physical mode for animation study; real half-life ratios are not used.",
-                      )}
-                </p>
-              </fieldset>
-            )}
 
             <div className="control-field particle-count-field">
               <div className="control-field-heading">

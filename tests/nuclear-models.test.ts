@@ -12,12 +12,52 @@ import {
 import { createSeededRandom, experimentProvenanceRows, readExperimentQuery, toCsv, withExperimentQuery } from "../app/lib/experiment.ts";
 import { getLab } from "../app/lib/labs.ts";
 import { MAP_RADIONUCLIDES } from "../app/radionuclides.ts";
+import {
+  DECAY_BRANCHING_SCHEMES,
+  DECAY_BRANCHING_VERSION,
+  resolveDecayBranchingScheme,
+  sampleDecayBranch,
+} from "../app/lib/decay-branching.ts";
 
 test("decay equations preserve half-life invariants", () => {
   assert.equal(decayProbability(0), 0);
   assert.equal(decayProbability(1), 0.5);
   assert.equal(theoreticalPopulation(800, 1), 400);
   assert.equal(theoreticalPopulation(800, 2), 200);
+});
+
+test("curated Physics branches are complete and sourced from the bundled catalog", () => {
+  assert.equal(DECAY_BRANCHING_VERSION, "curated-outcome-splits-v1");
+  for (const scheme of DECAY_BRANCHING_SCHEMES) {
+    assert.ok(scheme.outcomes.every((outcome) => outcome.probability > 0 && outcome.probability <= 1));
+    assert.ok(Math.abs(scheme.outcomes.reduce((sum, outcome) => sum + outcome.probability, 0) - 1) < 1e-12);
+  }
+  const iodine = resolveDecayBranchingScheme("I-131")!;
+  assert.equal(iodine.outcomes[0].probability, 0.98824);
+  assert.equal(iodine.outcomes[1].probability, 0.01176);
+  const cesium = resolveDecayBranchingScheme("cesium-137")!;
+  assert.equal(cesium.outcomes[0].probability, 0.94399);
+  assert.equal(cesium.outcomes[1].probability, 0.05601);
+  const cobalt = resolveDecayBranchingScheme("Co-60")!;
+  assert.equal(cobalt.outcomes.length, 1);
+  assert.equal(cobalt.outcomes[0].probability, 1);
+  assert.match(cobalt.emissionMetadata.gammaCascade ?? "", /cascade/i);
+  assert.equal(sampleDecayBranch(iodine, 0).id, "xe-131");
+  assert.equal(sampleDecayBranch(iodine, 0.999).role, "grouped-remainder");
+});
+
+test("Physics branch sampling is seeded, repeatable, and follows the declared split", () => {
+  const cesium = resolveDecayBranchingScheme("Cs-137")!;
+  const sample = (seed: number, count: number) => {
+    const random = createSeededRandom(seed);
+    return Array.from({ length: count }, () => sampleDecayBranch(cesium, random()).id);
+  };
+  assert.deepEqual(sample(137, 64), sample(137, 64));
+  assert.notDeepEqual(sample(137, 64), sample(138, 64));
+  const outcomes = sample(137, 10_000);
+  const principalRatio = outcomes.filter((id) => id === "ba-137m").length / outcomes.length;
+  assert.ok(Math.abs(principalRatio - cesium.outcomes[0].probability) < 0.01);
+  assert.ok(outcomes.includes("ba-137"));
 });
 
 test("the seeded stream used by a Decay reset is repeatable", () => {

@@ -4765,6 +4765,137 @@ summary:focus-visible {
   }
 }
 
+.model-mode-bar {
+  display: grid;
+  grid-template-columns: auto minmax(260px, 1fr) minmax(240px, 1.5fr);
+  gap: 18px;
+  align-items: center;
+  margin: 18px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 82%, var(--lab-decay-text) 18%);
+}
+
+.model-mode-copy,
+.model-mode-toggle,
+.branch-outcomes-heading,
+.branch-outcome-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.model-mode-copy {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.model-mode-copy span,
+.branch-outcomes-heading span {
+  font-size: .66rem;
+  letter-spacing: .12em;
+  color: var(--muted);
+}
+
+.model-mode-copy strong {
+  font-size: 1.08rem;
+  letter-spacing: .14em;
+}
+
+.model-mode-toggle {
+  gap: 8px;
+}
+
+.model-mode-toggle button {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  min-height: 46px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+
+.model-mode-toggle button[aria-pressed="true"] {
+  border-color: var(--lab-decay-text);
+  background: var(--paper);
+  box-shadow: inset 3px 0 var(--lab-decay-text);
+}
+
+.model-mode-toggle button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.model-mode-toggle small,
+.branch-outcome small,
+.model-mode-bar > p {
+  color: var(--muted);
+  font-size: .76rem;
+  line-height: 1.45;
+}
+
+.model-mode-bar > p {
+  margin: 0;
+}
+
+.branch-outcomes {
+  margin: 0 18px 18px;
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.branch-outcomes-heading {
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.branch-outcomes-heading strong {
+  font-size: .86rem;
+}
+
+.branch-outcome-list {
+  display: grid;
+  gap: 9px;
+}
+
+.branch-outcome-label {
+  justify-content: space-between;
+  font-size: .78rem;
+}
+
+.branch-outcome-track {
+  height: 7px;
+  margin-top: 5px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--line) 65%, transparent);
+}
+
+.branch-outcome-track span {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  background: var(--lab-decay-text);
+  transition: width .2s ease;
+}
+
+.branch-outcome-note {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: .74rem;
+}
+
+@media (max-width: 760px) {
+  .model-mode-bar {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Phase 2 / Decay: a focused instrument view ---------------------------- */
 .lab-shell:has(.field-play-toggle) {
   --decay-accent: #d8663e;

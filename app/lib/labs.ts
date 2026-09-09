@@ -58,8 +58,8 @@ export const NUCLEAR_DATASET: DatasetReference = {
   version: "radioactivedecay 0.6.1 derived catalog (992 records)",
   display: { ja: "ICRP核種表", en: "ICRP nuclide catalog" },
   role: {
-    ja: "核種地図と代表的な主壊変分岐",
-    en: "Nuclide map and representative principal decay branches",
+    ja: "核種地図と代表的な主壊変分岐、3核種の教育用分岐モデル",
+    en: "Nuclide map, representative principal branches, and a curated model for three nuclides",
   },
   source: "Bundled catalog derived from ICRP-107, AME2020, and Nubase2020.",
   license: "ICRP-07 terms are bundled at public/data/LICENSE.TXT; code is MIT. See DATA_PROVENANCE.md.",
@@ -122,10 +122,11 @@ export const LAB_REGISTRY = [
     datasets: [NUCLEAR_DATASET, NUDAT_FOOTPRINT_DATASET],
     assumptions: [
       { ja: "単一核種では半減期が一定で、各原子核は独立に壊変します。", en: "For a single nuclide, half-life is constant and nuclei decay independently." },
+      { ja: "PhysicsモードのI-131、Cs-137、Co-60は、カタログ分率から作った完全な結果分割（I-131/Cs-137は群化された残余を含む）を壊変ごとに抽選します。", en: "Physics mode samples a complete outcome split for I-131, Cs-137, and Co-60 from catalog fractions; I-131 and Cs-137 include grouped remainders." },
       { ja: "系列表示は観察のために中間核種を省略したマイルストーン列を含みます。", en: "Series views include observation-oriented milestone sequences that omit intermediate nuclides." },
     ],
     constraints: [
-      { ja: "代表分岐のみを使います。全分岐、放出エネルギー、実活動度は表現しません。", en: "Only representative branches are used; the lab does not model full branching, emissions, or real source activity." },
+      { ja: "分岐モデルは3核種に限る教育用の結果分割で、その他の核種は代表分岐のみです。レベル図式、γ線カスケード、放出エネルギー、実活動度を網羅するものではありません。", en: "The outcome split is a teaching model for three nuclides only; other nuclides retain representative branches. It is not a full level scheme, gamma scheme, emission-energy model, or real source activity model." },
       ...commonConstraints,
     ],
     languages: ["ja", "en"],
@@ -137,7 +138,7 @@ export const LAB_REGISTRY = [
       { id: "normalized-decay-rate", label: { ja: "正規化壊変率", en: "Normalized decay rate" }, unit: { ja: "T½ あたり", en: "per T½" }, kind: "observation" },
     ],
     stateKey: "decay-v1",
-    citations: ["Bundled catalog: ICRP-107 / AME2020 / Nubase2020 via radioactivedecay 0.6.1."],
+    citations: ["Bundled catalog: ICRP-107 / AME2020 / Nubase2020 via radioactivedecay 0.6.1; curated outcome splits are documented in DATA_PROVENANCE.md."],
     licenses: ["MIT software license; separate ICRP-07 data terms."],
     safety: commonSafety,
   },
