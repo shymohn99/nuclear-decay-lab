@@ -224,6 +224,11 @@ test("ships a typed registry, common state primitives, and bounded science model
   assert.match(atlas, /atlas-state-selector/);
   assert.match(atlas, /atlas-stable-panel/);
   assert.match(atlas, /atlas-branch-list/);
+  assert.match(atlas, /atlas-trace-explorer/);
+  assert.match(atlas, /buildAtlasTrace/);
+  assert.match(atlas, /flattenAtlasTrace/);
+  assert.match(atlas, /aria-busy/);
+  assert.match(atlas, /navigator\.clipboard\.writeText/);
   assert.match(atlas, /nuclideIdFromStateId/);
   assert.match(atlas, /\/labs\/pulse\?source=/);
   assert.match(atlas, /\/about#atlas/);
@@ -244,7 +249,7 @@ test("ships a typed registry, common state primitives, and bounded science model
   assert.match(pulse, /role="status"/);
   assert.doesNotMatch(pulse, /pulse-event-stream" aria-live/);
   assert.doesNotMatch([home, decay, detector, pulse].join("\n"), /\bfetch\s*\(/);
-  assert.match(atlas, /fetch\(`\$\{siteBasePath\}\$\{selected\.detailShard\}`/);
+  assert.match(atlas, /fetch\(`\$\{siteBasePath\}\$\{nuclide\.detailShard\}`/);
   assert.match(layout, /socialImagePath/);
   assert.match(site, /createLabMetadata/);
   assert.match(site, /siteBasePath/);

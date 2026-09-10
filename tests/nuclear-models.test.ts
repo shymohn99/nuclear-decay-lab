@@ -13,6 +13,7 @@ import {
 import { createSeededRandom, experimentProvenanceRows, readExperimentQuery, toCsv, withExperimentQuery } from "../app/lib/experiment.ts";
 import { getLab } from "../app/lib/labs.ts";
 import { ENSDF_ATLAS_INDEX, canonicalizeAtlasNuclideKey, nuclideIdFromStateId } from "../app/lib/ensdf-atlas.ts";
+import { buildAtlasTrace, flattenAtlasTrace } from "../app/lib/ensdf-atlas-tree.ts";
 import { MAP_RADIONUCLIDES } from "../app/radionuclides.ts";
 import {
   FOUNDATION_NUCLIDE_CATALOG,
@@ -200,6 +201,27 @@ test("ENSDF Atlas migrates legacy saved nuclide keys without changing canonical 
   assert.equal(canonicalizeAtlasNuclideKey("Co-60-27"), "z27-a60");
   assert.equal(canonicalizeAtlasNuclideKey("z43-a99"), "z43-a99");
   assert.equal(canonicalizeAtlasNuclideKey("unknown"), "unknown");
+});
+
+test("ENSDF Atlas trace groups evaluated records and stops at the chosen depth", async () => {
+  const cache = new Map<string, ReturnType<typeof JSON.parse>>();
+  const loadShard = async (stateId: string) => {
+    const nuclide = ENSDF_ATLAS_INDEX.nuclides.find((item) => item.id === nuclideIdFromStateId(stateId));
+    if (!nuclide) return null;
+    const cached = cache.get(nuclide.detailShard);
+    if (cached) return cached;
+    const shard = JSON.parse(readFileSync(new URL(`../public${nuclide.detailShard}`, import.meta.url), "utf8"));
+    cache.set(nuclide.detailShard, shard);
+    return shard;
+  };
+  const technetium = await buildAtlasTrace("z43-a99:m1", loadShard, { maxDepth: 3 });
+  assert.equal(technetium.edges.length, 2);
+  assert.deepEqual(new Set(technetium.edges.map((edge) => edge.displayMode)), new Set(["beta-minus", "isomeric-transition"]));
+  const uranium = await buildAtlasTrace("z92-a238:g", loadShard, { maxDepth: 3 });
+  const rows = flattenAtlasTrace(uranium);
+  assert.ok(rows.length >= 3);
+  assert.ok(rows.every((row) => row.depth <= 3));
+  assert.ok(rows.some((row) => row.stop === "depth"));
 });
 
 test("shared CSV provenance keeps a Lab's data and model boundary traceable", () => {

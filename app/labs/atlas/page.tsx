@@ -22,6 +22,7 @@ import {
   type EnsdfAtlasState,
   type EnsdfDisplayMode,
 } from "../../lib/ensdf-atlas";
+import { buildAtlasTrace, flattenAtlasTrace, type AtlasTraceNode } from "../../lib/ensdf-atlas-tree";
 import { readExperimentQuery, replaceExperimentQuery, translate } from "../../lib/experiment";
 import { getLab, type Language } from "../../lib/labs";
 import { siteBasePath } from "../../lib/site";
@@ -33,6 +34,8 @@ type SavedAtlasState = {
   view: "map" | "featured";
   viewport?: AtlasViewport;
   enabledModes?: EnsdfDisplayMode[];
+  traceDepth?: 3 | 6 | 10;
+  traceView?: "tree" | "table";
 };
 type MapPoint = { nuclide: EnsdfAtlasNuclide; x: number; y: number };
 
@@ -44,6 +47,7 @@ const DEFAULT_VIEWPORT: AtlasViewport = { x: 0, y: 0, width: MAP_WIDTH, height: 
 const ALL_MODES: EnsdfDisplayMode[] = [
   "stable", "alpha", "beta-minus", "beta-plus-ec", "electron-capture", "isomeric-transition", "other",
 ];
+const TRACE_DEPTHS = [3, 6, 10] as const;
 const FEATURED_CODES = new Set(["H-1", "C-14", "Co-60", "Tc-99", "I-131", "Cs-137", "Rn-222", "U-238"]);
 const decayPresetNuclides = new Set([
   "I-131", "C-14", "Co-60", "U-238", "Th-234", "U-234", "Ra-226", "Rn-222", "Po-210",
@@ -99,6 +103,43 @@ function branchFraction(branch: EnsdfAtlasBranch, language: Language): string {
   if (branch.branchingFractionReported === null) return translate(language, "比率未収録", "ratio not reported");
   const percent = branch.branchingFractionReported * 100;
   return `${percent.toLocaleString(language === "ja" ? "ja-JP" : "en-US", { maximumFractionDigits: 6 })}%`;
+}
+
+function fractionsLabel(values: readonly number[], language: Language): string {
+  if (!values.length) return translate(language, "比率未収録", "ratio not reported");
+  return values.map((value) => `${(value * 100).toLocaleString(language === "ja" ? "ja-JP" : "en-US", { maximumFractionDigits: 6 })}%`).join(" / ");
+}
+
+function traceStateLabel(stateId: string, nuclides: ReadonlyMap<string, EnsdfAtlasNuclide>): string {
+  const nuclide = nuclides.get(nuclideIdFromStateId(stateId));
+  if (!nuclide) return stateId;
+  const state = stateId.split(":")[1] ?? "g";
+  return `${nuclideLabel(nuclide)}${state === "g" ? "" : state}`;
+}
+
+function TraceTree({ node, language, nuclides, onNavigate }: Readonly<{
+  node: AtlasTraceNode;
+  language: Language;
+  nuclides: ReadonlyMap<string, EnsdfAtlasNuclide>;
+  onNavigate: (stateId: string) => void;
+}>) {
+  if (!node.edges.length) return null;
+  return (
+    <ol className="atlas-trace-tree">
+      {node.edges.map((edge) => (
+        <li key={edge.id}>
+          <div className="atlas-trace-edge">
+            <span className={`atlas-branch-mode atlas-mode--${edge.displayMode}`}>{modeLabel(edge.displayMode, language)}</span>
+            <span aria-hidden="true">→</span>
+            <button type="button" onClick={() => onNavigate(edge.daughterStateId)}>{traceStateLabel(edge.daughterStateId, nuclides)}</button>
+            <small>{fractionsLabel(edge.reportedFractions, language)}{edge.recordCount > 1 ? ` · ${edge.recordCount} rec.` : ""}</small>
+            {edge.stop ? <em>{edge.stop === "cycle" ? translate(language, "循環", "cycle") : edge.stop === "depth" ? translate(language, "ここまで", "depth limit") : translate(language, "省略", "limited")}</em> : null}
+          </div>
+          {edge.child ? <TraceTree node={edge.child} language={language} nuclides={nuclides} onNavigate={onNavigate} /> : null}
+        </li>
+      ))}
+    </ol>
+  );
 }
 
 function pointForNuclide(nuclide: EnsdfAtlasNuclide): MapPoint {
@@ -175,7 +216,7 @@ export default function NuclideAtlasPage() {
   const requestedRouteNuclide = requestedRouteNormalized
     ? nuclides.find((item) => normalizeSearch(nuclideLabel(item)) === requestedRouteNormalized.replace(/m\d*$/, ""))
     : undefined;
-  const [state, setState] = useState<SavedAtlasState>({ selectedKey: null, selectedStateId: null, view: "map", viewport: DEFAULT_VIEWPORT, enabledModes: ALL_MODES });
+  const [state, setState] = useState<SavedAtlasState>({ selectedKey: null, selectedStateId: null, view: "map", viewport: DEFAULT_VIEWPORT, enabledModes: ALL_MODES, traceDepth: 6, traceView: "tree" });
   const [searchQuery, setSearchQuery] = useState("");
   const [candidatePoints, setCandidatePoints] = useState<MapPoint[]>([]);
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
@@ -183,6 +224,9 @@ export default function NuclideAtlasPage() {
   const [hasPreviousViewport, setHasPreviousViewport] = useState(false);
   const [detail, setDetail] = useState<EnsdfAtlasShard | null>(null);
   const [detailStatus, setDetailStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [trace, setTrace] = useState<AtlasTraceNode | null>(null);
+  const [traceStatus, setTraceStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [shareStatus, setShareStatus] = useState("");
   const svgRef = useRef<SVGSVGElement | null>(null);
   const candidateDialogRef = useRef<HTMLDivElement | null>(null);
   const previousViewportRef = useRef<AtlasViewport | null>(null);
@@ -190,6 +234,7 @@ export default function NuclideAtlasPage() {
   const gestureRef = useRef<{ viewport: AtlasViewport; points: Map<number, { x: number; y: number }> } | null>(null);
   const movedRef = useRef(false);
   const shardCacheRef = useRef(new Map<string, EnsdfAtlasShard>());
+  const shardPromiseCacheRef = useRef(new Map<string, Promise<EnsdfAtlasShard | null>>());
 
   const viewport = clampViewport(state.viewport ?? DEFAULT_VIEWPORT);
   const zoom = MAP_WIDTH / viewport.width;
@@ -199,6 +244,25 @@ export default function NuclideAtlasPage() {
   const selectedStates = useMemo(() => selected && detail ? detail.states.filter((item) => item.nuclideId === selected.id).sort((a, b) => a.stateIndex - b.stateIndex) : [], [detail, selected]);
   const selectedState = selectedStates.find((item) => item.id === state.selectedStateId) ?? selectedStates[0];
   const selectedBranches = useMemo(() => selectedState && detail ? detail.branches.filter((item) => item.parentStateId === selectedState.id) : [], [detail, selectedState]);
+  const traceDepth = TRACE_DEPTHS.includes(state.traceDepth as 3 | 6 | 10) ? state.traceDepth as 3 | 6 | 10 : 6;
+  const traceView = state.traceView === "table" ? "table" : "tree";
+  const traceRows = useMemo(() => trace ? flattenAtlasTrace(trace) : [], [trace]);
+
+  const loadShardForState = useCallback((stateId: string): Promise<EnsdfAtlasShard | null> => {
+    const nuclide = nuclideIndex.get(nuclideIdFromStateId(stateId));
+    if (!nuclide) return Promise.resolve(null);
+    const cached = shardCacheRef.current.get(nuclide.detailShard);
+    if (cached) return Promise.resolve(cached);
+    const pending = shardPromiseCacheRef.current.get(nuclide.detailShard);
+    if (pending) return pending;
+    const request = fetch(`${siteBasePath}${nuclide.detailShard}`)
+      .then((response) => { if (!response.ok) throw new Error(`${response.status}`); return response.json() as Promise<EnsdfAtlasShard>; })
+      .then((shard) => { shardCacheRef.current.set(nuclide.detailShard, shard); return shard; })
+      .catch(() => null)
+      .finally(() => { shardPromiseCacheRef.current.delete(nuclide.detailShard); });
+    shardPromiseCacheRef.current.set(nuclide.detailShard, request);
+    return request;
+  }, [nuclideIndex]);
 
   const updateViewport = useCallback((next: AtlasViewport, remember = true) => {
     setState((current) => {
@@ -244,6 +308,8 @@ export default function NuclideAtlasPage() {
       view: next.view === "featured" || (next.view as string) === "table" ? "featured" : "map",
       viewport: isViewport(next.viewport) ? clampViewport(next.viewport) : DEFAULT_VIEWPORT,
       enabledModes: restoredModes,
+      traceDepth: TRACE_DEPTHS.includes(next.traceDepth as 3 | 6 | 10) ? next.traceDepth : 6,
+      traceView: next.traceView === "table" ? "table" : "tree",
     });
     setSearchQuery(selectedNuclide ? `${nuclideLabel(selectedNuclide)}${selectedStateId?.split(":")[1] === "g" ? "" : selectedStateId?.split(":")[1] ?? ""}` : "");
     previousViewportRef.current = null;
@@ -252,7 +318,16 @@ export default function NuclideAtlasPage() {
 
   useEffect(() => {
     if (!requestedRouteQuery || !requestedRouteNuclide) return;
-    const timer = window.setTimeout(() => centerNuclide(requestedRouteNuclide, requestedStateLabel(requestedRouteQuery), false), 0);
+    const depthQuery = Number(readExperimentQuery(window.location.search, "depth"));
+    const traceQuery = readExperimentQuery(window.location.search, "trace");
+    const timer = window.setTimeout(() => {
+      centerNuclide(requestedRouteNuclide, requestedStateLabel(requestedRouteQuery), false);
+      setState((current) => ({
+        ...current,
+        traceDepth: TRACE_DEPTHS.includes(depthQuery as 3 | 6 | 10) ? depthQuery as 3 | 6 | 10 : current.traceDepth,
+        traceView: traceQuery === "table" || traceQuery === "tree" ? traceQuery : current.traceView,
+      }));
+    }, 0);
     return () => window.clearTimeout(timer);
   }, [centerNuclide, requestedRouteNuclide, requestedRouteQuery]);
 
@@ -261,19 +336,30 @@ export default function NuclideAtlasPage() {
       const timer = window.setTimeout(() => { setDetail(null); setDetailStatus("idle"); }, 0);
       return () => window.clearTimeout(timer);
     }
-    const cached = shardCacheRef.current.get(selected.detailShard);
-    if (cached) {
-      const timer = window.setTimeout(() => { setDetail(cached); setDetailStatus("ready"); }, 0);
+    const timer = window.setTimeout(() => { setDetail(null); setDetailStatus("loading"); }, 0);
+    let active = true;
+    loadShardForState(`${selected.id}:g`).then((shard) => {
+      if (!active) return;
+      setDetail(shard);
+      setDetailStatus(shard ? "ready" : "error");
+    });
+    return () => { active = false; window.clearTimeout(timer); };
+  }, [loadShardForState, selected]);
+
+  useEffect(() => {
+    if (!selectedState || selectedState.stability === "stable") {
+      const timer = window.setTimeout(() => { setTrace(null); setTraceStatus("idle"); }, 0);
       return () => window.clearTimeout(timer);
     }
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => { setDetail(null); setDetailStatus("loading"); }, 0);
-    fetch(`${siteBasePath}${selected.detailShard}`, { signal: controller.signal })
-      .then((response) => { if (!response.ok) throw new Error(`${response.status}`); return response.json() as Promise<EnsdfAtlasShard>; })
-      .then((shard) => { shardCacheRef.current.set(selected.detailShard, shard); setDetail(shard); setDetailStatus("ready"); })
-      .catch((error: unknown) => { if ((error as { name?: string }).name !== "AbortError") setDetailStatus("error"); });
-    return () => { window.clearTimeout(timer); controller.abort(); };
-  }, [selected]);
+    let active = true;
+    const timer = window.setTimeout(() => { setTrace(null); setTraceStatus("loading"); }, 0);
+    buildAtlasTrace(selectedState.id, loadShardForState, { maxDepth: traceDepth, maxNodes: 72 }).then((next) => {
+      if (!active) return;
+      setTrace(next);
+      setTraceStatus("ready");
+    }).catch(() => { if (active) setTraceStatus("error"); });
+    return () => { active = false; window.clearTimeout(timer); };
+  }, [loadShardForState, selectedState, traceDepth]);
 
   useEffect(() => { if (candidatePoints.length) candidateDialogRef.current?.focus(); }, [candidatePoints.length]);
 
@@ -430,6 +516,30 @@ export default function NuclideAtlasPage() {
     if (daughter) centerNuclide(daughter, branch.daughterStateId.split(":")[1] ?? "g");
   };
 
+  const jumpToState = (stateId: string) => {
+    const daughter = nuclideIndex.get(nuclideIdFromStateId(stateId));
+    if (daughter) centerNuclide(daughter, stateId.split(":")[1] ?? "g");
+  };
+
+  const changeTraceDepth = (depth: 3 | 6 | 10) => {
+    setState((current) => ({ ...current, traceDepth: depth }));
+    replaceExperimentQuery("depth", `${depth}`);
+  };
+
+  const changeTraceView = (view: "tree" | "table") => {
+    setState((current) => ({ ...current, traceView: view }));
+    replaceExperimentQuery("trace", view);
+  };
+
+  const copyTraceLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShareStatus(translate(language, "リンクをコピーしました。", "Link copied."));
+    } catch {
+      setShareStatus(translate(language, "リンクをコピーできませんでした。", "Link could not be copied."));
+    }
+  };
+
   const hoveredPoint = hoveredKey ? pointIndex.get(hoveredKey) : undefined;
   const selectedCode = selected ? nuclideLabel(selected) : null;
   const hasDecayPreset = Boolean(selectedCode && decayPresetNuclides.has(selectedCode) && selectedState?.stability !== "stable");
@@ -508,6 +618,22 @@ export default function NuclideAtlasPage() {
           <div className="atlas-state-selector" role="group" aria-label={translate(language, "核状態", "Nuclear state")}>{selectedStates.map((item) => <button type="button" key={item.id} aria-pressed={item.id === selectedState.id} onClick={() => { setState((current) => ({ ...current, selectedStateId: item.id })); replaceExperimentQuery("nuclide", `${nuclideLabel(selected)}${item.label === "g" ? "" : item.label}`); }}><strong>{stateLabel(item)}</strong><span>{stateEnergy(item, language)}</span></button>)}</div>
           <div className="atlas-state-summary"><article className="nuclide-card current"><span>{translate(language, "選択中", "SELECTED")}</span><strong>{nuclideLabel(selected)}{selectedState.label === "g" ? "" : selectedState.label}</strong><p>Z {selected.z} / N {selected.n}</p><small>T½ {halfLifeLabel(selectedState, language)}</small></article><dl className="atlas-state-metrics"><div><dt>{translate(language, "状態", "State")}</dt><dd>{stateEnergy(selectedState, language)}</dd></div><div><dt>Jπ</dt><dd>{selectedState.spinParity ?? "—"}</dd></div><div><dt>{translate(language, "収録分岐", "Recorded branches")}</dt><dd>{selectedBranches.length}</dd></div><div><dt>{translate(language, "流入記録", "Incoming records")}</dt><dd>{selected.incomingCount}</dd></div></dl></div>
           {selectedState.stability === "stable" ? <div className="atlas-stable-panel"><span aria-hidden="true">◎</span><div><strong>{translate(language, "安定核", "Stable nuclide")}</strong><p>{translate(language, "ENSDFで安定と評価されています。壊変経路は表示しません。", "Evaluated as stable in ENSDF. No decay path is shown.")}</p></div></div> : <div className="atlas-branch-panel"><div className="atlas-branch-heading"><h3>{translate(language, "収録された壊変", "Recorded decays")}</h3><span>{selectedBranches.length}</span></div>{selectedBranches.length ? <ol className="atlas-branch-list">{selectedBranches.slice(0, 12).map((branch) => { const daughter = nuclideIndex.get(nuclideIdFromStateId(branch.daughterStateId)); return <li key={branch.id}><span className={`atlas-branch-mode atlas-mode--${branch.displayMode}`}>{modeLabel(branch.displayMode, language)}</span><b aria-hidden="true">→</b>{daughter ? <button type="button" onClick={() => jumpToDaughter(branch)}><strong>{nuclideLabel(daughter)}{branch.daughterStateId.endsWith(":g") ? "" : branch.daughterStateId.split(":")[1]}</strong><span>{branchFraction(branch, language)}</span></button> : <span>—</span>}</li>; })}</ol> : <p>{translate(language, "この状態には壊変レコードがありません。安定とは限りません。", "No decay record is attached to this state; this does not imply stability.")}</p>}{selectedBranches.length > 12 ? <small>{translate(language, `先頭12件を表示（全${selectedBranches.length}件）`, `Showing 12 of ${selectedBranches.length}`)}</small> : null}</div>}
+          {selectedState.stability !== "stable" && selectedBranches.length ? <section className="atlas-trace-explorer" aria-labelledby="atlas-trace-title" aria-busy={traceStatus === "loading"}>
+            <div className="atlas-trace-toolbar">
+              <div><p className="eyebrow">TRACE FORWARD</p><h3 id="atlas-trace-title">{translate(language, "この先の壊変系列", "Forward decay trace")}</h3></div>
+              <div className="atlas-trace-actions">
+                <div className="atlas-trace-depth" role="group" aria-label={translate(language, "追跡する段数", "Trace depth")}>{TRACE_DEPTHS.map((depth) => <button type="button" key={depth} aria-pressed={traceDepth === depth} onClick={() => changeTraceDepth(depth)}>{depth}</button>)}</div>
+                <div className="atlas-trace-view" role="group" aria-label={translate(language, "系列の表示", "Trace view")}><button type="button" aria-pressed={traceView === "tree"} onClick={() => changeTraceView("tree")}>{translate(language, "系図", "Tree")}</button><button type="button" aria-pressed={traceView === "table"} onClick={() => changeTraceView("table")}>{translate(language, "一覧", "Table")}</button></div>
+                <button className="atlas-trace-share" type="button" onClick={copyTraceLink}>{translate(language, "リンク", "Link")}</button>
+              </div>
+            </div>
+            <p className="visually-hidden" role="status" aria-live="polite">{shareStatus}</p>
+            {traceStatus === "loading" ? <p className="atlas-trace-status" role="status">{translate(language, "系列を読み込み中…", "Loading decay trace…")}</p> : null}
+            {traceStatus === "error" ? <p className="atlas-trace-status is-error" role="alert">{translate(language, "系列を読み込めませんでした。", "Decay trace could not be loaded.")}</p> : null}
+            {traceStatus === "ready" && trace ? <>
+              {traceView === "tree" ? <div className="atlas-trace-canvas"><button className="atlas-trace-root" type="button" onClick={() => jumpToState(trace.stateId)}>{traceStateLabel(trace.stateId, nuclideIndex)}</button><TraceTree node={trace} language={language} nuclides={nuclideIndex} onNavigate={jumpToState} /></div> : <div className="atlas-trace-table-wrap"><table className="atlas-trace-table"><thead><tr><th>{translate(language, "段", "Step")}</th><th>{translate(language, "親", "From")}</th><th>{translate(language, "変化", "Mode")}</th><th>{translate(language, "娘", "To")}</th><th>{translate(language, "比率 / 記録", "Ratio / records")}</th></tr></thead><tbody>{traceRows.map((row) => <tr key={row.id}><td>{row.depth}</td><td>{traceStateLabel(row.parentStateId, nuclideIndex)}</td><td>{modeLabel(row.displayMode, language)}<small>{row.rawModes.join(" / ")}</small></td><td><button type="button" onClick={() => jumpToState(row.daughterStateId)}>{traceStateLabel(row.daughterStateId, nuclideIndex)}</button></td><td>{fractionsLabel(row.reportedFractions, language)}{row.recordCount > 1 ? ` · ${row.recordCount}` : ""}</td></tr>)}</tbody></table></div>}
+            </> : null}
+          </section> : null}
         </> : null}
       </section>
 
